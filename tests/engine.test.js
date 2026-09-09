@@ -44,6 +44,26 @@ test('selecting an activity does not move the calendar until a day advances', ()
   clearPending(state);
   advanceDay(state);
   assert.equal(state.day, 2);
+  assert.equal(state.pendingEvent, null);
+});
+
+test('chapter story does not interrupt immediately and pauses after 30 lived days', () => {
+  const state = createGame({ seed: 9 });
+  assert.equal(selectActivity(state, 'study').ok, true);
+  for (let i = 0; i < 29; i++) {
+    const result = advanceDay(state);
+    assert.equal(result.ok, true);
+    if (state.pendingEvent) {
+      assert.notEqual(state.pendingEvent.source, 'story', `chapter event fired too early on lived day ${state.elapsedDays}`);
+      clearPending(state);
+    }
+  }
+  assert.equal(state.chapterSeen[1], undefined);
+  const result = advanceDay(state);
+  assert.equal(result.paused, true);
+  assert.equal(state.elapsedDays, 30);
+  assert.equal(state.pendingEvent?.source, 'story');
+  assert.equal(state.pendingEvent?.id, 'chapter-1');
 });
 
 test('every simulated day consumes food for every living household member', () => {
@@ -90,7 +110,6 @@ test('a queued random event pauses until the player resolves it', () => {
 
 test('pregnancy is measured in days rather than quarters', () => {
   const state = createGame({ seed: 5 });
-  // Finish chapter event first so project selection is available.
   selectActivity(state, 'marry');
   for (let i = 0; i < 15; i++) { clearPending(state); advanceDay(state); }
   assert.ok(Object.values(state.people).some(p => p.role === 'spouse'));
@@ -103,7 +122,6 @@ test('pregnancy is measured in days rather than quarters', () => {
 
 test('only root blood descendants can inherit in the daily engine', () => {
   const state = createGame({ seed: 6 });
-  // Inject a child only through the real pregnancy path.
   selectActivity(state, 'marry');
   for (let i = 0; i < 15; i++) { clearPending(state); advanceDay(state); }
   selectActivity(state, 'child'); clearPending(state); advanceDay(state);
