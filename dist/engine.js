@@ -11,6 +11,7 @@ export const MONTH_DAYS = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 export const DAYS_PER_YEAR = 365;
 export const TOTAL_DAYS = (END_YEAR - START_YEAR) * DAYS_PER_YEAR;
 export const FOOD_PER_PERSON_PER_DAY = 0.35;
+export const CHAPTER_EVENT_DELAY_DAYS = 30;
 
 export const ORIGINS = {
   peasant: { id: 'peasant', label: '寒门', desc: '有两方薄田，识字不多，但牵连较少。', money: 45, grain: 120, land: 2, reputation: 5, region: '洛阳近郊', skills: { knowledge: 1, martial: 2, trade: 1, social: 1, strategy: 1 } },
@@ -423,8 +424,14 @@ function maybeHistoricalEvent(state) {
   return true;
 }
 
+function chapterElapsedDays(state, chapter) {
+  return state.elapsedDays - (chapter.years[0] - START_YEAR) * DAYS_PER_YEAR;
+}
+
 function maybeChapterEvent(state) {
-  const chapter = getChapter(state); if (state.chapterSeen[chapter.id]) return false;
+  const chapter = getChapter(state);
+  if (state.chapterSeen[chapter.id]) return false;
+  if (chapterElapsedDays(state, chapter) < CHAPTER_EVENT_DELAY_DAYS) return false;
   const event = CHAPTER_EVENTS.find(e => e.chapter === chapter.id); if (!event) return false;
   queueEvent(state, event, 'story'); return true;
 }
@@ -539,6 +546,14 @@ export function deserializeState(raw) {
   if (!data || typeof data !== 'object' || !data.people || !data.family || !data.resources) throw new Error('存档结构无效');
   if (Number(data.version) === 2) data = migrateV2(data);
   if (Number(data.version) !== VERSION) throw new Error(`不支持的存档版本：${data.version}`);
+  const chapter = getChapter(data);
+  const earlyChapterEvent = data.pendingEvent?.source === 'story'
+    && data.pendingEvent.id === `chapter-${chapter.id}`
+    && chapterElapsedDays(data, chapter) < CHAPTER_EVENT_DELAY_DAYS;
+  if (earlyChapterEvent) {
+    data.pendingEvent = null;
+    data.pauseReason = '章节剧情已延后，可继续原行动';
+  }
   data.running = false; syncResources(data); return data;
 }
 
