@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#102536">
+  <title>乱世家书 · 290—350</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <main class="app-shell">
+    <section id="setup" class="setup-card">
+      <p class="eyebrow">第一版家族纪事 · 290春</p>
+      <h1>乱世家书</h1>
+      <p class="lead">从洛阳近郊的一间祖屋出发，在四种出身、六章家书和二百四十季之间，保住一条能继续写下去的血脉。</p>
+      <form id="setup-form">
+        <label>家族姓氏<input id="surname" maxlength="8" value="沈" required></label>
+        <label>开局身份<select id="origin"></select></label>
+        <button class="primary" type="submit">落笔开局</button>
+      </form>
+      <p class="fine-print">数值为虚构的策略刻度；历史事件以季度抽象呈现。进度只保存在本机浏览器，也可导出 JSON 备份。</p>
+    </section>
+
+    <section id="game" hidden>
+      <header class="topbar">
+        <div><p class="eyebrow">乱世家书 · 家族纪事</p><h1 id="date">290春</h1><p id="chapter">第1章 · 家门初立</p></div>
+        <div class="top-actions"><button id="export" type="button">导出家书</button><label class="file-button">导入家书<input id="import" type="file" accept="application/json,.json"></label><button id="new-game" type="button">另起一门</button></div>
+      </header>
+      <div class="resource-strip" aria-label="家门资源">
+        <div><span>钱</span><b id="money">0</b></div><div><span>粮</span><b id="grain">0</b></div><div><span>田产</span><b id="land">0</b></div><div><span>声望</span><b id="reputation">0</b></div><div><span>健康</span><b id="health">0</b></div><div><span>战乱</span><b id="unrest">0</b></div><div><span>迁徙准备</span><b id="preparation">0</b></div>
+      </div>
+      <p id="notice" role="status"></p>
+      <div class="layout">
+        <aside class="side-panel actions-panel"><div class="current-card"><span class="eyebrow">当前执笔人</span><h2 id="current-name">—</h2><p id="current-place">—</p></div><p class="status-line" id="status-line"></p><section><h2>主行动 <small>每季一项</small></h2><div id="main-actions" class="action-grid"></div></section><section><h2>家务 <small>每季一项</small></h2><div id="family-actions" class="action-grid"></div></section><label class="destination-label">迁徙地点<select id="destination"></select></label></aside>
+        <section class="main-panel"><div id="event" class="event-panel" hidden></div><div id="succession" class="succession-panel" hidden></div><section class="chronicle"><div class="section-heading"><div><span class="eyebrow">最近家书</span><h2>本家纪事</h2></div><span class="stamp">自动存档</span></div><div id="log" class="log"></div></section></section>
+        <aside class="side-panel archive-panel"><nav class="tabs" aria-label="家族资料页签"><button type="button" data-tab="family" class="active">家族树</button><button type="button" data-tab="relations">关系</button><button type="button" data-tab="assets">产业</button><button type="button" data-tab="timeline">历史</button></nav><div id="tab-family" class="tab-panel"><svg id="tree" class="family-tree" role="img" aria-label="可点击的家族树"></svg><div id="person-detail" class="person-detail"></div></div><div id="tab-relations" class="tab-panel" hidden><div id="relations"></div></div><div id="tab-assets" class="tab-panel" hidden><div id="assets"></div></div><div id="tab-timeline" class="tab-panel" hidden><div id="timeline"></div></div><details class="help"><summary>帮助与规则</summary><p>每季完成一项主行动和一项家务，第二个槽提交后才推进一季；失败或需要风险确认的行动不会改动状态。筹备迁徙会降低战乱损失。婚配为双方互联，怀孕三季后出生，育龄与生育间隔受限。</p><p>始祖血缘后代才能接续，配偶和母亲不能继承；未成年接续要先由成年家人完成监护行动。历史事件只发生一次，350年春收束时家族不会被强制灭门。</p></details></aside>
+      </div>
+    </section>
+  </main>
+  <script type="module" src="./game.js"></script>
+</body>
+</html>
+
