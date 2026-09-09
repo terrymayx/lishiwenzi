@@ -3,7 +3,7 @@ import {
   selectActivity, setRunning, advanceDay, resolveEvent, continueAs, performGuardianAction,
   listSuccessors, listGuardians, getActions, getChapter, getDateLabel, getFamilyTree,
   getRelations, getTimeline, getDailyFoodCost, selectPerson
-} from './engine.js';
+} from './engine.js?v=1.1.1';
 
 const $ = selector => document.querySelector(selector);
 let state = null;
@@ -29,15 +29,21 @@ function stopTimer(reason = null) {
   timer = null;
   if (state) { state.running = false; if (reason) state.pauseReason = reason; }
 }
+function focusPendingDecision() {
+  const target = state?.pendingEvent ? $('#event') : (state?.phase === 'succession' || state?.phase === 'guardian' ? $('#succession') : null);
+  if (!target || target.hidden) return;
+  window.requestAnimationFrame(() => target.scrollIntoView({ behavior: 'smooth', block: 'center' }));
+}
 function startTimer() {
   if (!state) return;
   const result = setRunning(state, true);
-  if (!result.ok) { setNotice(result.message, 'error'); render(); return; }
+  if (!result.ok) { setNotice(result.message, 'error'); render(); focusPendingDecision(); return; }
   stopTimer();
   state.running = true;
   const speed = $('#speed')?.value || '5';
   const interval = SPEEDS[speed] || SPEEDS['5'];
   timer = window.setInterval(stepOneDay, interval);
+  setNotice('时间开始按天流逝。');
   render();
 }
 function stepOneDay() {
@@ -48,12 +54,14 @@ function stepOneDay() {
   if (!result.ok || result.paused || state.pendingEvent || state.phase !== 'playing' || state.endpoint) {
     stopTimer(result.reason || state.pauseReason || result.message || '时间暂停');
     render();
+    focusPendingDecision();
   }
 }
 function pauseByPlayer() {
-  if (!state) return;
+  if (!state || !state.running) return;
   stopTimer('玩家主动暂停');
   setRunning(state, false);
+  setNotice('时间已手动暂停。');
   save(); render();
 }
 function startNewGame(event) {
@@ -108,14 +116,21 @@ function renderHeader() {
   const action = getActions(state).find(item => item.id === state.currentActivity?.id);
   const progress = state.currentActivity?.duration ? ` · ${state.currentActivity.elapsed}/${state.currentActivity.duration}日` : '';
   $('#activity-line').textContent = action ? `当前行动：${action.icon} ${action.label}${progress}` : '当前行动：尚未选择';
+
+  const blockedByEvent = Boolean(state.pendingEvent);
   $('#status-line').textContent = state.endpoint ? '350年1月1日 · 第一版纪事收束'
-    : state.pendingEvent ? `时间暂停 · ${state.pauseReason || '等待处理事件'}`
-    : state.phase === 'succession' ? '时间暂停 · 等待血缘后代接续'
-    : state.phase === 'guardian' ? '时间暂停 · 等待监护安排'
-    : state.running ? '时间正在按天流逝；遇到事件会自动暂停'
+    : blockedByEvent ? `已自动暂停 · ${state.pauseReason || '事件发生'}。请先处理事件，再继续时间。`
+    : state.phase === 'succession' ? '已自动暂停 · 等待血缘后代接续'
+    : state.phase === 'guardian' ? '已自动暂停 · 等待监护安排'
+    : state.running ? '时间正在按天流逝；可随时点击“暂停”'
     : (state.pauseReason || '选择行动后点击“开始时间”');
-  $('#start-time').disabled = state.running || !state.currentActivity || state.phase !== 'playing' || Boolean(state.pendingEvent) || state.endpoint;
-  $('#pause-time').disabled = !state.running;
+
+  const startButton = $('#start-time');
+  const pauseButton = $('#pause-time');
+  startButton.disabled = state.running || !state.currentActivity || state.phase !== 'playing' || blockedByEvent || state.endpoint;
+  pauseButton.disabled = !state.running;
+  startButton.textContent = blockedByEvent ? '先处理事件' : state.running ? '时间流逝中…' : '▶ 开始时间';
+  pauseButton.textContent = state.running ? 'Ⅱ 暂停' : '已暂停';
 }
 function createActionCard(action) {
   const card = document.createElement('button');
@@ -196,7 +211,21 @@ function renderSuccession() {
 function renderEvent() {
   const panel = $('#event'); panel.hidden = !state.pendingEvent; panel.replaceChildren(); if (!state.pendingEvent) return;
   const event = state.pendingEvent; const title = document.createElement('h2'); title.textContent = event.title; const text = document.createElement('p'); text.textContent = event.text; panel.append(title, text);
-  event.options.forEach(option => { const button = document.createElement('button'); button.type = 'button'; button.className = 'event-option'; const strong = document.createElement('strong'); strong.textContent = option.label; const consequence = document.createElement('span'); consequence.textContent = option.consequence; button.append(strong, consequence); button.addEventListener('click', () => { const result = resolveEvent(state, event.id, option.id); setNotice(result.message, result.ok ? 'info' : 'error'); if (result.ok) save(); render(); }); panel.append(button); });
+  event.options.forEach(option => {
+    const button = document.createElement('button'); button.type = 'button'; button.className = 'event-option';
+    const strong = document.createElement('strong'); strong.textContent = option.label;
+    const consequence = document.createElement('span'); consequence.textContent = option.consequence;
+    button.append(strong, consequence);
+    button.addEventListener('click', () => {
+      const result = resolveEvent(state, event.id, option.id);
+      if (result.ok) {
+        setNotice('事件已处理，当前行动会保留；点击“开始时间”即可继续。');
+        save();
+      } else setNotice(result.message, 'error');
+      render();
+    });
+    panel.append(button);
+  });
 }
 function renderTabs() {
   document.querySelectorAll('[data-tab]').forEach(button => button.classList.toggle('active', button.dataset.tab === activeTab));
