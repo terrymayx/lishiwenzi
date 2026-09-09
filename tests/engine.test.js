@@ -75,6 +75,17 @@ test('every simulated day consumes food for every living household member', () =
   assert.equal(state.resources.grain, Math.round((before - daily) * 10) / 10);
 });
 
+test('food crisis only allows buying grain with money', () => {
+  const state = createGame({ seed: 20 });
+  state.resources.money = 20;
+  state.resources.grain = 0.1;
+  assert.equal(selectActivity(state, 'study').ok, true);
+  const result = advanceDay(state);
+  assert.equal(result.paused, true);
+  assert.equal(state.pendingEvent?.title, '家中断粮');
+  assert.deepEqual(state.pendingEvent?.options.map(option => option.id), ['buy']);
+});
+
 test('291 historical event pauses time and only triggers once', () => {
   const state = createGame({ seed: 3 });
   selectActivity(state, 'study');
