@@ -2,8 +2,8 @@ import {
   ORIGINS, REGIONS, createGame, deserializeState, serializeState,
   selectActivity, setRunning, advanceDay, resolveEvent, continueAs, performGuardianAction,
   listSuccessors, listGuardians, getActions, getChapter, getDateLabel, getFamilyTree,
-  getRelations, getTimeline, getDailyFoodCost, selectPerson
-} from './engine.js?v=1.1.1';
+  getRelations, getTimeline, getDailyFoodCost, getLandPrice, buyLand, selectPerson
+} from './engine.js?v=1.2.0';
 
 const $ = selector => document.querySelector(selector);
 let state = null;
@@ -12,6 +12,7 @@ let timer = null;
 const storageKey = 'luanshi-jia-shu-v3';
 const PROFESSION_LABELS = { farmer: '耕作者', trader: '商旅', clerk: '文书幕僚', soldier: '军旅', artisan: '工匠' };
 const SPEEDS = { '1': 420, '5': 120, '20': 42 };
+const HOURGLASS_SPEEDS = { '1': '1.8s', '5': '.9s', '20': '.38s' };
 
 function save() {
   if (!state) return;
@@ -108,6 +109,7 @@ function renderHeader() {
   $('#land').textContent = `${state.resources.land}`;
   $('#reputation').textContent = state.resources.reputation.toFixed(1);
   $('#health').textContent = current ? `${Math.round(current.health)}` : '—';
+  $('#hunger').textContent = state.resources.hunger.toFixed(1);
   $('#unrest').textContent = `${Math.round(state.unrest)}`;
   $('#preparation').textContent = `${Math.round(state.household.preparation)}`;
   $('#food-rate').textContent = `${getDailyFoodCost(state).toFixed(1)}/日`;
@@ -131,6 +133,31 @@ function renderHeader() {
   pauseButton.disabled = !state.running;
   startButton.textContent = blockedByEvent ? '先处理事件' : state.running ? '时间流逝中…' : '▶ 开始时间';
   pauseButton.textContent = state.running ? 'Ⅱ 暂停' : '已暂停';
+  renderTimeFlow();
+}
+function renderTimeFlow() {
+  const flow = $('#time-flow'); const flowDate = $('#flow-date'); const flowStatus = $('#flow-status');
+  if (!flow || !flowDate || !flowStatus || !state) return;
+  const speed = $('#speed')?.value || '5';
+  flow.style.setProperty('--hourglass-speed', HOURGLASS_SPEEDS[speed] || HOURGLASS_SPEEDS['5']);
+  flowDate.textContent = getDateLabel(state);
+  const hasDecision = Boolean(state.pendingEvent) || state.phase === 'succession' || state.phase === 'guardian';
+  flow.classList.toggle('running', Boolean(state.running));
+  flow.classList.toggle('paused', !state.running && !hasDecision);
+  flow.classList.toggle('event', hasDecision);
+  if (state.endpoint) { flowStatus.textContent = '第一版纪事已经结束'; return; }
+  if (state.pendingEvent) {
+    flowStatus.textContent = state.pendingEvent.source === 'history' ? '重大历史发生 · 时间自动暂停'
+      : state.pendingEvent.source === 'random' ? '事件发生 · 时间自动暂停' : '剧情事件发生 · 时间自动暂停';
+    return;
+  }
+  if (state.phase === 'succession') { flowStatus.textContent = '等待后代继承 · 时间自动暂停'; return; }
+  if (state.phase === 'guardian') { flowStatus.textContent = '等待监护安排 · 时间自动暂停'; return; }
+  if (state.running) {
+    const label = ({ '1': '1×', '5': '5×', '20': '20×' })[speed] || '5×';
+    flowStatus.textContent = `时间流逝中 · ${label}`; return;
+  }
+  flowStatus.textContent = state.currentActivity ? '时间已暂停 · 点击开始继续' : '选择行动后开始时间';
 }
 function createActionCard(action) {
   const card = document.createElement('button');
@@ -180,10 +207,13 @@ function renderPerson() {
   const heading = document.createElement('h3'); heading.textContent = person.name;
   const body = document.createElement('p'); body.textContent = `${person.alive ? '在世' : '已故'} · ${Math.floor(person.age)}岁 · ${person.location} · ${PROFESSION_LABELS[person.profession] || person.profession}`;
   const relation = document.createElement('p'); relation.textContent = person.spouseId ? `配偶：${state.people[person.spouseId]?.name || '关系待查'}` : '未见婚姻关系';
+  const hunger = Number(person.hunger) || 0;
+  const hungerLabel = hunger >= 100 ? '濒临饿死' : hunger >= 80 ? '严重饥饿' : hunger >= 60 ? '饥饿' : hunger >= 30 ? '有些饿' : '温饱';
+  const hungerLine = document.createElement('p'); hungerLine.textContent = `饥饿 ${Math.round(hunger)} · ${hungerLabel}`;
   const skills = document.createElement('p'); skills.textContent = `学识 ${person.skills.knowledge.toFixed(1)} · 武艺 ${person.skills.martial.toFixed(1)} · 商才 ${person.skills.trade.toFixed(1)}`;
   const pregnancy = person.pregnancy ? document.createElement('p') : null;
   if (pregnancy) pregnancy.textContent = `孕期：预计约 ${person.pregnancy.remainingDays} 日后生产`;
-  panel.append(heading, body, relation, skills); if (pregnancy) panel.append(pregnancy);
+  panel.append(heading, body, relation, hungerLine, skills); if (pregnancy) panel.append(pregnancy);
 }
 function renderRelations() {
   const node = $('#relations'); node.replaceChildren(); const list = getRelations(state);
@@ -192,7 +222,15 @@ function renderRelations() {
 }
 function renderAssets() {
   const node = $('#assets'); node.replaceChildren(); const title = document.createElement('h3'); title.textContent = '产业与家门'; node.append(title);
-  const summary = document.createElement('p'); summary.textContent = `田产 ${state.household.land} 亩 · 钱 ${state.resources.money.toFixed(1)} · 粮 ${state.resources.grain.toFixed(1)} · 每日口粮 ${getDailyFoodCost(state).toFixed(1)} · 凝聚 ${Math.round(state.family.cohesion)}`; node.append(summary);
+  const summary = document.createElement('p'); summary.textContent = `田产 ${state.household.land} 亩 · 钱 ${state.resources.money.toFixed(1)} · 粮 ${state.resources.grain.toFixed(1)} · 每日口粮 ${getDailyFoodCost(state).toFixed(1)} · 平均饥饿 ${state.resources.hunger.toFixed(1)} · 凝聚 ${Math.round(state.family.cohesion)}`; node.append(summary);
+  const purchase = document.createElement('div'); purchase.className = 'land-purchase';
+  const purchaseTitle = document.createElement('strong'); purchaseTitle.textContent = '购买田地 · 扩充田产'; purchase.append(purchaseTitle);
+  [1, 3, 5].forEach(amount => {
+    const button = document.createElement('button'); button.type = 'button'; button.className = 'land-buy';
+    const price = getLandPrice(state, amount); button.textContent = `买${amount}亩 · ${price}钱`; button.disabled = !Number.isFinite(price) || state.resources.money < price || state.running || state.phase !== 'playing' || Boolean(state.pendingEvent);
+    button.addEventListener('click', () => { const result = buyLand(state, amount); setNotice(result.message, result.ok ? 'info' : 'error'); if (result.ok) save(); render(); }); purchase.append(button);
+  });
+  node.append(purchase);
   state.assets.forEach(asset => { const p = document.createElement('p'); p.textContent = `${asset.name} · ${asset.location} · 估值 ${asset.value}`; node.append(p); });
 }
 function renderTimeline() {

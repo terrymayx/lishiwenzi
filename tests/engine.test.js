@@ -2,7 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
   createGame, selectActivity, advanceDay, resolveEvent, serializeState, deserializeState,
-  listSuccessors, continueAs, performGuardianAction, getDailyFoodCost, __test
+  listSuccessors, continueAs, performGuardianAction, getDailyFoodCost,
+  getLandPrice, buyLand, __test
 } from '../dist/engine.js';
 
 function clearPending(state) {
@@ -168,4 +169,71 @@ test('350-01-01 is the inclusive demo endpoint', () => {
   assert.equal(state.month, 1);
   assert.equal(state.day, 1);
   assert.equal(state.phase, 'ended');
+});
+
+test('cultivation yield scales with owned land after daily food is paid', () => {
+  const state = createGame({ seed: 2 });
+  state.resources.grain = 50;
+  state.household.grain = 50;
+  const before = state.resources.grain;
+  const daily = getDailyFoodCost(state);
+  assert.equal(selectActivity(state, 'cultivate').ok, true);
+  const result = advanceDay(state);
+  assert.equal(result.ok, true);
+  assert.equal(state.resources.grain, Math.round((before + state.household.land * 0.4 - daily) * 10) / 10);
+});
+
+test('buying land charges an escalating per-mu price and creates an asset', () => {
+  const state = createGame({ seed: 12 });
+  const beforeMoney = state.resources.money;
+  const oneMu = getLandPrice(state, 1);
+  assert.equal(oneMu, 26);
+  const result = buyLand(state, 1);
+  assert.equal(result.ok, true);
+  assert.equal(result.cost, oneMu);
+  assert.equal(state.resources.money, beforeMoney - oneMu);
+  assert.equal(state.household.land, 3);
+  assert.equal(state.assets.at(-1).type, '田产');
+  assert.equal(state.assets.at(-1).area, 1);
+});
+
+test('buying multiple mu uses the escalating price for each new mu', () => {
+  const state = createGame({ seed: 13 });
+  state.resources.money = 100;
+  const cost = getLandPrice(state, 3);
+  assert.equal(cost, 90);
+  assert.equal(buyLand(state, 3).ok, true);
+  assert.equal(state.household.land, 5);
+  assert.equal(state.resources.money, 100 - cost);
+});
+
+test('land purchase rejects insufficient money and pending decisions', () => {
+  const state = createGame({ seed: 14 });
+  state.resources.money = 0;
+  assert.equal(buyLand(state, 1).ok, false);
+  assert.equal(state.household.land, 2);
+  __test.queueRandomEvent(state, 0);
+  assert.equal(buyLand(state, 1).ok, false);
+});
+
+test('each person tracks hunger and full meals reduce it', () => {
+  const state = createGame({ seed: 15 });
+  const people = Object.values(state.people).filter(person => person.alive);
+  people.forEach(person => { person.hunger = 42; });
+  selectActivity(state, 'study');
+  advanceDay(state);
+  people.forEach(person => assert.equal(person.hunger, 30));
+});
+
+test('starvation raises hunger, damages health, and can kill a person', () => {
+  const state = createGame({ seed: 16 });
+  const protagonist = state.people[state.playerId];
+  protagonist.hunger = 99;
+  protagonist.health = 3;
+  state.resources.grain = 0;
+  selectActivity(state, 'study');
+  advanceDay(state);
+  assert.equal(protagonist.hunger, 100);
+  assert.equal(protagonist.alive, false);
+  assert.match(protagonist.notes.at(-1), /饥饿/);
 });

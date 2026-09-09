@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#102536">
   <title>乱世家书 · 连续日历版</title>
-  <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="./style.css?v=1.2.0">
 </head>
 <body>
   <main class="app-shell">
@@ -36,6 +36,7 @@
         <div><span>健康</span><b id="health">0</b></div>
         <div><span>战乱</span><b id="unrest">0</b></div>
         <div><span>迁徙准备</span><b id="preparation">0</b></div>
+        <div><span>平均饥饿</span><b id="hunger">0</b></div>
       </div>
       <p id="notice" role="status"></p>
 
@@ -44,6 +45,10 @@
           <div class="current-card"><span class="eyebrow">当前执笔人</span><h2 id="current-name">—</h2><p id="current-place">—</p></div>
           <p id="activity-line" class="activity-line"></p>
           <p class="status-line" id="status-line"></p>
+          <div id="time-flow" class="time-flow paused" aria-live="polite">
+            <div class="hourglass-wrap" aria-hidden="true"><div class="hourglass">⏳</div></div>
+            <div class="time-flow-info"><strong id="flow-date">290年1月1日</strong><span id="flow-status">时间已暂停</span></div>
+          </div>
           <div class="time-controls">
             <button id="start-time" class="primary" type="button">▶ 开始时间</button>
             <button id="pause-time" type="button">Ⅱ 暂停</button>
@@ -70,6 +75,6 @@
       </div>
     </section>
   </main>
-  <script type="module" src="./game.js?v=1.1.1"></script>
+  <script type="module" src="./game.js?v=1.2.0"></script>
 </body>
 </html>

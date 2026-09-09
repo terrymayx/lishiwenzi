@@ -11,6 +11,10 @@ export const MONTH_DAYS = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 export const DAYS_PER_YEAR = 365;
 export const TOTAL_DAYS = (END_YEAR - START_YEAR) * DAYS_PER_YEAR;
 export const FOOD_PER_PERSON_PER_DAY = 0.35;
+export const FARM_YIELD_PER_LAND_PER_DAY = 0.4;
+export const LAND_BASE_PRICE = 18;
+export const LAND_PRICE_STEP = 4;
+export const HUNGER_MAX = 100;
 export const CHAPTER_EVENT_DELAY_DAYS = 30;
 
 export const ORIGINS = {
@@ -131,7 +135,7 @@ export { alivePeople };
 function person(state, name, age, role, extra = {}) {
   return {
     id: makeId('person', state), name, age, role, sex: extra.sex || '男', origin: state.origin,
-    alive: true, health: extra.health ?? 78, married: false, spouseId: null,
+    alive: true, health: extra.health ?? 78, hunger: clamp(extra.hunger ?? 0, 0, HUNGER_MAX), married: false, spouseId: null,
     childrenIds: [], parentId: extra.parentId ?? null, parentIds: extra.parentIds ? [...extra.parentIds] : (extra.parentId ? [extra.parentId] : []),
     familyId: extra.familyId ?? state.family.id, bloodlineFromRoot: extra.bloodlineFromRoot ?? false,
     skills: { knowledge: 1, martial: 1, trade: 1, social: 1, strategy: 1, ...(extra.skills || {}) },
@@ -147,6 +151,8 @@ function syncResources(state) {
   state.resources.grain = round1(Math.max(0, state.resources.grain));
   state.resources.reputation = round1(Math.max(0, state.resources.reputation));
   state.resources.health = round1(clamp(current?.health ?? 0, 0, 100));
+  const householdPeople = alivePeople(state).filter(p => p.familyId === state.family.id);
+  state.resources.hunger = round1(householdPeople.length ? householdPeople.reduce((sum, p) => sum + clamp(Number(p.hunger) || 0, 0, HUNGER_MAX), 0) / householdPeople.length : 0);
   state.resources.land = state.household.land;
   state.household.money = state.resources.money;
   state.household.grain = state.resources.grain;
@@ -160,7 +166,7 @@ export function createGame({ surname = '沈', origin = 'peasant', seed = 2026090
     version: VERSION, seed: Number(seed) || 1, rngState: normalizeSeed(seed), nextId: 1,
     elapsedDays: 0, year: START_YEAR, month: 1, day: 1, phase: 'playing', endpoint: false, running: false,
     surname: surname.trim(), origin: profile.id, region: profile.region, unrest: 8, grainPrice: 1, dailyFood: 0,
-    resources: { money: profile.money, grain: profile.grain, land: profile.land, reputation: profile.reputation, health: 78 },
+    resources: { money: profile.money, grain: profile.grain, land: profile.land, reputation: profile.reputation, health: 78, hunger: 0 },
     family: { id: 'family-1', surname: surname.trim(), title: `${surname.trim()}氏家门`, cohesion: 65, reputation: profile.reputation, legacy: ['祖籍洛阳'], households: [] },
     household: { id: 'household-1', label: '本家', money: profile.money, grain: profile.grain, land: profile.land, preparation: 0, location: profile.region },
     rootId: null, playerId: null, activeId: null, selectedPersonId: null,
@@ -191,6 +197,30 @@ export function getCurrent(state) { return state.playerId ? state.people[state.p
 export function getChapter(state) { return CHAPTERS.find(c => state.year >= c.years[0] && state.year <= c.years[1]) || CHAPTERS[CHAPTERS.length - 1]; }
 export function getDateLabel(state) { return `${state.year}年${state.month}月${state.day}日`; }
 export function getDailyFoodCost(state) { return round1(alivePeople(state).filter(p => p.familyId === state.family.id).length * FOOD_PER_PERSON_PER_DAY); }
+
+export function getLandPrice(state, acres = 1) {
+  const amount = Number(acres);
+  if (!Number.isInteger(amount) || amount < 1 || amount > 20) return Infinity;
+  let total = 0;
+  for (let i = 0; i < amount; i += 1) total += LAND_BASE_PRICE + (state.household.land + i) * LAND_PRICE_STEP;
+  return round1(total);
+}
+
+export function buyLand(state, acres = 1) {
+  if (state.phase !== 'playing' || state.endpoint || state.pendingEvent) return { ok: false, message: '当前不能购买田地。' };
+  const amount = Number(acres);
+  const cost = getLandPrice(state, amount);
+  if (!Number.isFinite(cost)) return { ok: false, message: '购买亩数必须是1至20亩。' };
+  if (state.resources.money < cost) return { ok: false, message: `钱粮不足，购买${amount}亩田地需要${cost}钱。` };
+  state.resources.money = round1(state.resources.money - cost);
+  state.household.land += amount;
+  const asset = { id: makeId('asset', state), type: '田产', name: `新购田地（${amount}亩）`, area: amount, value: cost, location: state.region, ownerId: state.playerId };
+  state.assets.push(asset);
+  state.family.households[0].assets.push(asset.id);
+  addLog(state, 'choice', '购置田地', `花费${cost}钱购置${amount}亩田地，现有田产${state.household.land}亩。`);
+  syncResources(state);
+  return { ok: true, cost, acres: amount, land: state.household.land, message: `已购置${amount}亩田地，花费${cost}钱。` };
+}
 
 function bloodDescendant(state, id) { return Boolean(state.people[id]?.bloodlineFromRoot); }
 function actionTarget(state, id) {
@@ -280,7 +310,7 @@ function applyDailyActivity(state) {
   } else if (activity.id === 'prepare') {
     if (activity.elapsed % 5 === 0 && state.resources.money >= 1) { state.resources.money -= 1; state.household.preparation = clamp(state.household.preparation + 2.5, 0, 100); }
   } else if (activity.id === 'cultivate') {
-    state.resources.grain += Math.max(0.05, state.household.land * 0.09); current.skills.trade += 0.002;
+    state.resources.grain += Math.max(0.05, state.household.land * FARM_YIELD_PER_LAND_PER_DAY); current.skills.trade += 0.002;
   } else if (activity.id === 'manage') {
     state.family.cohesion = clamp(state.family.cohesion + 0.04, 0, 100);
     if (activity.elapsed % 15 === 0) state.resources.reputation += 0.3;
@@ -326,10 +356,21 @@ function completeProject(state, activity, current) {
 
 function consumeFood(state) {
   const cost = getDailyFoodCost(state);
-  state.resources.grain -= cost;
-  if (state.resources.grain >= 0) return null;
-  state.resources.grain = 0;
-  for (const p of alivePeople(state).filter(p => p.familyId === state.family.id)) p.health = clamp(p.health - 0.8, 0, 100);
+  const members = alivePeople(state).filter(p => p.familyId === state.family.id);
+  const available = Math.max(0, Number(state.resources.grain) || 0);
+  const mealRatio = cost > 0 ? clamp(available / cost, 0, 1) : 1;
+  state.resources.grain = round1(Math.max(0, available - cost));
+  for (const p of members) {
+    if (mealRatio >= 1) {
+      p.hunger = round1(clamp((Number(p.hunger) || 0) - 12, 0, HUNGER_MAX));
+      continue;
+    }
+    p.hunger = round1(clamp((Number(p.hunger) || 0) + 15 * (1 - mealRatio), 0, HUNGER_MAX));
+    if (p.hunger >= 60) p.health = clamp(p.health - 0.1, 0, 100);
+    if (p.hunger >= 80) p.health = clamp(p.health - 0.15, 0, 100);
+    if (p.hunger >= HUNGER_MAX) p.health = clamp(p.health - (p.health <= 5 ? 5 : 0.25), 0, 100);
+  }
+  if (mealRatio >= 1) return null;
   state.family.cohesion = clamp(state.family.cohesion - 1, 0, 100);
   return '家中已经断粮。';
 }
@@ -354,7 +395,7 @@ function settlePeopleDaily(state) {
     if (!p.warningLogged && (p.health < 35 || p.age >= p.lifespan - 5)) {
       p.warningLogged = true; addLog(state, 'warning', `${p.name}需要照看`, `${p.name}的健康或年岁已经接近危险线。`);
     }
-    if (p.health <= 0) killPerson(state, p.id, '久病或饥馑');
+    if (p.health <= 0) killPerson(state, p.id, p.hunger >= HUNGER_MAX ? '饥饿' : '久病或饥馑');
     else if (p.age >= p.lifespan) killPerson(state, p.id, '年老体衰');
   }
 }
@@ -445,7 +486,9 @@ function maybeRandomEvent(state) {
 }
 
 function maybeResourceCrisis(state, crisisText) {
-  if (!crisisText || state.pendingEvent) return false;
+  // When the household cannot afford the sole recovery option, leave time
+  // running so the player can still work for money while hunger worsens.
+  if (!crisisText || state.pendingEvent || state.resources.money < 10) return false;
   queueEvent(state, {
     id: `crisis-${state.elapsedDays}`, title: '家中断粮', text: '每天都要吃饭。仓中已经没有足够口粮，时间因此暂停。', options: [
       { id: 'buy', label: '花钱买粮', consequence: '钱 -10，粮 +12', effect: { money: -10, grain: 12 } }
@@ -537,6 +580,7 @@ function migrateV2(data) {
   data.running = false; data.currentActivity = null; data.pauseReason = '旧版季度存档已迁移，请重新选择连续行动'; data.dailyFood = 0; data.randomEventCount = data.randomEventCount || 0;
   delete data.tick; delete data.quarter; delete data.actionSlots;
   for (const p of Object.values(data.people || {})) { if ('birthCooldown' in p && !('birthCooldownDays' in p)) p.birthCooldownDays = Number(p.birthCooldown || 0) * 90; if (p.pregnancy?.remaining && !p.pregnancy.remainingDays) p.pregnancy.remainingDays = Number(p.pregnancy.remaining) * 90; delete p.birthCooldown; }
+  for (const p of Object.values(data.people || {})) if (!Number.isFinite(Number(p.hunger))) p.hunger = 0;
   return data;
 }
 export function deserializeState(raw) {
@@ -552,6 +596,7 @@ export function deserializeState(raw) {
     data.pendingEvent = null;
     data.pauseReason = '章节剧情已延后，可继续原行动';
   }
+  for (const p of Object.values(data.people)) if (!Number.isFinite(Number(p.hunger))) p.hunger = 0;
   data.running = false; syncResources(data); return data;
 }
 
