@@ -448,9 +448,7 @@ function maybeResourceCrisis(state, crisisText) {
   if (!crisisText || state.pendingEvent) return false;
   queueEvent(state, {
     id: `crisis-${state.elapsedDays}`, title: '家中断粮', text: '每天都要吃饭。仓中已经没有足够口粮，时间因此暂停。', options: [
-      { id: 'buy', label: '花钱买粮', consequence: '钱 -10，粮 +12', effect: { money: -10, grain: 12 } },
-      { id: 'ration', label: '缩减口粮', consequence: '凝聚 -4，粮 +5', effect: { cohesion: -4, grain: 5 } },
-      { id: 'ask', label: '向亲邻求助', consequence: '声望 -3，粮 +8', effect: { reputation: -3, grain: 8 } }
+      { id: 'buy', label: '花钱买粮', consequence: '钱 -10，粮 +12', effect: { money: -10, grain: 12 } }
     ]
   }, 'random'); return true;
 }
