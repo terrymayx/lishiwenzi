@@ -68,6 +68,7 @@ test('291 historical event pauses time and only triggers once', () => {
   assert.equal(state.history.filter(id => id === 'h291').length, 1);
   assert.match(state.pendingEvent.title, /八王之乱/);
   clearPending(state);
+  // Same date cannot retrigger because h291 is already recorded.
   __test.setDate(state, 290, 12, 31);
   if (!state.currentActivity) selectActivity(state, 'study');
   advanceDay(state);
@@ -89,6 +90,7 @@ test('a queued random event pauses until the player resolves it', () => {
 
 test('pregnancy is measured in days rather than quarters', () => {
   const state = createGame({ seed: 5 });
+  // Finish chapter event first so project selection is available.
   selectActivity(state, 'marry');
   for (let i = 0; i < 15; i++) { clearPending(state); advanceDay(state); }
   assert.ok(Object.values(state.people).some(p => p.role === 'spouse'));
@@ -101,6 +103,7 @@ test('pregnancy is measured in days rather than quarters', () => {
 
 test('only root blood descendants can inherit in the daily engine', () => {
   const state = createGame({ seed: 6 });
+  // Inject a child only through the real pregnancy path.
   selectActivity(state, 'marry');
   for (let i = 0; i < 15; i++) { clearPending(state); advanceDay(state); }
   selectActivity(state, 'child'); clearPending(state); advanceDay(state);
