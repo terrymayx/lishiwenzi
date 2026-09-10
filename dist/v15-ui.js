@@ -1,9 +1,55 @@
-import { getMarriageMarketStatus } from './engine-v151.js?v=1.5.2';
+import { donateForReputation, getMarriageMarketStatus, serializeState } from './engine-v151.js?v=1.5.3';
 
 const $ = selector => document.querySelector(selector);
+const storageKey = 'luanshi-jia-shu-v3';
 
 function careLabel(care) {
   return care === 'rest' ? '静养' : care === 'doctor' ? '请医照看' : care === 'normal' ? '照常生活' : '等待决定';
+}
+
+function saveState(state) {
+  try { localStorage.setItem(storageKey, serializeState(state)); }
+  catch (_) { /* 主界面已有存档失败提示 */ }
+}
+
+function showDonationNotice(message, kind = 'info') {
+  const node = $('#notice');
+  if (!node) return;
+  node.textContent = message;
+  node.dataset.kind = kind;
+  window.clearTimeout(showDonationNotice.timer);
+  showDonationNotice.timer = window.setTimeout(() => {
+    if (node.textContent === message) node.textContent = '';
+  }, 4200);
+}
+
+function updateDonationControls(state) {
+  const panel = $('#reputation-donation');
+  if (!panel) return;
+  const blocked = !state || state.running || state.phase !== 'playing' || Boolean(state.pendingEvent) || state.endpoint;
+  panel.querySelectorAll('[data-donate]').forEach(button => {
+    const amount = Number(button.dataset.donate);
+    const insufficient = (Number(state?.resources?.money) || 0) < amount;
+    button.disabled = blocked || insufficient;
+    button.title = blocked
+      ? '请先暂停时间并处理完当前事件。'
+      : insufficient ? `现钱不足，需要${amount}钱。` : `捐${amount}钱，获得${amount / 1000}声望。`;
+  });
+}
+
+function onDonationClick(event) {
+  const button = event.target.closest('[data-donate]');
+  const state = window.__luanshiState;
+  if (!button || button.disabled || !state) return;
+  const amount = Number(button.dataset.donate);
+  const result = donateForReputation(state, amount);
+  showDonationNotice(result.message, result.ok ? 'info' : 'error');
+  if (!result.ok) {
+    updateDonationControls(state);
+    return;
+  }
+  saveState(state);
+  window.dispatchEvent(new Event('luanshi:statechange'));
 }
 
 function updateEventButtons(state) {
@@ -71,9 +117,11 @@ function updatePersonStatus(state) {
 function updateFamilyLifeUi() {
   const state = window.__luanshiState;
   if (!state || $('#game')?.hidden) return;
+  updateDonationControls(state);
   updateEventButtons(state);
   updatePersonStatus(state);
 }
 
+$('#reputation-donation')?.addEventListener('click', onDonationClick);
 window.addEventListener('luanshi:rendered', updateFamilyLifeUi);
 window.addEventListener('DOMContentLoaded', updateFamilyLifeUi);

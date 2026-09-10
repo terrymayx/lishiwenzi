@@ -11,6 +11,10 @@ export const V151_RULES = Object.freeze({
   ASSET_ELITE: 400
 });
 
+export const V153_RULES = Object.freeze({
+  DONATION_MONEY_PER_REPUTATION: 1000
+});
+
 const MARKET_BANDS = Object.freeze({
   ordinary: { id: 'ordinary', label: '普通婚配', minProfile: 0, maxProfile: 1 },
   affluent: { id: 'affluent', label: '殷实婚配', minProfile: 1, maxProfile: 2 },
@@ -89,6 +93,32 @@ export function getMarriageMarketStatus(s) {
     assetRequired: V151_RULES.ASSET_UNLOCK,
     nextReputation: band === 'ordinary' ? V151_RULES.REPUTATION_AFFLUENT : band === 'affluent' ? V151_RULES.REPUTATION_ELITE : null,
     nextAsset: band === 'ordinary' ? V151_RULES.ASSET_AFFLUENT : band === 'affluent' ? V151_RULES.ASSET_ELITE : null
+  };
+}
+
+export function donateForReputation(s, amount = V153_RULES.DONATION_MONEY_PER_REPUTATION) {
+  const spend = Number(amount);
+  const unit = V153_RULES.DONATION_MONEY_PER_REPUTATION;
+  if (!s?.resources) return { ok: false, message: '当前没有可使用的家门资源。' };
+  if (!Number.isInteger(spend) || spend < unit || spend % unit !== 0) {
+    return { ok: false, message: `捐款必须是${unit}钱的整数倍。` };
+  }
+  if (s.running || s.phase !== 'playing' || s.pendingEvent || s.endpoint) {
+    return { ok: false, message: '请先暂停时间并处理完当前事件，再捐钱求名。' };
+  }
+  const money = Math.max(0, Number(s.resources.money) || 0);
+  if (money < spend) {
+    return { ok: false, message: `现钱不足，需要${spend}钱才能完成这次捐赠。` };
+  }
+  const reputationGained = spend / unit;
+  s.resources.money = round(money - spend);
+  s.resources.reputation = round((Number(s.resources.reputation) || 0) + reputationGained);
+  expose(s);
+  return {
+    ok: true,
+    spent: spend,
+    reputationGained,
+    message: `捐出${spend}钱赈济乡里，声望 +${reputationGained}。`
   };
 }
 
