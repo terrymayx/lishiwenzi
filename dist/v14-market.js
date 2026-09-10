@@ -1,5 +1,5 @@
-import { getDailyFoodCost } from './engine.js?base=1.4.0';
-import {ledger} from './v14-rules.js';
+import { getDailyFoodCost } from './engine.js?base=1.4.1';
+import {ledger} from './v14-rules.js?v=1.4.1';
 
 const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
 const round1 = value => Math.round(Number(value || 0) * 10) / 10;

@@ -5,6 +5,9 @@ import {
   getRelations, getTimeline, getDailyFoodCost, getLandPrice, buyLand, selectPerson
 } from './engine.js?v=1.2.0';
 
+import { createFamilyWorkView } from './family-work-ui.js?v=1.4.1';
+
+let familyWorkView = null;
 const $ = selector => document.querySelector(selector);
 let state = null;
 let activeTab = 'family';
@@ -134,7 +137,15 @@ function renderHeader() {
   startButton.textContent = blockedByEvent ? '先处理事件' : state.running ? '时间流逝中…' : '▶ 开始时间';
   pauseButton.textContent = state.running ? 'Ⅱ 暂停' : '已暂停';
   renderTimeFlow();
+  if (state.ending?.type === 'starvation') {
+    $('#current-name').textContent = `${state.ending.personName || '当前执笔人'} · 已故`;
+    $('#current-place').textContent = '死因：饥饿';
+    $('#status-line').textContent = '饥饿达到100% · 游戏结束';
+    $('#flow-status').textContent = '饥饿100% · 游戏结束';
+    startButton.disabled = true; startButton.textContent = '游戏已结束';
+  }
 }
+
 function renderTimeFlow() {
   const flow = $('#time-flow'); const flowDate = $('#flow-date'); const flowStatus = $('#flow-status');
   if (!flow || !flowDate || !flowStatus || !state) return;
@@ -181,26 +192,7 @@ function renderActions() {
   destination.disabled = state.running || state.phase !== 'playing';
 }
 function renderTree() {
-  const tree = $('#tree'); tree.replaceChildren();
-  const people = getFamilyTree(state); if (!people.length) return;
-  const maxGeneration = Math.max(0, ...people.map(person => person.generation));
-  const width = Math.max(600, people.length * 150); const height = Math.max(270, 100 + maxGeneration * 88);
-  tree.setAttribute('viewBox', `0 0 ${width} ${height}`); tree.setAttribute('width', width); tree.setAttribute('height', height); tree.setAttribute('preserveAspectRatio', 'xMidYMid meet');
-  const positions = new Map(); const levels = new Map();
-  people.forEach(person => { const list = levels.get(person.generation) || []; list.push(person); levels.set(person.generation, list); });
-  for (const [generation, list] of levels) list.forEach((person, index) => positions.set(person.id, { x: ((index + 1) * width) / (list.length + 1), y: 50 + generation * 72 }));
-  const lines = document.createElementNS('http://www.w3.org/2000/svg', 'g'); lines.setAttribute('class', 'tree-lines');
-  people.forEach(person => { const from = positions.get(person.id); (person.parentIds || []).forEach(parentId => { const to = positions.get(parentId); if (!from || !to) return; const line = document.createElementNS('http://www.w3.org/2000/svg', 'line'); line.setAttribute('x1', from.x); line.setAttribute('y1', from.y - 19); line.setAttribute('x2', to.x); line.setAttribute('y2', to.y + 19); lines.append(line); }); });
-  tree.append(lines);
-  people.forEach(person => {
-    const pos = positions.get(person.id); const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-    group.setAttribute('class', `tree-node ${person.alive ? '' : 'dead'} ${person.id === state.selectedPersonId ? 'selected' : ''}`); group.setAttribute('transform', `translate(${pos.x} ${pos.y})`); group.dataset.person = person.id;
-    const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle'); circle.setAttribute('r', '21');
-    const text = document.createElementNS('http://www.w3.org/2000/svg', 'text'); text.setAttribute('y', '39'); text.setAttribute('text-anchor', 'middle');
-    const nameLine = document.createElementNS('http://www.w3.org/2000/svg', 'tspan'); nameLine.setAttribute('x', '0'); nameLine.textContent = person.name;
-    const ageLine = document.createElementNS('http://www.w3.org/2000/svg', 'tspan'); ageLine.setAttribute('x', '0'); ageLine.setAttribute('dy', '13'); ageLine.textContent = `${person.age}岁`;
-    text.append(nameLine, ageLine); group.append(circle, text); group.addEventListener('click', () => { selectPerson(state, person.id); renderTree(); renderPerson(); }); tree.append(group);
-  });
+  familyWorkView?.renderTree(getFamilyTree(state), state);
 }
 function renderPerson() {
   const person = state.people[state.selectedPersonId] || state.people[state.playerId]; const panel = $('#person-detail'); panel.replaceChildren(); if (!person) return;
@@ -214,6 +206,7 @@ function renderPerson() {
   const pregnancy = person.pregnancy ? document.createElement('p') : null;
   if (pregnancy) pregnancy.textContent = `孕期：预计约 ${person.pregnancy.remainingDays} 日后生产`;
   panel.append(heading, body, relation, hungerLine, skills); if (pregnancy) panel.append(pregnancy);
+  familyWorkView?.renderDetail(panel, person, state);
 }
 function renderRelations() {
   const node = $('#relations'); node.replaceChildren(); const list = getRelations(state);
@@ -274,17 +267,25 @@ function render() {
   if (!state) return;
   renderHeader(); renderActions(); renderTabs(); renderLog(); renderEvent(); renderSuccession();
   $('#game').classList.toggle('ended', state.endpoint);
+  window.dispatchEvent(new Event('luanshi:rendered'));
 }
 function exportSave() {
   try { const blob = new Blob([serializeState(state)], { type: 'application/json' }); const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = `乱世家书-${state.surname}-${state.year}-${state.month}-${state.day}.json`; link.click(); URL.revokeObjectURL(link.href); setNotice('家书 JSON 已导出。'); } catch (error) { setNotice(`导出失败：${error.message}`, 'error'); }
 }
 function importSave(event) {
+  familyWorkView?.closeMenu();
   const file = event.target.files?.[0]; if (!file) return; stopTimer();
   const reader = new FileReader(); reader.onload = () => { try { state = deserializeState(String(reader.result)); $('#setup').hidden = true; $('#game').hidden = false; save(); render(); setNotice('家书已导入。时间保持暂停，请自行继续。'); } catch (error) { setNotice(`导入失败：${error.message}`, 'error'); } event.target.value = ''; }; reader.readAsText(file);
 }
-function showSetup() { stopTimer(); state = null; $('#game').hidden = true; $('#setup').hidden = false; }
+function showSetup() { familyWorkView?.closeMenu(); stopTimer(); state = null; window.__luanshiState = null; $('#game').hidden = true; $('#setup').hidden = false; }
 
 function init() {
+  familyWorkView = createFamilyWorkView({
+    getState: () => state, select: id => selectPerson(state, id),
+    pause: () => { if (state?.running) { stopTimer('指派人物工作'); setRunning(state, false); save(); } },
+    render, save, notice: setNotice
+  });
+  window.addEventListener('luanshi:statechange', () => { if (state) render(); });
   Object.entries(ORIGINS).forEach(([id, origin]) => { const option = document.createElement('option'); option.value = id; option.textContent = `${origin.label} · ${origin.desc}`; $('#origin').append(option); });
   $('#setup-form').addEventListener('submit', startNewGame);
   $('#actions').addEventListener('click', onAction);
@@ -292,7 +293,7 @@ function init() {
   $('#pause-time').addEventListener('click', pauseByPlayer);
   $('#speed').addEventListener('change', () => { if (state?.running) startTimer(); });
   $('#export').addEventListener('click', exportSave); $('#import').addEventListener('change', importSave); $('#new-game').addEventListener('click', showSetup);
-  document.querySelectorAll('[data-tab]').forEach(button => button.addEventListener('click', () => { activeTab = button.dataset.tab; renderTabs(); }));
+  document.querySelectorAll('[data-tab]').forEach(button => button.addEventListener('click', () => { familyWorkView?.closeMenu(); activeTab = button.dataset.tab; renderTabs(); }));
   loadSaved();
 }
 window.addEventListener('beforeunload', () => { if (state) save(); });

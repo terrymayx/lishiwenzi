@@ -1,1 +1,29 @@
 .economy-panel{padding:18px;border:1px solid #406170;border-radius:12px;background:#142c39;margin-bottom:18px;color:#e5edf0}.economy-panel h2{margin-top:0}.budget-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.budget-grid div{padding:10px;background:#203b48;border-radius:7px}.budget-grid small,.budget-grid strong{display:block}.budget-grid strong{color:#e7cc87;margin-top:6px}.economy-panel details{border-top:1px solid #406170;padding:12px 0}.economy-panel summary{cursor:pointer;font-weight:600}.economy-panel button{margin:6px 5px 3px 0}.economy-panel label{display:block;margin-top:10px}.economy-panel input[type=checkbox]{width:auto;margin-right:8px}.economy-panel input[type=number]{width:90px}.work-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:10px 0}.work-row select{max-width:145px}.economy-panel .fine-print{color:#b8cbd4}.economy-panel p{line-height:1.6}@media(max-width:650px){.budget-grid{grid-template-columns:repeat(2,minmax(0,1fr));}.economy-panel{padding:12px}}
+/* V1.4.1 direct-rendered compact work tree. No polling geometry overrides. */
+.tree-instruction{font-size:.75rem;line-height:1.4;color:var(--muted);margin:0 0 8px}
+.family-tree.managed-tree{min-width:0;min-height:0;width:100%;background:transparent;border:0}
+.managed-tree .tree-lines path{fill:none;stroke:var(--paper-dim);stroke-width:1;opacity:.4}
+.managed-tree .tree-person-card{fill:#173247;stroke:#395b6d;stroke-width:1}
+.managed-tree .tree-node.selected .tree-person-card{fill:#293d46;stroke:#d9b27c;stroke-width:1.6}
+.managed-tree .tree-node:hover .tree-person-card,.managed-tree .tree-node:focus .tree-person-card{stroke:#edc69b;stroke-width:2}
+.managed-tree .tree-node:focus{outline:none}
+.managed-tree .tree-node .tree-person-name{font-size:13px;fill:var(--paper);font-weight:600}
+.managed-tree .tree-node .tree-person-age{font-size:10px;fill:var(--muted)}
+.managed-tree .tree-node .tree-work-label{font-size:11px;fill:#c6dcd5}
+.managed-tree .tree-node .tree-work-label[data-job=rest]{fill:#edd49a}
+.managed-tree .tree-node .tree-health-value{font-size:10px;fill:var(--muted)}
+.tree-health-track{fill:#0b1927}.tree-health-fill{fill:#80b19b}.tree-health-fill[data-health=tired]{fill:#d8b678}.tree-health-fill[data-health=low]{fill:#d88472}
+.person-work-detail{border-top:1px solid var(--line);padding-top:9px}
+.assign-work-button{background:var(--blue-700);border:1px solid var(--line);color:var(--paper);padding:7px 14px;border-radius:5px;margin:5px 0}
+.work-detail-help{display:block;color:var(--muted);font-size:.73rem;line-height:1.5}
+.work-context-menu{position:fixed;z-index:1000;width:310px;max-width:calc(100vw - 16px);max-height:calc(100vh - 24px);overflow-y:auto;overscroll-behavior:contain;padding:12px;border:1px solid #9a8767;border-radius:10px;background:#142a39;color:var(--paper);box-shadow:0 16px 50px #0008;font-family:inherit}
+.work-menu-title{display:block;padding:3px 5px;font-size:.95rem}
+.work-menu-hint{color:var(--muted);font-size:.75rem;line-height:1.5;margin:5px 5px 9px}
+.work-menu-option{display:block;width:100%;background:#203a49;color:var(--paper);border:1px solid #3c5662;border-radius:5px;padding:8px 10px;margin:5px 0;text-align:left}
+.work-menu-option strong{display:block;font-size:.85rem;margin-bottom:3px}
+.work-menu-option small{display:block;color:#b6c7c7;font-size:.72rem;line-height:1.4}
+.work-menu-option:hover:not(:disabled),.work-menu-option:focus-visible{background:#33444b;border-color:#e0bb80;outline:1px solid #e0bb80}
+.work-menu-option:disabled{opacity:.38;cursor:not-allowed}
+.economy-panel button{background:#234454;color:var(--paper);border:1px solid #48616a;border-radius:5px;padding:7px 10px;font-size:.85rem}
+.economy-panel button:hover:not(:disabled){border-color:#e0bb80}
+@media(max-width:700px){.side-panel,.main-panel{width:100%}.tree-instruction{font-size:.8rem}.work-menu-option{padding:10px}}

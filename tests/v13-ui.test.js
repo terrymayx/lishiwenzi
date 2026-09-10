@@ -4,11 +4,11 @@ import fs from 'node:fs';
 
 const index = fs.readFileSync(new URL('../dist/index.html', import.meta.url), 'utf8');
 
-test('V1.4 page routes through family economy engine and retains compact-tree UI', () => {
+test('V1.4.1 page routes through family economy and direct compact work-tree UI', () => {
   assert.match(index, /V1\.4/);
-  assert.match(index, /engine-v14\.js\?v=1\.4\.0/);
-  assert.match(index, /v14-ui\.js\?v=1\.4\.0/);
-  assert.match(index, /v132-ui\.js\?v=1\.3\.2/);
+  assert.match(index, /engine-v14\.js\?v=1\.4\.1/);
+  assert.match(index, /v14-ui\.js\?v=1\.4\.1/);
+  assert.doesNotMatch(index, /v132-ui\.js/);
   assert.match(index, /v132\.css\?v=1\.3\.2/);
   assert.doesNotMatch(index, /v12-ui\.js/);
 });

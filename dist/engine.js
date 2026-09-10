@@ -308,6 +308,8 @@ function applyDailyActivity(state) {
   const current = getCurrent(state);
   if (!activity || !current?.alive) return { completed: false };
   activity.elapsed += 1;
+  // Optional V1.4.1 daily-work override: resting is settled once, after food purchase.
+  if (state.__skipDailyActivity) return { completed: false };
   if (activity.kind === 'project' && !chargeProjectStart(state, activity)) return { crisis: '资源不足，无法继续当前计划。' };
 
   if (activity.id === 'trade') {

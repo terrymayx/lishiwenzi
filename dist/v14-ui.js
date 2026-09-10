@@ -1,4 +1,4 @@
-import * as E from './engine-v14.js?v=1.4.0';
+import * as E from './engine-v14.js?v=1.4.1';
 const $=s=>document.querySelector(s);
 let signature='';
 function notice(text){$('#notice').textContent=text;}
@@ -18,19 +18,9 @@ function update(){
  }
  panel.append(stats,element('p','收获日期是季节参考，未播种或未安排收割时不保证收获；预测未计未来工资买粮。','fine-print'));
  const enabled=s.phase==='playing'&&!s.endpoint&&!s.running&&!s.pendingEvent;
- const act=(label,fn)=>{const button=element('button',label);button.type='button';button.disabled=!enabled;button.onclick=()=>{const r=fn();notice(r?.message||'设置已保存');save(s);signature='';document.activeElement?.blur();update();};return button;};
+ const act=(label,fn)=>{const button=element('button',label);button.type='button';button.disabled=!enabled;button.onclick=()=>{const r=fn();window.dispatchEvent(new Event('luanshi:statechange'));notice(r?.message||'设置已保存');save(s);signature='';document.activeElement?.blur();update();};return button;};
  const check=(label,value,fn)=>{const line=element('label');const input=element('input');input.type='checkbox';input.checked=value;input.disabled=!enabled;input.onchange=()=>{fn(input.checked);save(s);signature='';input.blur();update();};line.append(input,document.createTextNode(label));return line;};
- const work=element('details');work.open=true;work.append(element('summary','家庭分工'));
- for(const j of b.assignments){
-  const row=element('div',undefined,'work-row');row.append(element('span',j.name+' · '+Math.floor(j.age)+'岁'));
-  if(j.personId===s.playerId)row.append(element('span','跟随主要行动 → '+j.label));
-  else{
-   const select=element('select');select.disabled=!enabled;
-   for(const job of E.V14_RULES.FAMILY_ASSIGNMENTS){const option=element('option',E.getAssignmentLabel(job));option.value=job;option.selected=ag.work.assignments[j.personId]===job;if(j.age<16&&!['study','rest'].includes(job))option.disabled=true;select.append(option);}
-   select.onchange=()=>{const r=E.setFamilyWorkAssignment(s,j.personId,select.value);notice(r.message);save(s);signature='';select.blur();update();};row.append(select,element('small','今天：'+j.label));
-  }work.append(row);
- }
- work.append(check('农闲自动短工，下个农忙季回田',ag.work.autoShortwork,v=>ag.work.autoShortwork=v));panel.append(work);
+ panel.append(element('p','工作安排已移到右侧家族树：右键人物指派；健康≤35自动休养，恢复至60继续原工作。','fine-print'));
  const farm=element('details');farm.append(element('summary','农田与雇工'));
  farm.append(element('p','春耕 '+f.springWorkDays+'/20 · 夏管 '+f.summerWorkDays+'/20 · 秋收 '+f.harvestWorkDays+'/5（按全田完成比例折算）'));
  farm.append(element('p','当前务农容量 '+f.familyCapacity+'亩；雇工 '+ag.hiredWorkers+'人，共 '+f.hiredCapacity+'亩。每人每自然月6钱含食宿。'));
@@ -54,9 +44,10 @@ function update(){
   annual.append(element('p','现金：劳动 +'+a.workIncome+'，卖粮 +'+a.saleIncome+'，买粮 −'+a.buyCost+'，工资 −'+a.wages+'，购田 −'+a.investment+'，其他净额 '+a.otherMoney));
   annual.append(element('p','粮食：秋收 +'+a.harvest+'，购入 +'+a.bought+'，吃饭 −'+a.foodConsumed+'，售出 −'+a.sold+'，其他净额 '+a.otherGrain));
  }
- annual.append(element('p','当前人口全年口粮参考 '+b.forecast.annualFood+'粮；当前日收入年化 '+b.forecast.annualIncome+'钱（未扣未来农忙、疾病、涨价与人口变化，不是保证收入）。'));
+ annual.append(element('p','当前人口全年口粮参考 '+b.forecast.annualFood+'粮；当前日收入年化 '+b.forecast.annualIncome+'钱（未扣未来农忙、轮休、疾病、涨价与人口变化，不是保证收入）。'));
  panel.append(annual);
  $('#money').textContent=s.resources.money.toFixed(2);$('#grain').textContent=s.resources.grain.toFixed(2);$('#food-rate').textContent=b.actual.dailyFood.toFixed(2)+'/日';
 }
+window.addEventListener('luanshi:rendered',()=>{signature='';update();});
 window.setInterval(update,200);
 update();
