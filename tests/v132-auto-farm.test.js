@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import * as Farm from '../dist/v13-rules.js';
-import { createGame, getActions } from '../dist/engine-v13.js';
+import * as Farm from '../dist/v132-rules.js';
+import { createGame, getActions } from '../dist/engine-v132.js';
 
 test('hired workers have an automatic daily farm-work entry point independent of current action', () => {
   assert.equal(typeof Farm.recordHiredWorkerDay, 'function');
@@ -56,14 +56,14 @@ test('cultivation is the first action and explicitly means self-and-family farmi
   const actions = getActions(state);
   assert.equal(actions[0].id, 'cultivate');
   assert.match(actions[0].desc, /自己和家人/);
-  assert.match(actions[0].desc, /雇工.*自动/);
+  assert.match(actions[0].desc, /雇.*农工.*自动/);
 });
 
 test('family tree rendering uses the compact V1.3.2 geometry', () => {
-  const game = fs.readFileSync(new URL('../dist/game.js', import.meta.url), 'utf8');
-  const style = fs.readFileSync(new URL('../dist/style.css', import.meta.url), 'utf8');
-  assert.match(game, /const nodeSpacing = 94/);
-  assert.match(game, /circle\.setAttribute\('r', '16'\)/);
-  assert.match(game, /generation \* 56/);
+  const ui = fs.readFileSync(new URL('../dist/v132-ui.js', import.meta.url), 'utf8');
+  const style = fs.readFileSync(new URL('../dist/v132.css', import.meta.url), 'utf8');
+  assert.match(ui, /const nodeSpacing = 94/);
+  assert.match(ui, /circle\.setAttribute\('r', '16'\)/);
+  assert.match(ui, /generation \* generationSpacing/);
   assert.match(style, /\.family-tree\{[^}]*min-width:360px[^}]*min-height:190px/);
 });
