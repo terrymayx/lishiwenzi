@@ -115,7 +115,7 @@ test('pregnancy reaches a birth event and creates the child only when resolved',
 
 test('V1.5 page and event UI expose family-life version and disabled paid choices', () => {
   const index = fs.readFileSync(new URL('../dist/index.html', import.meta.url), 'utf8');
-  const ui = fs.readFileSync(new URL('../dist/game.js', import.meta.url), 'utf8');
+  const ui = fs.readFileSync(new URL('../dist/v15-ui.js', import.meta.url), 'utf8');
   assert.match(index, /V1\.5/);
   assert.match(index, /engine-v15\.js\?v=1\.5\.0/);
   assert.match(ui, /option\.disabled/);
