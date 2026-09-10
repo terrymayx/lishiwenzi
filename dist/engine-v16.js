@@ -109,6 +109,8 @@ export function buyBusiness(state, businessId, count = 1) {
   const industry = ensureIndustry(state);
   state.resources.money = round1(money - cost);
   if (state.household) state.household.money = state.resources.money;
+  const currentLedger = Base.ledger(state);
+  currentLedger.investment = round1((Number(currentLedger.investment) || 0) + cost);
   industry.businesses[businessId] += amount;
   const asset = attachBusinessAsset(state, definition, amount, cost);
   addLog(
@@ -136,6 +138,8 @@ function settleDailyIndustryIncome(state) {
   if (income <= 0) return 0;
   state.resources.money = round1(Number(state.resources?.money || 0) + income);
   if (state.household) state.household.money = state.resources.money;
+  const currentLedger = Base.ledger(state);
+  currentLedger.otherMoney = round1((Number(currentLedger.otherMoney) || 0) + income);
   industry.lifetimeIncome = round1(industry.lifetimeIncome + income);
   return income;
 }
