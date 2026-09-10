@@ -1,4 +1,4 @@
-import { getMarriageMarketStatus } from './engine-v151.js?v=1.5.1';
+import { getMarriageMarketStatus } from './engine-v151.js?v=1.5.2';
 
 const $ = selector => document.querySelector(selector);
 
@@ -51,14 +51,20 @@ function updatePersonStatus(state) {
 
   if (selected.id === state.playerId && selected.alive && !selected.married && selected.age >= 18) {
     const market = getMarriageMarketStatus(state);
+    const reputationMet = market.reputation >= market.reputationRequired;
+    const assetMet = market.assetValue >= market.assetRequired;
     const base = market.eligible
       ? `说媒资格：已开启 · ${market.label}`
-      : '说媒资格：未开启';
-    const progress = `声望 ${market.reputation}/${market.reputationRequired} · 家产 ${market.assetValue}/${market.assetRequired}`;
+      : '说媒资格：未开启 · 声望与家产必须同时达标';
+    const progress = `声望 ${market.reputation}/${market.reputationRequired} ${reputationMet ? '✓' : '✗'} · 家产 ${market.assetValue}/${market.assetRequired} ${assetMet ? '✓' : '✗'}`;
+    const missing = [];
+    if (!reputationMet) missing.push(`声望还差${Math.max(0, market.reputationRequired - market.reputation).toFixed(1).replace(/\.0$/, '')}`);
+    if (!assetMet) missing.push(`家产还差${Math.max(0, market.assetRequired - market.assetValue).toFixed(1).replace(/\.0$/, '')}钱`);
+    const gap = missing.length ? ` · ${missing.join('，')}` : '';
     const next = market.nextReputation && market.nextAsset
-      ? ` · 下一档：声望${market.nextReputation}或家产${market.nextAsset}`
+      ? ` · 下一档需同时达到：声望${market.nextReputation}且家产${market.nextAsset}`
       : '';
-    appendStatusLine(panel, 'marriage-market-status', `${base} · ${progress}${next}。家产=现钱+名下产业估值，不含粮食。`, 'family-life-status marriage-market-status');
+    appendStatusLine(panel, 'marriage-market-status', `${base} · ${progress}${gap}${next}。家产=现钱+名下产业估值，不含粮食。`, 'family-life-status marriage-market-status');
   }
 }
 
