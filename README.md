@@ -2,7 +2,7 @@
 
 魏晋南北朝文字家族游戏，试玩290—350年。按日连续推进，普通消息不停表，重大历史与重要人生事件自动暂停。
 
-[试玩入口](https://terrymayx.github.io/lishiwenzi/dist/) · [V1.5 婚育规则](docs/V1.5-FAMILY-LIFE.md) · [V1.4 家庭经济规则](docs/V1.4-ECONOMY.md)
+[试玩入口](https://terrymayx.github.io/lishiwenzi/dist/) · [V1.5.1 说媒规则](docs/V1.5.1-MARRIAGE-MARKET.md) · [V1.5 婚育规则](docs/V1.5-FAMILY-LIFE.md) · [V1.4 家庭经济规则](docs/V1.4-ECONOMY.md)
 
 ## 本版更新
 
@@ -24,6 +24,6 @@
 node --test tests/*.test.js
 ```
 
-其他对话接手时优先阅读 `docs/V1.5-FAMILY-LIFE.md`，再阅读 `docs/V1.4-ECONOMY.md`、`dist/engine-v151.js`、`dist/engine-v15.js`、`dist/engine-v14.js`、`dist/v14-rules.js`、`dist/v14-market.js`、`dist/v14-ui.js`、`dist/family-work-ui.js` 与 V1.5/V1.4 测试。`dist/index.html` 的 import map 将当前游戏 UI 的引擎入口统一指向 `engine-v151.js`。
+其他对话接手时优先阅读 `docs/V1.5.1-MARRIAGE-MARKET.md` 与 `docs/V1.5-FAMILY-LIFE.md`，再阅读 `docs/V1.4-ECONOMY.md`、`dist/engine-v151.js`、`dist/engine-v15.js`、`dist/engine-v14.js`、`dist/v14-rules.js`、`dist/v14-market.js`、`dist/v14-ui.js`、`dist/family-work-ui.js` 与 V1.5/V1.4 测试。`dist/index.html` 的 import map 将当前游戏 UI 的引擎入口统一指向 `engine-v151.js`。
 
 存档保存在当前浏览器，支持 JSON 导入导出。V1.5.1 直接在 V1.5 婚育状态上增加婚配门槛与分层，不重建已有配偶/子女；升级前仍建议先导出一份家书备份。
