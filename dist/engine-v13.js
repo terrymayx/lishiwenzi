@@ -121,18 +121,21 @@ export function advanceDay(state) {
 
   settleMonthlyFarmWages(state);
 
-  // 每季第一次推进会生成一次天气。小灾只记消息，重大天灾才暂停。
-  rollSeasonWeather(state);
-  if (state.pendingEvent?.source === 'agriculture-major') {
-    exposeState(state);
-    return { ok: true, paused: true, reason: state.pauseReason };
-  }
-
+  // 耕作日先结算本季农事。即便当天遭遇重大天灾，这一天投入的劳力仍算数。
   if (cultivating) {
     const farmResult = recordCultivationDay(state);
     const current = state.people?.[state.playerId];
     if (current?.skills) current.skills.trade = Number(current.skills.trade || 0) + 0.002;
     result = { ...result, agriculture: farmResult };
+  } else if (getSeasonLabel(state.month) !== '冬藏') {
+    // 非耕作状态也会感知春、夏、秋天气；冬季天气暂不作为农业重大事件打断游戏。
+    rollSeasonWeather(state);
+  }
+
+  // 小灾只写入家书；真正的大旱、大水、蝗灾等才暂停。
+  if (state.pendingEvent?.source === 'agriculture-major') {
+    exposeState(state);
+    return { ...result, ok: true, paused: true, reason: state.pauseReason };
   }
 
   exposeState(state);
