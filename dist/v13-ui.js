@@ -101,6 +101,13 @@ function actionButton(label, handler, disabled = false) {
 function runEconomyAction(state, operation) {
   const result = operation();
   if (result.ok) {
+    if (result.revenue != null) {
+      state.market ??= {};
+      state.market.lastTrade = {
+        type: 'sell', amount: result.amount, unitPrice: result.unitPrice, total: result.revenue,
+        year: state.year, month: state.month, day: state.day
+      };
+    }
     refreshResourceStrip(state);
     saveState(state);
   }
@@ -123,7 +130,7 @@ function renderFarmDashboard(state, force = false) {
     state.resources?.money, state.resources?.grain, state.household?.land,
     summary.familyCapacity, summary.hiredWorkers, summary.springWorkDays,
     summary.summerWorkDays, summary.harvestWorkDays, summary.expectedHarvest,
-    summary.grainSellPrice, grainBuyPrice, state.market?.lastTrade?.total
+    summary.grainSellPrice, grainBuyPrice, state.market?.lastTrade?.type, state.market?.lastTrade?.total
   ].join('|');
   let dashboard = assets.querySelector('.farm-dashboard');
   if (!force && dashboard?.dataset.signature === signature) return;
