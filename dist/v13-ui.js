@@ -3,16 +3,38 @@ import {
   getFarmSummary,
   hireFarmWorkers,
   dismissFarmWorkers,
+  getGrainBuyPrice,
+  getBuyQuote,
+  buyGrain,
   sellGrain,
   serializeState
-} from './engine-v13.js?v=1.3.0';
+} from './engine-v13.js?v=1.3.1';
 
 const $ = selector => document.querySelector(selector);
 const storageKey = 'luanshi-jia-shu-v3';
+const round1 = value => Math.round(Number(value || 0) * 10) / 10;
 
 function saveState(state) {
   try { localStorage.setItem(storageKey, serializeState(state)); }
   catch (_) { /* 主界面已有存档失败提示，这里不重复打断 */ }
+}
+
+function formatResource(value) {
+  const number = round1(value);
+  return Number.isInteger(number) ? String(number) : number.toFixed(1);
+}
+
+function refreshResourceStrip(state) {
+  if (!state) return;
+  const values = {
+    money: state.resources?.money,
+    grain: state.resources?.grain,
+    land: state.household?.land ?? state.resources?.land
+  };
+  for (const [id, value] of Object.entries(values)) {
+    const node = $(`#${id}`);
+    if (node && value != null) node.textContent = formatResource(value);
+  }
 }
 
 function notice(message, kind = 'info') {
@@ -78,9 +100,13 @@ function actionButton(label, handler, disabled = false) {
 
 function runEconomyAction(state, operation) {
   const result = operation();
-  notice(result.message, result.ok ? 'info' : 'error');
-  if (result.ok) saveState(state);
+  if (result.ok) {
+    refreshResourceStrip(state);
+    saveState(state);
+  }
   renderFarmDashboard(state, true);
+  const balance = result.ok ? ` · 当前钱 ${formatResource(state.resources?.money)} / 粮 ${formatResource(state.resources?.grain)}` : '';
+  notice(`${result.message}${balance}`, result.ok ? 'info' : 'error');
 }
 
 function currentWeather(state, summary) {
@@ -91,11 +117,13 @@ function renderFarmDashboard(state, force = false) {
   const assets = $('#assets');
   if (!assets || !state || $('#tab-assets')?.hidden) return;
   const summary = getFarmSummary(state);
+  const grainBuyPrice = getGrainBuyPrice(state);
   const signature = [
     state.year, state.month, state.day, state.running, Boolean(state.pendingEvent), state.phase,
     state.resources?.money, state.resources?.grain, state.household?.land,
     summary.familyCapacity, summary.hiredWorkers, summary.springWorkDays,
-    summary.summerWorkDays, summary.harvestWorkDays, summary.expectedHarvest
+    summary.summerWorkDays, summary.harvestWorkDays, summary.expectedHarvest,
+    summary.grainSellPrice, grainBuyPrice, state.market?.lastTrade?.total
   ].join('|');
   let dashboard = assets.querySelector('.farm-dashboard');
   if (!force && dashboard?.dataset.signature === signature) return;
@@ -106,7 +134,7 @@ function renderFarmDashboard(state, force = false) {
   dashboard.dataset.signature = signature;
   dashboard.dataset.season = summary.season;
 
-  const title = document.createElement('h4'); title.textContent = '田庄经营 · 农时与劳力';
+  const title = document.createElement('h4'); title.textContent = '田庄经营 · 农时与粮市';
   const badge = document.createElement('span'); badge.className = 'farm-season-badge'; badge.textContent = `当前农时：${summary.seasonLabel}`;
   dashboard.append(title, badge);
 
@@ -117,7 +145,8 @@ function renderFarmDashboard(state, force = false) {
     stat('雇工', `${summary.hiredWorkers}人 · 可管${summary.hiredCapacity}亩`),
     stat('有效经营', `${summary.productiveAcres}/${summary.land}亩`),
     stat('每月工钱', `${summary.monthlyWages}钱`),
-    stat('当前卖粮价', `${summary.grainSellPrice}钱/粮`)
+    stat('买粮价', `${grainBuyPrice}钱/粮`),
+    stat('卖粮价', `${summary.grainSellPrice}钱/粮`)
   );
   dashboard.append(stats);
 
@@ -143,7 +172,7 @@ function renderFarmDashboard(state, force = false) {
 
   const expectation = document.createElement('p'); expectation.className = 'farm-note';
   expectation.textContent = summary.season === 'winter'
-    ? '冬藏：田里不会每天冒出粮食。利用冬季储粮、卖粮、赚钱、买田或安排来年雇工。'
+    ? '冬藏：田里不会每天冒出粮食。可以直接在这里买粮、卖余粮、赚钱、买田或安排来年雇工。'
     : `预计秋收参考：约${summary.expectedHarvest}粮。实际收成取决于可经营亩数、春耕、夏管以及天灾。`;
   dashboard.append(expectation);
 
@@ -157,12 +186,38 @@ function renderFarmDashboard(state, force = false) {
   );
   dashboard.append(laborActions);
 
-  const grainActions = document.createElement('div'); grainActions.className = 'farm-actions';
-  const grainTitle = document.createElement('strong'); grainTitle.textContent = `出售余粮 · 当前每粮约${summary.grainSellPrice}钱`; grainActions.append(grainTitle);
+  const buyActions = document.createElement('div'); buyActions.className = 'farm-actions grain-market-buy';
+  const buyTitle = document.createElement('strong'); buyTitle.textContent = `购买粮食 · 当前每粮${grainBuyPrice}钱`; buyActions.append(buyTitle);
   for (const amount of [10, 50, 100]) {
-    grainActions.append(actionButton(`卖${amount}粮`, () => runEconomyAction(state, () => sellGrain(state, amount)), blocked || state.resources.grain < amount));
+    const quote = getBuyQuote(state, amount);
+    buyActions.append(actionButton(
+      `买${amount}粮 · ${quote.total}钱`,
+      () => runEconomyAction(state, () => buyGrain(state, amount)),
+      blocked || state.resources.money < quote.total
+    ));
   }
-  dashboard.append(grainActions);
+  dashboard.append(buyActions);
+
+  const sellActions = document.createElement('div'); sellActions.className = 'farm-actions grain-market-sell';
+  const sellTitle = document.createElement('strong'); sellTitle.textContent = `出售余粮 · 当前每粮${summary.grainSellPrice}钱`; sellActions.append(sellTitle);
+  for (const amount of [10, 50, 100]) {
+    const revenue = round1(amount * summary.grainSellPrice);
+    sellActions.append(actionButton(
+      `卖${amount}粮 · +${revenue}钱`,
+      () => runEconomyAction(state, () => sellGrain(state, amount)),
+      blocked || state.resources.grain < amount
+    ));
+  }
+  dashboard.append(sellActions);
+
+  if (state.market?.lastTrade) {
+    const trade = state.market.lastTrade;
+    const receipt = document.createElement('p'); receipt.className = 'farm-note market-receipt';
+    receipt.textContent = trade.type === 'buy'
+      ? `最近交易：买入${trade.amount}粮，支出${trade.total}钱。钱粮余额已立即更新。`
+      : `最近交易：卖出${trade.amount}粮，收入${trade.total}钱。钱粮余额已立即更新。`;
+    dashboard.append(receipt);
+  }
 
   const purchase = assets.querySelector('.land-purchase');
   if (purchase) assets.insertBefore(dashboard, purchase);
@@ -181,6 +236,7 @@ function updateHungerWarning(state) {
 function refresh() {
   const state = window.__luanshiState;
   if (state) {
+    refreshResourceStrip(state);
     starvationEnding(state);
     renderFarmDashboard(state);
     updateHungerWarning(state);
