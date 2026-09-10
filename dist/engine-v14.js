@@ -1,13 +1,15 @@
 import * as Base from './engine-v12.js?v=1.4.1';
 import * as Rules from './v14-rules.js?v=1.4.1';
 import * as Market from './v14-market.js?v=1.4.1';
+import {normalizeFamilyRelations} from './v142-relations.js?v=1.4.2';
 import {isMinorMessageEvent,convertPendingMinorEventToMessage} from './v13-rules.js?v=1.3.1';
 export * from './engine-v12.js?v=1.4.1';
 export * from './v14-rules.js?v=1.4.1';
 export * from './v14-market.js?v=1.4.1';
+export {normalizeFamilyRelations} from './v142-relations.js?v=1.4.2';
 export {V14_RULES as V13_RULES} from './v14-rules.js?v=1.4.1';
 const expose=s=>{if(typeof window!=='undefined')window.__luanshiState=s;return s;};
-function prepare(s){Rules.ensureFamilyWork(s);Rules.ledger(s);return expose(s);}
+function prepare(s){normalizeFamilyRelations(s);Rules.ensureFamilyWork(s);Rules.ledger(s);return expose(s);}
 export function createGame(options){return prepare(Base.createGame(options));}
 export function deserializeState(raw){return prepare(Base.deserializeState(raw));}
 export function getActions(s){
