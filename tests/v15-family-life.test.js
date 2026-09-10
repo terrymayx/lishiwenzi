@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 
-const E = await import('../dist/engine-v15.js?v=1.5.1');
+const E = await import('../dist/engine-v151.js?v=1.5.1');
 
 function game(seed = 1501) {
   const s = E.createGame({ surname: '沈', origin: 'peasant', seed });
@@ -173,7 +173,7 @@ test('V1.5.1 page and event UI expose marriage market progress and disabled paid
   const index = fs.readFileSync(new URL('../dist/index.html', import.meta.url), 'utf8');
   const ui = fs.readFileSync(new URL('../dist/v15-ui.js', import.meta.url), 'utf8');
   assert.match(index, /V1\.5\.1/);
-  assert.match(index, /engine-v15\.js\?v=1\.5\.1/);
+  assert.match(index, /engine-v151\.js\?v=1\.5\.1/);
   assert.match(ui, /option\.disabled/);
   assert.match(ui, /说媒资格/);
   assert.match(ui, /家产/);
