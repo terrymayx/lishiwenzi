@@ -2,7 +2,8 @@ import {
   ORIGINS, REGIONS, createGame, deserializeState, serializeState,
   selectActivity, setRunning, advanceDay, resolveEvent, continueAs, performGuardianAction,
   listSuccessors, listGuardians, getActions, getChapter, getDateLabel, getFamilyTree,
-  getRelations, getTimeline, getDailyFoodCost, getLandPrice, buyLand, selectPerson
+  getRelations, getTimeline, getDailyFoodCost, getLandPrice, buyLand, selectPerson,
+  getIndustrySummary, buyBusiness
 } from './engine.js?v=1.2.0';
 
 import { createFamilyWorkView } from './family-work-ui.js?v=1.4.1';
@@ -213,6 +214,40 @@ function renderRelations() {
   if (!list.length) { node.textContent = '家门尚无姻亲记录。'; return; }
   list.filter(relation => relation.from < relation.to).forEach(relation => { const p = document.createElement('p'); p.textContent = `${state.people[relation.from]?.name || '—'} ↔ ${state.people[relation.to]?.name || '—'} · ${relation.type} · 信任 ${relation.trust}`; node.append(p); });
 }
+function renderBusinessIndustry(node) {
+  const industry = getIndustrySummary(state);
+  const section = document.createElement('section');
+  section.id = 'business-industry';
+  section.className = 'business-industry';
+
+  const heading = document.createElement('div'); heading.className = 'business-heading';
+  const title = document.createElement('strong'); title.textContent = '商业产业';
+  const income = document.createElement('span'); income.className = 'business-income-summary'; income.textContent = `产业总收入：+${industry.dailyIncome.toFixed(1)}钱/日`;
+  heading.append(title, income); section.append(heading);
+
+  const hint = document.createElement('p'); hint.className = 'business-hint'; hint.textContent = '购置后无需主角亲自经营，每个实际推进的游戏日都会自动产钱。';
+  section.append(hint);
+
+  const grid = document.createElement('div'); grid.className = 'business-grid';
+  Object.values(industry.businesses).forEach(business => {
+    const card = document.createElement('article'); card.className = 'business-card';
+    const name = document.createElement('strong'); name.textContent = business.label;
+    const owned = document.createElement('span'); owned.textContent = `拥有 ${business.count}`;
+    const rate = document.createElement('small'); rate.textContent = `单体 +${business.dailyIncome.toFixed(1)}钱/日 · 当前 +${business.totalDailyIncome.toFixed(1)}钱/日`;
+    const button = document.createElement('button'); button.type = 'button'; button.className = 'business-buy';
+    button.textContent = business.id === 'caravan' ? `组建商队 · ${business.price}钱` : `购置${business.label} · ${business.price}钱`;
+    button.disabled = state.running || state.phase !== 'playing' || Boolean(state.pendingEvent) || state.endpoint || state.resources.money < business.price;
+    button.addEventListener('click', () => {
+      const result = buyBusiness(state, business.id);
+      setNotice(result.message, result.ok ? 'info' : 'error');
+      if (result.ok) save();
+      render();
+    });
+    card.append(name, owned, rate, button); grid.append(card);
+  });
+  section.append(grid);
+  node.append(section);
+}
 function renderAssets() {
   const node = $('#assets'); node.replaceChildren(); const title = document.createElement('h3'); title.textContent = '产业与家门'; node.append(title);
   const summary = document.createElement('p'); summary.textContent = `田产 ${state.household.land} 亩 · 钱 ${state.resources.money.toFixed(1)} · 粮 ${state.resources.grain.toFixed(1)} · 每日口粮 ${getDailyFoodCost(state).toFixed(1)} · 平均饥饿 ${state.resources.hunger.toFixed(1)} · 凝聚 ${Math.round(state.family.cohesion)}`; node.append(summary);
@@ -224,6 +259,7 @@ function renderAssets() {
     button.addEventListener('click', () => { const result = buyLand(state, amount); setNotice(result.message, result.ok ? 'info' : 'error'); if (result.ok) save(); render(); }); purchase.append(button);
   });
   node.append(purchase);
+  renderBusinessIndustry(node);
   state.assets.forEach(asset => { const p = document.createElement('p'); p.textContent = `${asset.name} · ${asset.location} · 估值 ${asset.value}`; node.append(p); });
 }
 function renderTimeline() {
