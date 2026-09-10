@@ -4,16 +4,18 @@ import fs from 'node:fs';
 
 const index = fs.readFileSync(new URL('../dist/index.html', import.meta.url), 'utf8');
 
-test('V1.3.1 page routes the game engine through engine-v13 and loads farm UI', () => {
-  assert.match(index, /V1\.3\.1/);
-  assert.match(index, /engine-v13\.js\?v=1\.3\.1/);
+test('V1.3.2 page routes through auto-farm engine and loads compact-tree UI', () => {
+  assert.match(index, /V1\.3\.2/);
+  assert.match(index, /engine-v132\.js\?v=1\.3\.2/);
   assert.match(index, /v13-ui\.js\?v=1\.3\.1/);
-  assert.match(index, /v13\.css\?v=1\.3\.0/);
+  assert.match(index, /v132-ui\.js\?v=1\.3\.2/);
+  assert.match(index, /v132\.css\?v=1\.3\.2/);
   assert.doesNotMatch(index, /v12-ui\.js/);
 });
 
-test('V1.3.1 farm UI exposes labor, buy/sell quotes and seasonal progress', () => {
+test('V1.3.2 farm UI keeps live grain market and adds automatic hired-worker feedback', () => {
   const ui = fs.readFileSync(new URL('../dist/v13-ui.js', import.meta.url), 'utf8');
+  const autoUi = fs.readFileSync(new URL('../dist/v132-ui.js', import.meta.url), 'utf8');
   assert.match(ui, /家庭劳力/);
   assert.match(ui, /雇工/);
   assert.match(ui, /购买粮食/);
@@ -23,15 +25,16 @@ test('V1.3.1 farm UI exposes labor, buy/sell quotes and seasonal progress', () =
   assert.match(ui, /卖\$\{amount\}粮/);
   assert.match(ui, /getBuyQuote/);
   assert.match(ui, /refreshResourceStrip/);
-  assert.match(ui, /当前钱/);
-  assert.match(ui, /春耕/);
-  assert.match(ui, /夏管/);
-  assert.match(ui, /秋收/);
+  assert.match(autoUi, /雇工自动耕作/);
+  assert.match(autoUi, /主角选择行商、读书、从军/);
 });
 
-test('V1.3 stylesheet has a dedicated farm management panel', () => {
+test('V1.3 styles include farm management and compact family tree layers', () => {
   const style = fs.readFileSync(new URL('../dist/v13.css', import.meta.url), 'utf8');
+  const compact = fs.readFileSync(new URL('../dist/v132.css', import.meta.url), 'utf8');
   assert.match(style, /\.farm-dashboard/);
   assert.match(style, /\.farm-actions/);
   assert.match(style, /\.farm-progress/);
+  assert.match(compact, /\.family-tree/);
+  assert.match(compact, /min-width:360px/);
 });
