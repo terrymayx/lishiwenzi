@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#102536">
-  <title>乱世家书 · V1.5 婚育人生事件</title>
+  <title>乱世家书 · V1.5.1 说媒门槛与婚配分层</title>
   <link rel="stylesheet" href="./style.css?v=1.2.1">
   <link rel="stylesheet" href="./v13.css?v=1.3.0">
   <link rel="stylesheet" href="./v132.css?v=1.3.2">
@@ -12,9 +12,10 @@
   <script type="importmap">
     {
       "imports": {
-        "./engine.js?v=1.2.0": "./engine-v15.js?v=1.5.0",
-        "./engine-v14.js?v=1.4.1": "./engine-v15.js?v=1.5.0",
-        "./engine-v14.js?v=1.4.2": "./engine-v15.js?v=1.5.0",
+        "./engine.js?v=1.2.0": "./engine-v151.js?v=1.5.1",
+        "./engine-v14.js?v=1.4.1": "./engine-v151.js?v=1.5.1",
+        "./engine-v14.js?v=1.4.2": "./engine-v151.js?v=1.5.1",
+        "./engine-v15.js?v=1.5.1": "./engine-v151.js?v=1.5.1",
         "./family-work-ui.js?v=1.4.1": "./family-work-ui.js?v=1.4.2"
       }
     }
@@ -23,20 +24,20 @@
 <body>
   <main class="app-shell">
     <section id="setup" class="setup-card">
-      <p class="eyebrow">V1.5 婚育人生事件 · 290年1月1日</p>
+      <p class="eyebrow">V1.5.1 说媒门槛与婚配分层 · 290年1月1日</p>
       <h1>乱世家书</h1>
-      <p class="lead">日子按天持续流逝。婚事与添丁不再是可以随时点击的行动，而会在合适年龄、家境和婚后生活中自然发生：媒人会登门说亲，婚后也可能随机有孕，真正影响人生走势时沙漏才会停下。</p>
+      <p class="lead">日子按天持续流逝。婚育仍由人生随机事件推动；未婚执笔人只有达到声望15，或家产达到120钱后，才会进入婚姻市场并有机会遇到媒人登门。</p>
       <form id="setup-form">
         <label>家族姓氏<input id="surname" maxlength="8" value="沈" required></label>
         <label>开局身份<select id="origin"></select></label>
         <button class="primary" type="submit">落笔开局</button>
       </form>
-      <p class="fine-print">历史大事件仍固定发生；普通生活消息不频繁暂停。媒人说亲、家中有孕、临盆、生死与其他真正改变人物或家族走势的事情会自动暂停等待决定。</p>
+      <p class="fine-print">家产按现钱加名下产业估值计算，不把粮食算进去。声望或家产继续提高后，媒人介绍的对象家庭层级也会提升。</p>
     </section>
 
     <section id="game" hidden>
       <header class="topbar">
-        <div><p class="eyebrow">乱世家书 · V1.5 婚育人生事件</p><h1 id="date">290年1月1日</h1><p id="chapter">第1章 · 家门初立</p></div>
+        <div><p class="eyebrow">乱世家书 · V1.5.1 说媒门槛与婚配分层</p><h1 id="date">290年1月1日</h1><p id="chapter">第1章 · 家门初立</p></div>
         <div class="top-actions"><button id="export" type="button">导出家书</button><label class="file-button">导入家书<input id="import" type="file" accept="application/json,.json"></label><button id="new-game" type="button">另起一门</button></div>
       </header>
 
@@ -83,13 +84,13 @@
           <div id="tab-relations" class="tab-panel" hidden><div id="relations"></div></div>
           <div id="tab-assets" class="tab-panel" hidden><div id="assets"></div></div>
           <div id="tab-timeline" class="tab-panel" hidden><div id="timeline"></div></div>
-          <details class="help"><summary>V1.5 帮助与规则</summary><p><strong>婚育改为人生事件：</strong>“筹办婚事”和“商议添丁”已经从主动行动中删除。未婚执笔人到适婚年龄后，每月有机会遇到媒人说亲；对象会随机生成家境、年龄、健康、性格与聘礼。接受后立即支付聘礼并进入15日婚事筹备，拒绝后数月内不会再次说亲。</p><p>婚后每月按妻方年龄、健康、饥饿与战乱状况判定是否有孕。18—29岁概率最高，30岁后逐步下降，35岁后明显下降；健康太差、饥饿严重或生产冷却期内不会触发。有孕后可选择静养、照常生活或花8钱请医者照看。静养会临时暂停孕妇原工作，生产后自动恢复。</p><p>孕期约270日。临盆属于重大个人事件，会自动暂停。结果可能是母子平安、孩子体弱、难产、胎儿未能存活，极少数严重难产会危及母亲。生产风险受年龄、健康、饥饿、战乱和孕期照护共同影响；生产后至少360日不会再次怀孕。</p><p>家族树继续采用思维导图式关系线：金色横线表示夫妻，蓝灰分叉线表示父母与子女；多个子女共用一条家庭分叉线。左键人物高亮直接亲属关系，右键人物安排工作。</p><p>长期务农、务农兼短工、长期短工、副业、求学和休养继续保留。健康≤35自动休养，恢复到60后继续原安排。春夏务农健康−0.25/日，秋收和短工−0.35，副业−0.15；足粮休养+1.20。</p><p>成人日耗0.35粮；0—5岁0.14、6—11岁0.21、12—15岁0.28。满管理参考亩产90粮，雇工每月6钱含食宿；粮食可以买卖，也可设置低粮自动补货。当前执笔人饥饿100%仍直接结束游戏。</p></details>
+          <details class="help"><summary>V1.5.1 帮助与规则</summary><p><strong>说媒需要先进入婚姻市场：</strong>未婚执笔人达到适婚年龄后，还必须满足“声望≥15”或“家产≥120钱”其中一项，媒人才可能按月登门。家产=现钱+名下产业估值，不含粮食。</p><p><strong>婚配分层：</strong>声望15/家产120开启普通婚配，主要出现乡里农户、手艺人家；声望30/家产220进入殷实婚配，更容易出现手艺人家、小商户；声望50/家产400进入门第婚配，可出现小商户、地方吏户旁支和旧族旁支。达到资格后仍按月随机触发，不是立刻强制结婚。</p><p>“筹办婚事”和“商议添丁”仍不作为主动行动。媒人说亲时对象会随机生成年龄、健康、性格、能力与聘礼。接受后立即支付聘礼并进入15日婚事筹备；现金不足时接受按钮不可选，拒绝后90—180日内不会再次说亲。</p><p>婚后每月按妻方年龄、健康、饥饿与战乱状况判定是否有孕。18—29岁概率最高，30岁后逐步下降，35岁后明显下降；健康太差、饥饿严重或生产冷却期内不会触发。有孕后可选择静养、照常生活或花8钱请医者照看。静养会临时暂停孕妇原工作，生产后自动恢复。</p><p>孕期约270日。临盆属于重大个人事件，会自动暂停。结果可能是母子平安、孩子体弱、难产、胎儿未能存活，极少数严重难产会危及母亲。生产风险受年龄、健康、饥饿、战乱和孕期照护共同影响；生产后至少360日不会再次怀孕。</p><p>家族树继续采用思维导图式关系线：金色横线表示夫妻，蓝灰分叉线表示父母与子女；多个子女共用一条家庭分叉线。左键人物高亮直接亲属关系，右键人物安排工作。</p><p>长期务农、务农兼短工、长期短工、副业、求学和休养继续保留。健康≤35自动休养，恢复到60后继续原安排。春夏务农健康−0.25/日，秋收和短工−0.35，副业−0.15；足粮休养+1.20。</p><p>成人日耗0.35粮；0—5岁0.14、6—11岁0.21、12—15岁0.28。满管理参考亩产90粮，雇工每月6钱含食宿；粮食可以买卖，也可设置低粮自动补货。当前执笔人饥饿100%仍直接结束游戏。</p></details>
         </aside>
       </div>
     </section>
   </main>
   <script type="module" src="./game.js?v=1.4.2"></script>
   <script type="module" src="./v14-ui.js?v=1.4.2"></script>
-  <script type="module" src="./v15-ui.js?v=1.5.0"></script>
+  <script type="module" src="./v15-ui.js?v=1.5.1"></script>
 </body>
 </html>
