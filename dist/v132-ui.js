@@ -12,7 +12,9 @@ function compactFamilyTree() {
 
   const ids = groups.map(group => group.dataset.person).filter(Boolean);
   const signature = ids.map(id => `${id}:${state.people?.[id]?.generation ?? 0}`).join('|');
-  if (signature === lastTreeSignature && tree.dataset.compactV132 === '1') return;
+  const allNodesAlreadyCompact = groups.every(group => group.dataset.compactV132 === '1');
+  const linesAlreadyCompact = tree.querySelector('.tree-lines')?.dataset.compactV132 === '1';
+  if (signature === lastTreeSignature && allNodesAlreadyCompact && linesAlreadyCompact) return;
   lastTreeSignature = signature;
 
   const levels = new Map();
@@ -44,6 +46,7 @@ function compactFamilyTree() {
     const pos = positions.get(group.dataset.person);
     if (!pos) continue;
     group.setAttribute('transform', `translate(${pos.x} ${pos.y})`);
+    group.dataset.compactV132 = '1';
     const circle = group.querySelector('circle');
     if (circle) circle.setAttribute('r', '16');
     const text = group.querySelector('text');
@@ -56,6 +59,7 @@ function compactFamilyTree() {
   if (oldLines) oldLines.remove();
   const lines = document.createElementNS(SVG_NS, 'g');
   lines.setAttribute('class', 'tree-lines');
+  lines.dataset.compactV132 = '1';
   for (const id of ids) {
     const person = state.people?.[id];
     const from = positions.get(id);
