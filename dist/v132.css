@@ -1,0 +1,5 @@
+.family-tree{min-width:360px!important;min-height:190px!important}
+.tree-node text{font-size:11px!important}
+.tree-lines line{stroke-width:.8}
+.auto-farm-note{margin:10px 0 0!important;padding:9px 10px!important;border:1px solid rgba(203,191,168,.16)!important;background:rgba(35,72,91,.24);color:var(--paper-dim)!important;font-size:.82rem!important;line-height:1.55!important}
+@media(max-width:700px){.family-tree{min-width:320px!important;min-height:180px!important}}
