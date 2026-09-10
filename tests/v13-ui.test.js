@@ -16,7 +16,8 @@ test('V1.3 farm UI exposes labor, hired workers, grain sales and seasonal progre
   const ui = fs.readFileSync(new URL('../dist/v13-ui.js', import.meta.url), 'utf8');
   assert.match(ui, /家庭劳力/);
   assert.match(ui, /雇工/);
-  assert.match(ui, /卖10粮/);
+  assert.match(ui, /\[10, 50, 100\]/);
+  assert.match(ui, /卖\$\{amount\}粮/);
   assert.match(ui, /春耕/);
   assert.match(ui, /夏管/);
   assert.match(ui, /秋收/);
