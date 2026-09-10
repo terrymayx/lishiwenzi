@@ -1,0 +1,14 @@
+.business-industry{margin:14px 0;padding:12px;border:1px solid var(--line);border-radius:8px;background:rgba(20,44,57,.72)}
+.business-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:5px}
+.business-heading>strong{font-size:.95rem;color:var(--paper)}
+.business-income-summary{font-size:.82rem;font-weight:700;color:#e7cc87}
+.business-hint{margin:5px 0 10px;color:var(--muted);font-size:.76rem;line-height:1.5}
+.business-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.business-card{display:flex;flex-direction:column;gap:5px;min-width:0;padding:10px;border:1px solid #3f5866;border-radius:7px;background:#1d3948}
+.business-card>strong{font-size:.9rem;color:var(--paper)}
+.business-card>span{font-size:.8rem;color:#e5d19f}
+.business-card>small{min-height:2.6em;color:#b8cbd4;font-size:.72rem;line-height:1.35}
+.business-card button{margin-top:auto;background:#234454;color:var(--paper);border:1px solid #48616a;border-radius:5px;padding:7px 8px;font-size:.78rem}
+.business-card button:hover:not(:disabled){border-color:#e0bb80}
+.business-card button:disabled{opacity:.42;cursor:not-allowed}
+@media(max-width:700px){.business-grid{grid-template-columns:1fr}.business-card>small{min-height:0}}
