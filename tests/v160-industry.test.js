@@ -21,11 +21,13 @@ test('buying a business deducts cash, increments ownership and preserves total h
   const s = game(1601);
   s.resources.money = 1000;
   const beforeAssets = E.getHouseholdAssetValue(s);
+  const beforeInvestment = E.ledger(s).investment;
   const result = E.buyBusiness(s, 'grainShop');
   assert.equal(result.ok, true);
   assert.equal(s.resources.money, 820);
   assert.equal(E.getIndustrySummary(s).businesses.grainShop.count, 1);
   assert.equal(E.getHouseholdAssetValue(s), beforeAssets);
+  assert.equal(E.ledger(s).investment - beforeInvestment, 180);
   const asset = s.assets.find(item => item.businessType === 'grainShop');
   assert.equal(asset.value, 180);
   assert.equal(asset.units, 1);
@@ -76,6 +78,7 @@ test('owned businesses add their passive income on top of the same normal day ec
   assert.equal(tick.ok, true);
   assert.equal(controlTick.ok, true);
   assert.equal(Number((s.resources.money - control.resources.money).toFixed(1)), 1.9);
+  assert.equal(Number((E.ledger(s).otherMoney - E.ledger(control).otherMoney).toFixed(1)), 1.9);
   assert.equal(E.getIndustrySummary(s).dailyIncome, 1.9);
   assert.equal(s.industry.lastDailyIncome, 1.9);
 });
