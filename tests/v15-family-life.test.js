@@ -198,11 +198,11 @@ test('pregnancy reaches a birth event and creates the child only when resolved',
   assert.ok(mother.birthCooldownDays >= 359);
 });
 
-test('V1.5.3 page keeps the dual marriage thresholds and current event UI', () => {
+test('V1.6.0 page keeps the V1.5.2 dual marriage thresholds and current event UI', () => {
   const index = fs.readFileSync(new URL('../dist/index.html', import.meta.url), 'utf8');
   const ui = fs.readFileSync(new URL('../dist/v15-ui.js', import.meta.url), 'utf8');
-  assert.match(index, /V1\.5\.3/);
-  assert.match(index, /engine-v151\.js\?v=1\.5\.3/);
+  assert.match(index, /V1\.6\.0/);
+  assert.match(index, /engine-v16\.js\?v=1\.6\.0/);
   assert.match(index, /同时满足|且/);
   assert.match(ui, /option\.disabled/);
   assert.match(ui, /说媒资格/);
