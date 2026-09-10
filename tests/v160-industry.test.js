@@ -57,24 +57,33 @@ test('business purchase rejects insufficient money, running time and invalid ids
   assert.equal(E.buyBusiness(s, 'unknown').ok, false);
 });
 
-test('owned businesses pay once after each successfully advanced day regardless of current action', () => {
+test('owned businesses add their passive income on top of the same normal day economy', () => {
   const s = game(1604);
+  const control = game(1604);
   s.resources.money = 2000;
+  control.resources.money = 2000;
   E.buyBusiness(s, 'grainShop');
   E.buyBusiness(s, 'clothShop');
-  const before = s.resources.money;
+  control.resources.money = s.resources.money;
+  control.household.money = s.household.money;
+
   E.setRunning(s, true);
+  E.setRunning(control, true);
   const tick = E.advanceDay(s);
+  const controlTick = E.advanceDay(control);
+
   assert.equal(tick.ok, true);
-  assert.equal(Number((s.resources.money - before).toFixed(1)), 1.9);
+  assert.equal(controlTick.ok, true);
+  assert.equal(Number((s.resources.money - control.resources.money).toFixed(1)), 1.9);
   assert.equal(E.getIndustrySummary(s).dailyIncome, 1.9);
   assert.equal(s.industry.lastDailyIncome, 1.9);
 });
 
-test('blocked advance does not mint passive income', () => {
+test('a pending decision blocks the day and cannot mint passive income', () => {
   const s = game(1605);
   s.resources.money = 1000;
   E.buyBusiness(s, 'grainShop');
+  s.pendingEvent = { id: 'major' };
   const before = s.resources.money;
   const elapsed = s.elapsedDays;
   const tick = E.advanceDay(s);
