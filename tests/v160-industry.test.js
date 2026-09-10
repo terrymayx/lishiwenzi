@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
 
 const E = await import('../dist/engine-v16.js?v=1.6.0');
 
@@ -99,4 +100,16 @@ test('old V1.5.3 saves migrate with zero industries', async () => {
   const loaded = E.deserializeState(Base.serializeState(old));
   assert.equal(E.getIndustrySummary(loaded).dailyIncome, 0);
   assert.deepEqual(loaded.industry.businesses, { grainShop: 0, clothShop: 0, caravan: 0 });
+});
+
+test('V1.6.0 assets page exposes passive business management and the current route', () => {
+  const index = fs.readFileSync(new URL('../dist/index.html', import.meta.url), 'utf8');
+  const gameUi = fs.readFileSync(new URL('../dist/game.js', import.meta.url), 'utf8');
+  assert.match(index, /V1\.6\.0/);
+  assert.match(index, /engine-v16\.js\?v=1\.6\.0/);
+  assert.match(index, /v160\.css\?v=1\.6\.0/);
+  assert.match(gameUi, /商业产业/);
+  assert.match(gameUi, /产业总收入/);
+  assert.match(gameUi, /buyBusiness/);
+  assert.match(gameUi, /getIndustrySummary/);
 });
