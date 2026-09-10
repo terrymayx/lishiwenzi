@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 
-const E = await import('../dist/engine-v151.js?v=1.5.1');
+const E = await import('../dist/engine-v151.js?v=1.5.2');
 
 function game(seed = 1501) {
   const s = E.createGame({ surname: '沈', origin: 'peasant', seed });
@@ -18,7 +18,7 @@ test('marriage and child are no longer direct action cards', () => {
   assert.ok(ids.includes('longfarm'));
 });
 
-test('V1.5.1 matchmaker requires reputation 15 or household assets 120', () => {
+test('V1.5.2 matchmaker requires reputation 15 and household assets 120 together', () => {
   const poor = game(1510);
   poor.resources.reputation = 5;
   poor.resources.money = 45;
@@ -28,46 +28,72 @@ test('V1.5.1 matchmaker requires reputation 15 or household assets 120', () => {
   assert.equal(poorStatus.assetRequired, 120);
   assert.equal(E.__v15Test.queueMatchmaker(poor, { bridePrice: 18 }), null);
 
-  const reputable = game(1511);
-  reputable.resources.reputation = 15;
-  reputable.resources.money = 10;
-  assert.equal(E.getMarriageMarketStatus(reputable).eligible, true);
-  assert.ok(E.__v15Test.queueMatchmaker(reputable, { bridePrice: 18 }));
+  const reputableOnly = game(1511);
+  reputableOnly.resources.reputation = 15;
+  reputableOnly.resources.money = 10;
+  assert.equal(E.getMarriageMarketStatus(reputableOnly).eligible, false);
+  assert.equal(E.__v15Test.queueMatchmaker(reputableOnly, { bridePrice: 18 }), null);
 
-  const wealthy = game(1512);
-  wealthy.resources.reputation = 0;
+  const wealthyOnly = game(1512);
+  wealthyOnly.resources.reputation = 0;
   // Peasant opening family property contains a 24-money thin-field asset.
-  wealthy.resources.money = 96;
-  const wealthyStatus = E.getMarriageMarketStatus(wealthy);
-  assert.equal(wealthyStatus.assetValue, 120);
-  assert.equal(wealthyStatus.eligible, true);
-  assert.ok(E.__v15Test.queueMatchmaker(wealthy, { bridePrice: 18 }));
+  wealthyOnly.resources.money = 96;
+  const wealthyOnlyStatus = E.getMarriageMarketStatus(wealthyOnly);
+  assert.equal(wealthyOnlyStatus.assetValue, 120);
+  assert.equal(wealthyOnlyStatus.eligible, false);
+  assert.equal(E.__v15Test.queueMatchmaker(wealthyOnly, { bridePrice: 18 }), null);
+
+  const qualified = game(1517);
+  qualified.resources.reputation = 15;
+  qualified.resources.money = 96;
+  const qualifiedStatus = E.getMarriageMarketStatus(qualified);
+  assert.equal(qualifiedStatus.assetValue, 120);
+  assert.equal(qualifiedStatus.eligible, true);
+  assert.ok(E.__v15Test.queueMatchmaker(qualified, { bridePrice: 18 }));
 });
 
-test('marriage market rises from ordinary to affluent to elite with reputation or assets', () => {
+test('marriage market upgrades only when both reputation and asset thresholds are met', () => {
   const ordinary = game(1513);
   ordinary.resources.reputation = 15;
-  ordinary.resources.money = 10;
+  ordinary.resources.money = 96;
   assert.equal(E.getMarriageMarketStatus(ordinary).band, 'ordinary');
 
-  const affluent = game(1514);
+  const reputationAhead = game(1514);
+  reputationAhead.resources.reputation = 30;
+  reputationAhead.resources.money = 96;
+  assert.equal(E.getMarriageMarketStatus(reputationAhead).band, 'ordinary');
+
+  const assetsAhead = game(1515);
+  assetsAhead.resources.reputation = 15;
+  assetsAhead.resources.money = 196;
+  assert.equal(E.getMarriageMarketStatus(assetsAhead).assetValue, 220);
+  assert.equal(E.getMarriageMarketStatus(assetsAhead).band, 'ordinary');
+
+  const affluent = game(1516);
   affluent.resources.reputation = 30;
-  affluent.resources.money = 10;
+  affluent.resources.money = 196;
+  assert.equal(E.getMarriageMarketStatus(affluent).assetValue, 220);
   assert.equal(E.getMarriageMarketStatus(affluent).band, 'affluent');
 
-  const elite = game(1515);
-  elite.resources.reputation = 50;
-  elite.resources.money = 10;
-  assert.equal(E.getMarriageMarketStatus(elite).band, 'elite');
+  const eliteReputationOnly = game(1518);
+  eliteReputationOnly.resources.reputation = 50;
+  eliteReputationOnly.resources.money = 196;
+  assert.equal(E.getMarriageMarketStatus(eliteReputationOnly).band, 'affluent');
 
-  const wealthyElite = game(1516);
-  wealthyElite.resources.reputation = 0;
-  wealthyElite.resources.money = 376;
-  const status = E.getMarriageMarketStatus(wealthyElite);
+  const eliteAssetsOnly = game(1519);
+  eliteAssetsOnly.resources.reputation = 30;
+  eliteAssetsOnly.resources.money = 376;
+  assert.equal(E.getMarriageMarketStatus(eliteAssetsOnly).assetValue, 400);
+  assert.equal(E.getMarriageMarketStatus(eliteAssetsOnly).band, 'affluent');
+
+  const elite = game(1520);
+  elite.resources.reputation = 50;
+  elite.resources.money = 376;
+  const status = E.getMarriageMarketStatus(elite);
   assert.equal(status.assetValue, 400);
   assert.equal(status.band, 'elite');
 
-  const event = E.__v15Test.queueMatchmaker(wealthyElite, { bridePrice: 24 });
+  const event = E.__v15Test.queueMatchmaker(elite, { bridePrice: 24 });
   assert.equal(event.familyData.candidate.marketBand, 'elite');
   assert.ok(event.familyData.candidate.profileTier >= 2);
 });
@@ -102,10 +128,13 @@ test('matchmaker proposal pauses, charges bride price, and starts a 15-day weddi
   assert.equal(s.relations[`${protagonist.id}:${spouse.id}`].type, '婚姻');
 });
 
-test('insufficient bride price disables acceptance and rejection starts a cooldown', () => {
+test('insufficient bride price disables acceptance after both marriage thresholds are met', () => {
   const s = game(1503);
   s.resources.reputation = 15;
   s.resources.money = 8;
+  if (s.assets[0]) s.assets[0].value = 120;
+  const status = E.getMarriageMarketStatus(s);
+  assert.equal(status.eligible, true);
   const event = E.__v15Test.queueMatchmaker(s, { bridePrice: 24 });
   assert.equal(event.options.find(o => o.id === 'accept').disabled, true);
   const rejected = E.resolveEvent(s, event.id, 'reject');
@@ -169,11 +198,12 @@ test('pregnancy reaches a birth event and creates the child only when resolved',
   assert.ok(mother.birthCooldownDays >= 359);
 });
 
-test('V1.5.1 page and event UI expose marriage market progress and disabled paid choices', () => {
+test('V1.5.2 page and event UI explain that both marriage thresholds are required', () => {
   const index = fs.readFileSync(new URL('../dist/index.html', import.meta.url), 'utf8');
   const ui = fs.readFileSync(new URL('../dist/v15-ui.js', import.meta.url), 'utf8');
-  assert.match(index, /V1\.5\.1/);
-  assert.match(index, /engine-v151\.js\?v=1\.5\.1/);
+  assert.match(index, /V1\.5\.2/);
+  assert.match(index, /engine-v151\.js\?v=1\.5\.2/);
+  assert.match(index, /同时满足|且/);
   assert.match(ui, /option\.disabled/);
   assert.match(ui, /说媒资格/);
   assert.match(ui, /家产/);
