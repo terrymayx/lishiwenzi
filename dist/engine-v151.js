@@ -72,11 +72,11 @@ export function getHouseholdAssetValue(s) {
 export function getMarriageMarketStatus(s) {
   const reputation = Math.max(0, Number(s?.resources?.reputation) || 0);
   const assetValue = getHouseholdAssetValue(s);
-  const eligible = reputation >= V151_RULES.REPUTATION_UNLOCK || assetValue >= V151_RULES.ASSET_UNLOCK;
+  const eligible = reputation >= V151_RULES.REPUTATION_UNLOCK && assetValue >= V151_RULES.ASSET_UNLOCK;
   let band = 'locked';
   if (eligible) {
-    band = reputation >= V151_RULES.REPUTATION_ELITE || assetValue >= V151_RULES.ASSET_ELITE ? 'elite'
-      : reputation >= V151_RULES.REPUTATION_AFFLUENT || assetValue >= V151_RULES.ASSET_AFFLUENT ? 'affluent'
+    band = reputation >= V151_RULES.REPUTATION_ELITE && assetValue >= V151_RULES.ASSET_ELITE ? 'elite'
+      : reputation >= V151_RULES.REPUTATION_AFFLUENT && assetValue >= V151_RULES.ASSET_AFFLUENT ? 'affluent'
       : 'ordinary';
   }
   return {
@@ -159,7 +159,7 @@ function prepare(s) {
   if (!s) return s;
   const f = Base.ensureFamilyLife(s);
   if (!('v151MarriageCheckKey' in f)) f.v151MarriageCheckKey = monthKey(s);
-  f.marketPolicyVersion = 151;
+  f.marketPolicyVersion = 152;
   return expose(s);
 }
 
@@ -198,7 +198,7 @@ export function advanceDay(s) {
   prepare(s);
   const target = current(s);
   if (target?.alive && !target.married) {
-    // Prevent V1.5's unrestricted monthly matchmaker roll; V1.5.1 owns that roll.
+    // Prevent V1.5's unrestricted monthly matchmaker roll; V1.5.2 owns that roll.
     Base.ensureFamilyLife(s).marriageCheckKey = nextMonthKey(s);
   }
   let result = Base.advanceDay(s);
