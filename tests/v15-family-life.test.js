@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 
-const E = await import('../dist/engine-v15.js?v=1.5.0');
+const E = await import('../dist/engine-v151.js?v=1.5.1');
 
 function game(seed = 1501) {
   const s = E.createGame({ surname: '沈', origin: 'peasant', seed });
@@ -18,9 +18,64 @@ test('marriage and child are no longer direct action cards', () => {
   assert.ok(ids.includes('longfarm'));
 });
 
+test('V1.5.1 matchmaker requires reputation 15 or household assets 120', () => {
+  const poor = game(1510);
+  poor.resources.reputation = 5;
+  poor.resources.money = 45;
+  const poorStatus = E.getMarriageMarketStatus(poor);
+  assert.equal(poorStatus.eligible, false);
+  assert.equal(poorStatus.reputationRequired, 15);
+  assert.equal(poorStatus.assetRequired, 120);
+  assert.equal(E.__v15Test.queueMatchmaker(poor, { bridePrice: 18 }), null);
+
+  const reputable = game(1511);
+  reputable.resources.reputation = 15;
+  reputable.resources.money = 10;
+  assert.equal(E.getMarriageMarketStatus(reputable).eligible, true);
+  assert.ok(E.__v15Test.queueMatchmaker(reputable, { bridePrice: 18 }));
+
+  const wealthy = game(1512);
+  wealthy.resources.reputation = 0;
+  // Peasant opening family property contains a 24-money thin-field asset.
+  wealthy.resources.money = 96;
+  const wealthyStatus = E.getMarriageMarketStatus(wealthy);
+  assert.equal(wealthyStatus.assetValue, 120);
+  assert.equal(wealthyStatus.eligible, true);
+  assert.ok(E.__v15Test.queueMatchmaker(wealthy, { bridePrice: 18 }));
+});
+
+test('marriage market rises from ordinary to affluent to elite with reputation or assets', () => {
+  const ordinary = game(1513);
+  ordinary.resources.reputation = 15;
+  ordinary.resources.money = 10;
+  assert.equal(E.getMarriageMarketStatus(ordinary).band, 'ordinary');
+
+  const affluent = game(1514);
+  affluent.resources.reputation = 30;
+  affluent.resources.money = 10;
+  assert.equal(E.getMarriageMarketStatus(affluent).band, 'affluent');
+
+  const elite = game(1515);
+  elite.resources.reputation = 50;
+  elite.resources.money = 10;
+  assert.equal(E.getMarriageMarketStatus(elite).band, 'elite');
+
+  const wealthyElite = game(1516);
+  wealthyElite.resources.reputation = 0;
+  wealthyElite.resources.money = 376;
+  const status = E.getMarriageMarketStatus(wealthyElite);
+  assert.equal(status.assetValue, 400);
+  assert.equal(status.band, 'elite');
+
+  const event = E.__v15Test.queueMatchmaker(wealthyElite, { bridePrice: 24 });
+  assert.equal(event.familyData.candidate.marketBand, 'elite');
+  assert.ok(event.familyData.candidate.profileTier >= 2);
+});
+
 test('matchmaker proposal pauses, charges bride price, and starts a 15-day wedding', () => {
   const s = game(1502);
   s.resources.money = 100;
+  s.resources.reputation = 15;
   const event = E.__v15Test.queueMatchmaker(s, { bridePrice: 24, name: '李氏', age: 19, sex: '女' });
   assert.equal(s.pendingEvent.source, 'family-marriage');
   assert.match(event.text, /李氏/);
@@ -49,6 +104,7 @@ test('matchmaker proposal pauses, charges bride price, and starts a 15-day weddi
 
 test('insufficient bride price disables acceptance and rejection starts a cooldown', () => {
   const s = game(1503);
+  s.resources.reputation = 15;
   s.resources.money = 8;
   const event = E.__v15Test.queueMatchmaker(s, { bridePrice: 24 });
   assert.equal(event.options.find(o => o.id === 'accept').disabled, true);
@@ -113,10 +169,12 @@ test('pregnancy reaches a birth event and creates the child only when resolved',
   assert.ok(mother.birthCooldownDays >= 359);
 });
 
-test('V1.5 page and event UI expose family-life version and disabled paid choices', () => {
+test('V1.5.1 page and event UI expose marriage market progress and disabled paid choices', () => {
   const index = fs.readFileSync(new URL('../dist/index.html', import.meta.url), 'utf8');
   const ui = fs.readFileSync(new URL('../dist/v15-ui.js', import.meta.url), 'utf8');
-  assert.match(index, /V1\.5/);
-  assert.match(index, /engine-v15\.js\?v=1\.5\.0/);
+  assert.match(index, /V1\.5\.1/);
+  assert.match(index, /engine-v151\.js\?v=1\.5\.1/);
   assert.match(ui, /option\.disabled/);
+  assert.match(ui, /说媒资格/);
+  assert.match(ui, /家产/);
 });

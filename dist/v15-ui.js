@@ -1,3 +1,5 @@
+import { getMarriageMarketStatus } from './engine-v151.js?v=1.5.1';
+
 const $ = selector => document.querySelector(selector);
 
 function careLabel(care) {
@@ -15,10 +17,20 @@ function updateEventButtons(state) {
   });
 }
 
+function appendStatusLine(panel, id, text, className = 'family-life-status') {
+  if (!text) return;
+  const line = document.createElement('p');
+  line.id = id;
+  line.className = className;
+  line.textContent = text;
+  panel.append(line);
+}
+
 function updatePersonStatus(state) {
   const panel = $('#person-detail');
   if (!panel) return;
   panel.querySelector('#family-life-status')?.remove();
+  panel.querySelector('#marriage-market-status')?.remove();
   const selected = state.people?.[state.selectedPersonId] || state.people?.[state.playerId];
   if (!selected) return;
   const life = state.familyLife;
@@ -35,12 +47,19 @@ function updatePersonStatus(state) {
       text = `配偶${spouse.name}有孕：约 ${life.pregnancy.remainingDays} 日后临盆 · 照护：${careLabel(life.pregnancy.care)}。`;
     }
   }
-  if (!text) return;
-  const line = document.createElement('p');
-  line.id = 'family-life-status';
-  line.className = 'family-life-status';
-  line.textContent = text;
-  panel.append(line);
+  appendStatusLine(panel, 'family-life-status', text);
+
+  if (selected.id === state.playerId && selected.alive && !selected.married && selected.age >= 18) {
+    const market = getMarriageMarketStatus(state);
+    const base = market.eligible
+      ? `说媒资格：已开启 · ${market.label}`
+      : '说媒资格：未开启';
+    const progress = `声望 ${market.reputation}/${market.reputationRequired} · 家产 ${market.assetValue}/${market.assetRequired}`;
+    const next = market.nextReputation && market.nextAsset
+      ? ` · 下一档：声望${market.nextReputation}或家产${market.nextAsset}`
+      : '';
+    appendStatusLine(panel, 'marriage-market-status', `${base} · ${progress}${next}。家产=现钱+名下产业估值，不含粮食。`, 'family-life-status marriage-market-status');
+  }
 }
 
 function updateFamilyLifeUi() {
