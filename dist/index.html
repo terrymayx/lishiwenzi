@@ -4,14 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#102536">
-  <title>乱世家书 · V1.3.2 自动农庄</title>
+  <title>乱世家书 · V1.4 家庭生计</title>
   <link rel="stylesheet" href="./style.css?v=1.2.1">
   <link rel="stylesheet" href="./v13.css?v=1.3.0">
   <link rel="stylesheet" href="./v132.css?v=1.3.2">
+  <link rel="stylesheet" href="./v14.css?v=1.4.0">
   <script type="importmap">
     {
       "imports": {
-        "./engine.js?v=1.2.0": "./engine-v132.js?v=1.3.2"
+        "./engine.js?v=1.2.0": "./engine-v14.js?v=1.4.0"
       }
     }
   </script>
@@ -19,7 +20,7 @@
 <body>
   <main class="app-shell">
     <section id="setup" class="setup-card">
-      <p class="eyebrow">V1.3.2 自动农庄 · 290年1月1日</p>
+      <p class="eyebrow">V1.4 家庭生计 · 290年1月1日</p>
       <h1>乱世家书</h1>
       <p class="lead">选好行动后开始时间，日子会持续流逝。自己和家人可以亲自耕作；一旦雇了农工，他们会在你行商、读书、从军或处理其他事务时继续自动推进春耕、夏管与秋收。</p>
       <form id="setup-form">
@@ -32,7 +33,7 @@
 
     <section id="game" hidden>
       <header class="topbar">
-        <div><p class="eyebrow">乱世家书 · V1.3.2 自动农庄</p><h1 id="date">290年1月1日</h1><p id="chapter">第1章 · 家门初立</p></div>
+        <div><p class="eyebrow">乱世家书 · V1.4 家庭生计</p><h1 id="date">290年1月1日</h1><p id="chapter">第1章 · 家门初立</p></div>
         <div class="top-actions"><button id="export" type="button">导出家书</button><label class="file-button">导入家书<input id="import" type="file" accept="application/json,.json"></label><button id="new-game" type="button">另起一门</button></div>
       </header>
 
@@ -79,13 +80,13 @@
           <div id="tab-relations" class="tab-panel" hidden><div id="relations"></div></div>
           <div id="tab-assets" class="tab-panel" hidden><div id="assets"></div></div>
           <div id="tab-timeline" class="tab-panel" hidden><div id="timeline"></div></div>
-          <details class="help"><summary>帮助与规则</summary><p>“耕作”现在专指自己和家人亲自下田，已移到行动列表最前面。3—5月春耕、6—8月夏管、9—11月秋收、12—2月冬藏；亲自耕作时按家庭劳力推进农事。</p><p>16—55岁健康成人通常可负责3亩，少年与较年长成员通常1亩；严重饥饿、重病或超龄者无法承担正常耕作。田地超过家庭劳力后，可在“产业”页雇农工，每人负责3亩、每月6钱。</p><p>雇工不占当前行动。只要时间正在流逝，春、夏、秋的受雇农工就会自动耕作；因此当前执笔人可以同时去行商、读书、从军或处理其他事务。冬藏期农工只做维护，不推进新一季农事。</p><p>粮市提供买10/50/100粮与卖10/50/100粮选项，每个按钮直接显示本次交易需要花多少钱或能得到多少钱。点击后钱、粮、价格和交易回执立即刷新，不需要先启动时间。</p><p>粮价会随世界粮价变化；正常买粮价高于卖粮价，不能靠原地倒卖套利。</p><p>每个农业季节会结算一次风候。轻度春寒、夏旱、秋雨等只写入家书继续时间；大旱、大水、蝗灾等足以改变全年收成时才会自动暂停，让玩家选择是否投入钱财救田。</p><p>家人染病、临时征敛、故人来信、一纸旧债等低影响事件改为普通消息，不再自动暂停。重大历史、死亡继承、重大天灾、关键人生转折等仍会暂停。</p><p>每位家人继续独立记录饥饿；当前执笔人饥饿达到100%会饿死并直接结束游戏。</p></details>
+          <details class="help"><summary>V1.4 帮助与规则</summary><p>成人日耗0.35粮；0—5岁0.14、6—11岁0.21、12—15岁0.28。健康成人短工每日0.9钱，副业0.6钱。当前执笔人的主要行动优先，其他家人按分工工作。</p><p>每名健康成人提供3亩经营容量。每日春耕或夏管投入为容量÷20亩，秋收容量÷5亩；满管理参考亩产90粮。默认农闲转短工，下季自动回田。天气会减产，粮食只在秋收入仓。</p><p>农工每月6钱含食宿，按自然月续雇，可关闭续雇。自动买粮低于7天时补到30天，受现金保留额限制。当前人物饥饿100%直接结束；重大历史和生死事件仍会暂停。预测按当前人口和安排估算，实际账簿从升级载入日起记录。</p></details>
         </aside>
       </div>
     </section>
   </main>
-  <script type="module" src="./game.js?v=1.3.0"></script>
-  <script type="module" src="./v13-ui.js?v=1.3.1"></script>
+  <script type="module" src="./game.js?v=1.4.0"></script>
+  <script type="module" src="./v14-ui.js?v=1.4.0"></script>
   <script type="module" src="./v132-ui.js?v=1.3.2"></script>
 </body>
 </html>

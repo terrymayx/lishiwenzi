@@ -23,3 +23,4 @@ jobs:
       - run: node --check dist/v13-ui.js
       - run: node --check dist/game.js
       - run: node --test tests/*.test.js
+      - run: node --check dist/engine-v14.js && node --check dist/v14-rules.js && node --check dist/v14-market.js && node --check dist/v14-ui.js

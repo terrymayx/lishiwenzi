@@ -1,11 +1,11 @@
-import * as Base from './engine.js?base=1.2.0';
+import * as Base from './engine.js?base=1.4.0';
 import {
   applyStarvationRules,
   getLandPrice as getV12LandPrice,
   buyLand as buyV12Land
 } from './v12-rules.js?v=1.2.1';
 
-export * from './engine.js?base=1.2.0';
+export * from './engine.js?base=1.4.0';
 
 function exposeState(state) {
   if (typeof window !== 'undefined' && state) window.__luanshiState = state;

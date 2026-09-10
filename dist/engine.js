@@ -11,6 +11,9 @@ export const MONTH_DAYS = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 export const DAYS_PER_YEAR = 365;
 export const TOTAL_DAYS = (END_YEAR - START_YEAR) * DAYS_PER_YEAR;
 export const FOOD_PER_PERSON_PER_DAY = 0.35;
+export const CHILD_FOOD_0_5_PER_DAY = 0.14;
+export const CHILD_FOOD_6_11_PER_DAY = 0.21;
+export const CHILD_FOOD_12_15_PER_DAY = 0.28;
 export const FARM_YIELD_PER_LAND_PER_DAY = 0.4;
 export const LAND_BASE_PRICE = 18;
 export const LAND_PRICE_STEP = 4;
@@ -128,6 +131,7 @@ const nextRng = current => (Math.imul(current >>> 0, 1664525) + 1013904223) >>> 
 function random(state) { state.rngState = nextRng(state.rngState); return state.rngState / 4294967296; }
 function makeId(prefix, state) { return `${prefix}-${state.nextId++}`; }
 function round1(value) { return Math.round(value * 10) / 10; }
+function round2(value) { return Math.round(Number(value || 0) * 100) / 100; }
 function addLog(state, kind, title, text) { state.eventLog.push({ year: state.year, month: state.month, day: state.day, kind, title, text }); }
 function alivePeople(state) { return Object.values(state.people).filter(person => person.alive); }
 export { alivePeople };
@@ -148,7 +152,7 @@ function person(state, name, age, role, extra = {}) {
 function syncResources(state) {
   const current = getCurrent(state);
   state.resources.money = round1(Math.max(0, state.resources.money));
-  state.resources.grain = round1(Math.max(0, state.resources.grain));
+  state.resources.grain = round2(Math.max(0, state.resources.grain));
   state.resources.reputation = round1(Math.max(0, state.resources.reputation));
   state.resources.health = round1(clamp(current?.health ?? 0, 0, 100));
   const householdPeople = alivePeople(state).filter(p => p.familyId === state.family.id);
@@ -156,7 +160,7 @@ function syncResources(state) {
   state.resources.land = state.household.land;
   state.household.money = state.resources.money;
   state.household.grain = state.resources.grain;
-  state.dailyFood = round1(alivePeople(state).filter(p => p.familyId === state.family.id).length * FOOD_PER_PERSON_PER_DAY);
+  state.dailyFood = getDailyFoodCost(state);
 }
 
 export function createGame({ surname = '沈', origin = 'peasant', seed = 20260908 } = {}) {
@@ -196,7 +200,17 @@ export function createGame({ surname = '沈', origin = 'peasant', seed = 2026090
 export function getCurrent(state) { return state.playerId ? state.people[state.playerId] || null : null; }
 export function getChapter(state) { return CHAPTERS.find(c => state.year >= c.years[0] && state.year <= c.years[1]) || CHAPTERS[CHAPTERS.length - 1]; }
 export function getDateLabel(state) { return `${state.year}年${state.month}月${state.day}日`; }
-export function getDailyFoodCost(state) { return round1(alivePeople(state).filter(p => p.familyId === state.family.id).length * FOOD_PER_PERSON_PER_DAY); }
+export function getPersonFoodCost(person) {
+  if (!person?.alive) return 0;
+  const age = Number(person.age) || 0;
+  if (age < 6) return CHILD_FOOD_0_5_PER_DAY;
+  if (age < 12) return CHILD_FOOD_6_11_PER_DAY;
+  if (age < 16) return CHILD_FOOD_12_15_PER_DAY;
+  return FOOD_PER_PERSON_PER_DAY;
+}
+export function getDailyFoodCost(state) {
+  return round2(alivePeople(state).filter(p => p.familyId === state.family.id).reduce((total, p) => total + getPersonFoodCost(p), 0));
+}
 
 export function getLandPrice(state, acres = 1) {
   const amount = Number(acres);
@@ -298,7 +312,7 @@ function applyDailyActivity(state) {
 
   if (activity.id === 'trade') {
     const regionBonus = (REGIONS[state.region]?.trade || 50) / 100;
-    state.resources.money += (0.16 + random(state) * 0.16) * regionBonus;
+    if (!state.__v14DailyWork) state.resources.money += (0.16 + random(state) * 0.16) * regionBonus;
     current.skills.trade += 0.004;
   } else if (activity.id === 'study') {
     current.skills.knowledge += 0.012; state.resources.reputation += 0.008;
@@ -310,7 +324,7 @@ function applyDailyActivity(state) {
   } else if (activity.id === 'prepare') {
     if (activity.elapsed % 5 === 0 && state.resources.money >= 1) { state.resources.money -= 1; state.household.preparation = clamp(state.household.preparation + 2.5, 0, 100); }
   } else if (activity.id === 'cultivate') {
-    state.resources.grain += Math.max(0.05, state.household.land * FARM_YIELD_PER_LAND_PER_DAY); current.skills.trade += 0.002;
+    if (!state.__v14DailyWork) state.resources.grain += Math.max(0.05, state.household.land * FARM_YIELD_PER_LAND_PER_DAY); current.skills.trade += 0.002;
   } else if (activity.id === 'manage') {
     state.family.cohesion = clamp(state.family.cohesion + 0.04, 0, 100);
     if (activity.elapsed % 15 === 0) state.resources.reputation += 0.3;
@@ -359,7 +373,7 @@ function consumeFood(state) {
   const members = alivePeople(state).filter(p => p.familyId === state.family.id);
   const available = Math.max(0, Number(state.resources.grain) || 0);
   const mealRatio = cost > 0 ? clamp(available / cost, 0, 1) : 1;
-  state.resources.grain = round1(Math.max(0, available - cost));
+  state.resources.grain = round2(Math.max(0, available - cost));
   for (const p of members) {
     if (mealRatio >= 1) {
       p.hunger = round1(clamp((Number(p.hunger) || 0) - 12, 0, HUNGER_MAX));
@@ -426,6 +440,7 @@ function killPerson(state, personId, reason) {
 }
 
 function dailyRisk(state) {
+  if (state.__v14DailyWork && state.currentActivity?.id === 'trade') return;
   const current = getCurrent(state); const id = state.currentActivity?.id;
   if (!current || !id) return null;
   let p = 0;
@@ -500,6 +515,7 @@ export function advanceDay(state) {
   if (state.phase !== 'playing' || state.endpoint || state.pendingEvent || !state.currentActivity) return { ok: false, paused: true, message: '当前时间不能继续。' };
   state.running = true;
   const activityResult = applyDailyActivity(state);
+  const beforeFoodResult = typeof state.__beforeFood === 'function' ? state.__beforeFood() : null;
   const foodCrisis = consumeFood(state);
   dailyRisk(state);
   settlePeopleDaily(state);
@@ -518,7 +534,7 @@ export function advanceDay(state) {
   if (activityResult?.completed) { state.running = false; state.pauseReason = activityResult.message; syncResources(state); return { ok: true, paused: true, reason: state.pauseReason }; }
   if (maybeRandomEvent(state)) { syncResources(state); return { ok: true, paused: true, reason: state.pauseReason }; }
   syncResources(state);
-  return { ok: true, paused: false, date: getDateLabel(state) };
+  return { ok: true, paused: false, date: getDateLabel(state), beforeFood: beforeFoodResult };
 }
 
 function canPay(state, effect) {
