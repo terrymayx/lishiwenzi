@@ -15,6 +15,11 @@ import {
   isMinorMessageEvent,
   convertPendingMinorEventToMessage
 } from './v13-rules.js?v=1.3.0';
+import {
+  getGrainBuyPrice,
+  getBuyQuote,
+  buyGrain
+} from './v13-market.js?v=1.3.1';
 
 export * from './engine-v12.js?v=1.2.1';
 export {
@@ -30,6 +35,11 @@ export {
   rollSeasonWeather,
   isMinorMessageEvent
 } from './v13-rules.js?v=1.3.0';
+export {
+  getGrainBuyPrice,
+  getBuyQuote,
+  buyGrain
+} from './v13-market.js?v=1.3.1';
 
 function exposeState(state) {
   if (typeof window !== 'undefined' && state) window.__luanshiState = state;
