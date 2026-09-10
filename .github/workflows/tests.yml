@@ -19,6 +19,7 @@ jobs:
       - run: node --check dist/v12-rules.js
       - run: node --check dist/engine-v13.js
       - run: node --check dist/v13-rules.js
+      - run: node --check dist/v13-market.js
       - run: node --check dist/v13-ui.js
       - run: node --check dist/game.js
       - run: node --test tests/*.test.js
