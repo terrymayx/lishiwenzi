@@ -4,20 +4,26 @@ import fs from 'node:fs';
 
 const index = fs.readFileSync(new URL('../dist/index.html', import.meta.url), 'utf8');
 
-test('V1.3 page routes the game engine through engine-v13 and loads farm UI', () => {
-  assert.match(index, /V1\.3/);
-  assert.match(index, /engine-v13\.js\?v=1\.3\.0/);
-  assert.match(index, /v13-ui\.js\?v=1\.3\.0/);
+test('V1.3.1 page routes the game engine through engine-v13 and loads farm UI', () => {
+  assert.match(index, /V1\.3\.1/);
+  assert.match(index, /engine-v13\.js\?v=1\.3\.1/);
+  assert.match(index, /v13-ui\.js\?v=1\.3\.1/);
   assert.match(index, /v13\.css\?v=1\.3\.0/);
   assert.doesNotMatch(index, /v12-ui\.js/);
 });
 
-test('V1.3 farm UI exposes labor, hired workers, grain sales and seasonal progress', () => {
+test('V1.3.1 farm UI exposes labor, buy/sell quotes and seasonal progress', () => {
   const ui = fs.readFileSync(new URL('../dist/v13-ui.js', import.meta.url), 'utf8');
   assert.match(ui, /家庭劳力/);
   assert.match(ui, /雇工/);
+  assert.match(ui, /购买粮食/);
+  assert.match(ui, /出售余粮/);
   assert.match(ui, /\[10, 50, 100\]/);
+  assert.match(ui, /买\$\{amount\}粮/);
   assert.match(ui, /卖\$\{amount\}粮/);
+  assert.match(ui, /getBuyQuote/);
+  assert.match(ui, /refreshResourceStrip/);
+  assert.match(ui, /当前钱/);
   assert.match(ui, /春耕/);
   assert.match(ui, /夏管/);
   assert.match(ui, /秋收/);
