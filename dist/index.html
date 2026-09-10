@@ -4,12 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#102536">
-  <title>乱世家书 · V1.2 田地与饥饿</title>
+  <title>乱世家书 · V1.3 农时与田庄</title>
   <link rel="stylesheet" href="./style.css?v=1.2.1">
+  <link rel="stylesheet" href="./v13.css?v=1.3.0">
   <script type="importmap">
     {
       "imports": {
-        "./engine.js?v=1.2.0": "./engine-v12.js?v=1.2.1"
+        "./engine.js?v=1.2.0": "./engine-v13.js?v=1.3.0"
       }
     }
   </script>
@@ -17,20 +18,20 @@
 <body>
   <main class="app-shell">
     <section id="setup" class="setup-card">
-      <p class="eyebrow">V1.2 田地与饥饿 · 290年1月1日</p>
+      <p class="eyebrow">V1.3 农时与田庄 · 290年1月1日</p>
       <h1>乱世家书</h1>
-      <p class="lead">选好行动后开始时间，日子会一天天流逝。家人每天吃饭并积累各自的饥饿度；耕作产能随田地增加，当前执笔人饥饿达到100%时会饿死并直接结束游戏。</p>
+      <p class="lead">选好行动后开始时间，日子会持续流逝。田地不再每天直接产粮：春季播种、夏季照料、秋季收获、冬季储粮；田产超过家庭劳力后需要雇工，余粮还可以出售换钱。</p>
       <form id="setup-form">
         <label>家族姓氏<input id="surname" maxlength="8" value="沈" required></label>
         <label>开局身份<select id="origin"></select></label>
         <button class="primary" type="submit">落笔开局</button>
       </form>
-      <p class="fine-print">历史大事件仍固定发生；玩家改变的是家族准备、田产、粮食、所在地区、关系与个人命运。存档保存在本机，也可导出 JSON。</p>
+      <p class="fine-print">历史大事件仍固定发生；普通生活消息不再频繁暂停。真正改变人物、家族或年度收成的大事才会让沙漏停下等待决定。</p>
     </section>
 
     <section id="game" hidden>
       <header class="topbar">
-        <div><p class="eyebrow">乱世家书 · V1.2 田地与饥饿</p><h1 id="date">290年1月1日</h1><p id="chapter">第1章 · 家门初立</p></div>
+        <div><p class="eyebrow">乱世家书 · V1.3 农时与田庄</p><h1 id="date">290年1月1日</h1><p id="chapter">第1章 · 家门初立</p></div>
         <div class="top-actions"><button id="export" type="button">导出家书</button><label class="file-button">导入家书<input id="import" type="file" accept="application/json,.json"></label><button id="new-game" type="button">另起一门</button></div>
       </header>
 
@@ -77,12 +78,12 @@
           <div id="tab-relations" class="tab-panel" hidden><div id="relations"></div></div>
           <div id="tab-assets" class="tab-panel" hidden><div id="assets"></div></div>
           <div id="tab-timeline" class="tab-panel" hidden><div id="timeline"></div></div>
-          <details class="help"><summary>帮助与规则</summary><p>选择一个持续行动或计划后点击“开始时间”。系统按天结算行动、吃饭、年龄、健康、怀孕与风险；随机事件、重大历史、断粮、计划完成与死亡都会自动暂停。</p><p>耕作按每亩约0.4粮/日提高产能；产业页可购买1、3或5亩田地，地越多价格越高。每位家人独立记录饥饿，其他家人饥饿达到100%会立即饿死；当前执笔人达到100%则直接游戏结束，不进入后代继承。</p><p>断粮事件仍只有“花钱买粮”。钱不够时不会把流程锁死，可以继续谋生或耕作，但饥饿会继续上升。</p></details>
+          <details class="help"><summary>帮助与规则</summary><p>耕作不再每天直接产粮。3—5月春耕、6—8月夏管、9—11月秋收、12—2月冬藏；春耕和夏管完成度、可经营亩数以及天气共同决定秋收。</p><p>16—55岁健康成人通常可负责3亩，少年与较年长成员通常1亩；严重饥饿、重病或超龄者无法承担正常耕作。田地超过家庭劳力后，可在“产业”页雇农工，每人负责3亩、每月6钱。</p><p>产业页仍可购买田地，并新增出售10/50/100粮。粮价会随世界粮价变化；买粮价格始终高于正常卖粮价，不能靠原地倒卖套利。</p><p>每个农业季节会结算一次风候。轻度春寒、夏旱、秋雨等只写入家书继续时间；大旱、大水、蝗灾等足以改变全年收成时才会自动暂停，让玩家选择是否投入钱财救田。</p><p>家人染病、临时征敛、故人来信、一纸旧债等低影响事件改为普通消息，不再自动暂停。重大历史、死亡继承、重大天灾、关键人生转折等仍会暂停。</p><p>每位家人继续独立记录饥饿；当前执笔人饥饿达到100%会饿死并直接结束游戏。</p></details>
         </aside>
       </div>
     </section>
   </main>
-  <script type="module" src="./game.js?v=1.2.1"></script>
-  <script type="module" src="./v12-ui.js?v=1.2.1"></script>
+  <script type="module" src="./game.js?v=1.3.0"></script>
+  <script type="module" src="./v13-ui.js?v=1.3.0"></script>
 </body>
 </html>
