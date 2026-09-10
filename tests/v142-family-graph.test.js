@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import * as E from '../dist/engine-v14.js?v=1.4.1';
+import * as FamilyGraph from '../dist/family-work-ui.js?v=1.4.2';
 
 test('new game links the initial mother to the root protagonist', () => {
   const s = E.createGame({ surname: '沈', origin: 'peasant', seed: 142 });
@@ -39,4 +40,18 @@ test('family graph renderer defines spouse, shared child branch, and selected re
   assert.match(ui, /spouseId|婚姻/);
   assert.match(css, /\.spouse-line/);
   assert.match(css, /\.relation-line\.related/);
+});
+
+test('single-child branch keeps an orthogonal horizontal connector when parent and child are offset', () => {
+  assert.equal(typeof FamilyGraph.getFamilyBranchGeometry, 'function');
+  const geometry = FamilyGraph.getFamilyBranchGeometry({
+    anchorX: 140,
+    anchorY: 100,
+    childCenters: [70],
+    childTop: 152
+  });
+  assert.equal(geometry.busY, 136);
+  assert.equal(geometry.busMinX, 70);
+  assert.equal(geometry.busMaxX, 140);
+  assert.equal(geometry.needsHorizontalBus, true);
 });
