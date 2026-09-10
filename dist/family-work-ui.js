@@ -75,6 +75,23 @@ function buildChildGroups(people, positions) {
   return [...groups.values()];
 }
 
+export function getFamilyBranchGeometry({ anchorX, anchorY, childCenters, childTop }) {
+  const children = (childCenters || []).map(Number).filter(Number.isFinite);
+  const parentX = Number(anchorX);
+  const top = Number(childTop);
+  const startY = Number(anchorY);
+  const busY = Math.max(startY + 12, top - 16);
+  const xs = [parentX, ...children].filter(Number.isFinite);
+  const busMinX = xs.length ? Math.min(...xs) : parentX;
+  const busMaxX = xs.length ? Math.max(...xs) : parentX;
+  return {
+    busY,
+    busMinX,
+    busMaxX,
+    needsHorizontalBus: Number.isFinite(busMinX) && Number.isFinite(busMaxX) && Math.abs(busMaxX - busMinX) > 0.5
+  };
+}
+
 /** One UI controller; work, health and save state remain exclusively in the engine. */
 export function createFamilyWorkView(hooks) {
   const tree = document.querySelector('#tree');
@@ -197,14 +214,14 @@ export function createFamilyWorkView(hooks) {
       const anchorY=isCouple?parentPositions[0].y+CARD_HEIGHT/2:Math.max(...parentPositions.map(pos=>pos.y+CARD_HEIGHT));
       const childCenters=childPositions.map(pos=>pos.x+CARD_WIDTH/2);
       const childTop=Math.min(...childPositions.map(pos=>pos.y));
-      const busY=Math.max(anchorY+12,childTop-16);
+      const geometry=getFamilyBranchGeometry({anchorX,anchorY,childCenters,childTop});
       const allRelatives=[...branch.parents,...branch.children];
-      relationPath(bloodLayer,'parent-line',`M${anchorX} ${anchorY} V${busY}`,allRelatives,state.selectedPersonId);
-      if(childCenters.length>1){
-        relationPath(bloodLayer,'sibling-line',`M${Math.min(...childCenters)} ${busY} H${Math.max(...childCenters)}`,allRelatives,state.selectedPersonId);
+      relationPath(bloodLayer,'parent-line',`M${anchorX} ${anchorY} V${geometry.busY}`,allRelatives,state.selectedPersonId);
+      if(geometry.needsHorizontalBus){
+        relationPath(bloodLayer,'family-bus-line sibling-line',`M${geometry.busMinX} ${geometry.busY} H${geometry.busMaxX}`,allRelatives,state.selectedPersonId);
       }
       branch.children.forEach((childId,index)=>{
-        relationPath(bloodLayer,'child-line',`M${childCenters[index]} ${busY} V${childPositions[index].y}`,[...branch.parents,childId],state.selectedPersonId);
+        relationPath(bloodLayer,'child-line',`M${childCenters[index]} ${geometry.busY} V${childPositions[index].y}`,[...branch.parents,childId],state.selectedPersonId);
       });
     }
     tree.append(relationshipLayer);
