@@ -26,4 +26,12 @@
 .work-menu-option:disabled{opacity:.38;cursor:not-allowed}
 .economy-panel button{background:#234454;color:var(--paper);border:1px solid #48616a;border-radius:5px;padding:7px 10px;font-size:.85rem}
 .economy-panel button:hover:not(:disabled){border-color:#e0bb80}
-@media(max-width:700px){.side-panel,.main-panel{width:100%}.tree-instruction{font-size:.8rem}.work-menu-option{padding:10px}}
+/* V1.4.2 family relationship mind-map lines. */
+.managed-tree .relationship-layer{pointer-events:none}
+.managed-tree .relation-line{fill:none;vector-effect:non-scaling-stroke;stroke-linecap:round;stroke-linejoin:round;transition:opacity .15s,stroke-width .15s,stroke .15s}
+.managed-tree .parent-line,.managed-tree .child-line,.managed-tree .sibling-line{stroke:#8faeb7;stroke-width:1.6;opacity:.78}
+.managed-tree .spouse-line{stroke:#d6ad70;stroke-width:2.2;opacity:.95}
+.managed-tree .relation-line.related{opacity:1;stroke-width:2.8;filter:drop-shadow(0 0 2px rgba(225,194,146,.35))}
+.managed-tree.has-selection .relation-line:not(.related){opacity:.22}
+.managed-tree .tree-node.dead+.relation-line{opacity:.28}
+@media(max-width:700px){.side-panel,.main-panel{width:100%}.tree-instruction{font-size:.8rem}.work-menu-option{padding:10px}.managed-tree .relation-line{stroke-width:1.8}.managed-tree .spouse-line{stroke-width:2.3}}
