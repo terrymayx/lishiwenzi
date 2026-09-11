@@ -114,13 +114,13 @@ test('legacy saves preserve access to land and businesses they already own', asy
   assert.equal(status.caravan.unlocked, true);
 });
 
-test('V1.6.4 page shows locked projects with red reminders and explicit progress conditions', () => {
+test('current page keeps V1.6.4 locked projects with red reminders and explicit progress conditions', () => {
   const index = fs.readFileSync(new URL('../dist/index.html', import.meta.url), 'utf8');
   const unlockUi = fs.readFileSync(new URL('../dist/v164-ui.js', import.meta.url), 'utf8');
   const css = fs.readFileSync(new URL('../dist/v164.css', import.meta.url), 'utf8');
 
-  assert.match(index, /V1\.6\.4/);
-  assert.match(index, /engine-v164\.js\?v=1\.6\.4/);
+  assert.match(index, /V1\.6\.5/);
+  assert.match(index, /engine-v165\.js\?v=1\.6\.5/);
   assert.match(index, /v164\.css\?v=1\.6\.4/);
   assert.match(index, /v164-ui\.js\?v=1\.6\.4/);
   assert.match(unlockUi, /getHouseholdUnlockStatus/);
