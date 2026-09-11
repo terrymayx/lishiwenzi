@@ -69,12 +69,13 @@ test('land remains operated by automatic farm workers while protagonist does sho
   const E = await currentEngine();
   const state = makeGame(E, 1653);
   state.household.land = 3;
+  state.month = 3;
+  state.day = 1;
   const auto = E.ensureAutoFarmWorkers(state);
   auto.requiredWorkers = 1;
   auto.paidWorkers = 1;
-  state.agriculture.hiredWorkers = 1;
-  state.month = 3;
-  state.day = 1;
+  auto.lastPayrollMonthKey = '290-3';
+  E.ensureAutoFarmWorkers(state);
   state.agriculture.weather['290-spring'] = { yieldModifier: 1, label: '测试天气' };
   assert.equal(E.selectActivity(state, 'trade').ok, true);
   const beforeSown = Number(state.agriculture.work.sown || 0);
