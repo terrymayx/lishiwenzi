@@ -51,8 +51,8 @@ test('current page keeps the V1.5.3 donation control as a folded reputation shor
   const ui = fs.readFileSync(new URL('../dist/v15-ui.js', import.meta.url), 'utf8');
   const farmUi = fs.readFileSync(new URL('../dist/v13-ui.js', import.meta.url), 'utf8');
 
-  assert.match(index, /V1\.6\.5/);
-  assert.match(index, /engine-v165\.js\?v=1\.6\.5/);
+  assert.match(index, /V1\.6\.6/);
+  assert.match(index, /engine-v166\.js\?v=1\.6\.6/);
   assert.match(index, /<details[^>]+id="reputation-donation"/);
   assert.match(index, /data-resource-shortcut="reputation"/);
   assert.match(index, /1000钱\s*=\s*\+1声望/);

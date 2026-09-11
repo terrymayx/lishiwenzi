@@ -149,8 +149,8 @@ test('current page keeps the V1.6.2 automatic farm-worker UI and payroll', () =>
   const uiPath = new URL('../dist/v162-ui.js', import.meta.url);
   const cssPath = new URL('../dist/v162.css', import.meta.url);
 
-  assert.match(index, /V1\.6\.5/);
-  assert.match(index, /engine-v165\.js\?v=1\.6\.5/);
+  assert.match(index, /V1\.6\.6/);
+  assert.match(index, /engine-v166\.js\?v=1\.6\.6/);
   assert.match(index, /v162-ui\.js\?v=1\.6\.2/);
   assert.ok(fs.existsSync(uiPath));
   assert.ok(fs.existsSync(cssPath));

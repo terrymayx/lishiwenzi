@@ -200,8 +200,8 @@ test('pregnancy reaches a birth event and creates the child only when resolved',
 test('current page keeps the V1.5.2 dual marriage thresholds and event UI', () => {
   const index = fs.readFileSync(new URL('../dist/index.html', import.meta.url), 'utf8');
   const ui = fs.readFileSync(new URL('../dist/v15-ui.js', import.meta.url), 'utf8');
-  assert.match(index, /V1\.6\.5/);
-  assert.match(index, /engine-v165\.js\?v=1\.6\.5/);
+  assert.match(index, /V1\.6\.6/);
+  assert.match(index, /engine-v166\.js\?v=1\.6\.6/);
   assert.match(index, /婚配、婚育和历史主线规则保持不变|婚配/);
   assert.match(ui, /option\.disabled/);
   assert.match(ui, /说媒资格/);
