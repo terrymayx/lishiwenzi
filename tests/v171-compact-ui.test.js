@@ -6,10 +6,14 @@ import { execFileSync } from 'node:child_process';
 const read = path => fs.readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
 const html = read('dist/index.html');
 
-test('compact UI is the default and its stylesheet wins the cascade', () => {
+test('compact UI remains the base while the current overview stylesheet wins the cascade', () => {
   assert.match(html, /<body class="compact-ui">/);
   const sheets = [...html.matchAll(/<link rel="stylesheet" href="([^"]+)"/g)].map(m => m[1]);
-  assert.equal(sheets.at(-1), './v171.css?v=1.7.1');
+  const compactIndex = sheets.indexOf('./v171.css?v=1.7.1');
+  const overviewIndex = sheets.indexOf('./v172.css?v=1.7.2');
+  assert.ok(compactIndex >= 0, 'V1.7.1 compact stylesheet is retained');
+  assert.ok(overviewIndex > compactIndex, 'V1.7.2 overview stylesheet layers on top of compact UI');
+  assert.equal(sheets.at(-1), './v172.css?v=1.7.2');
   assert.match(html, /v171-ui\.js\?v=1\.7\.1/);
 });
 

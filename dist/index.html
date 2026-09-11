@@ -7,8 +7,10 @@
   <meta name="compatibility-base" content="V1.6.7 engine-v167.js?v=1.6.7">
   <meta name="compatibility-v168" content="V1.6.8 engine-v168.js?v=1.6.8">
   <meta name="compatibility-v169" content="V1.6.9 engine-v169.js?v=1.6.9">
+  <meta name="compatibility-v170" content="V1.7.0 engine-v170.js?v=1.7.0">
+  <meta name="compatibility-v171" content="V1.7.1 紧凑界面">
   <meta name="compatibility-v164-ui" content="v164-ui.js?v=1.6.9">
-  <title>乱世家书 · V1.7.1 紧凑界面</title>
+  <title>乱世家书 · V1.7.2 总览重排</title>
   <link rel="stylesheet" href="./style.css?v=1.2.1">
   <link rel="stylesheet" href="./v13.css?v=1.3.0">
   <link rel="stylesheet" href="./v132.css?v=1.3.2">
@@ -20,6 +22,7 @@
   <link rel="stylesheet" href="./v164.css?v=1.6.4">
   <link rel="stylesheet" href="./v170.css?v=1.7.0">
   <link rel="stylesheet" href="./v171.css?v=1.7.1">
+  <link rel="stylesheet" href="./v172.css?v=1.7.2">
   <script type="importmap">
     {
       "imports": {
@@ -35,59 +38,73 @@
 <body class="compact-ui">
   <main class="app-shell">
     <section id="setup" class="setup-card">
-      <p class="eyebrow">V1.7.1 紧凑界面 · 290年1月1日</p>
+      <p class="eyebrow">V1.7.2 总览重排 · 290年1月1日</p>
       <h1>乱世家书</h1>
-      <p class="lead">按天生活、经营田庄和产业、延续家族。新增磨坊、油坊、酒坊、客栈、织坊、纸坊、水运船队，并用家业目标、经营成就和里程碑奖励贯穿长期发展。</p>
+      <p class="lead">按天生活、经营田庄和产业、延续家族。V1.7.2沿用紧凑尺寸，把状态、行动、当前事件、下一目标和深层资料重新分层，让玩家一眼知道现在发生什么、下一步做什么。</p>
       <form id="setup-form">
         <label>家族姓氏<input id="surname" maxlength="8" value="沈" required></label>
         <label>开局身份<select id="origin"></select></label>
         <button class="primary" type="submit">落笔开局</button>
       </form>
-      <p class="fine-print">产业与经营成就达到条件后自动解锁、自动发放一次性奖励；购买后的产业继续按天自动获得净收益。新开局健康100，初始粮食170。</p>
+      <p class="fine-print">只调整UI布局与信息优先级；V1.7.0产业、里程碑、健康、体力、农业和存档规则全部保持不变。新开局健康100，初始粮食170。</p>
     </section>
 
     <section id="game" hidden>
-      <header class="topbar">
-        <div><p class="eyebrow">乱世家书 · V1.7.1</p><h1 id="date">290年1月1日</h1><p id="chapter">第1章 · 家门初立</p></div>
-        <div class="top-actions"><button id="export" type="button">导出家书</button><label class="file-button">导入家书<input id="import" type="file" accept="application/json,.json"></label><button id="new-game" type="button">另起一门</button></div>
-      </header>
+      <section id="compact-status" class="compact-status" aria-label="当前状态总览">
+        <header class="topbar">
+          <div><p class="eyebrow">乱世家书 · V1.7.2</p><h1 id="date">290年1月1日</h1><p id="chapter">第1章 · 家门初立</p></div>
+          <div class="top-actions"><button id="export" type="button">导出家书</button><label class="file-button">导入家书<input id="import" type="file" accept="application/json,.json"></label><button id="new-game" type="button">另起一门</button></div>
+        </header>
+        <div id="compact-person-summary" class="compact-person-summary" aria-live="polite">等待开局</div>
+        <div class="resource-strip" aria-label="家门核心资源">
+          <div class="resource-card"><div class="resource-label"><span>钱</span><button class="resource-plus" type="button" data-resource-shortcut="money" aria-label="增加钱财快捷操作">+</button></div><b id="money">0</b></div>
+          <div class="resource-card"><div class="resource-label"><span>粮</span><button class="resource-plus" type="button" data-resource-shortcut="grain" aria-label="补充粮食快捷操作">+</button></div><b id="grain">0</b></div>
+          <div class="resource-card"><div class="resource-label"><span>每日口粮</span></div><b id="food-rate">0/日</b></div>
+          <div class="resource-card"><div class="resource-label"><span>田产</span></div><b id="land">0</b></div>
+          <div class="resource-card"><div class="resource-label"><span>声望</span><button class="resource-plus" type="button" data-resource-shortcut="reputation" aria-label="提高声望快捷操作">+</button></div><b id="reputation">0</b></div>
+          <div class="resource-card"><div class="resource-label"><span>体力</span></div><b id="stamina">0</b></div>
+          <div class="resource-card"><div class="resource-label"><span>健康</span></div><b id="health">0</b></div>
+        </div>
+        <div id="resource-shortcut-panel" class="resource-shortcut-panel" hidden aria-live="polite"></div>
+        <div class="compact-extra-row">
+          <details id="more-status" class="more-status"><summary>更多状态</summary><div class="more-status-grid"><div><span>战乱</span><b id="unrest">0</b></div><div><span>迁徙准备</span><b id="preparation">0</b></div><div><span>平均饥饿</span><b id="hunger">0</b></div></div></details>
+          <details id="reputation-donation" class="reputation-donation" aria-label="捐钱求名"><summary><strong>捐钱求名</strong><span>1000钱 = +1声望</span></summary><div class="donation-actions" aria-label="捐款金额"><button type="button" data-donate="1000">捐1000 · +1声望</button><button type="button" data-donate="5000">捐5000 · +5声望</button><button type="button" data-donate="10000">捐10000 · +10声望</button></div></details>
+        </div>
+      </section>
 
-      <div class="resource-strip" aria-label="家门核心资源">
-        <div class="resource-card"><div class="resource-label"><span>钱</span><button class="resource-plus" type="button" data-resource-shortcut="money" aria-label="增加钱财快捷操作">+</button></div><b id="money">0</b></div>
-        <div class="resource-card"><div class="resource-label"><span>粮</span><button class="resource-plus" type="button" data-resource-shortcut="grain" aria-label="补充粮食快捷操作">+</button></div><b id="grain">0</b></div>
-        <div class="resource-card"><div class="resource-label"><span>每日口粮</span></div><b id="food-rate">0/日</b></div>
-        <div class="resource-card"><div class="resource-label"><span>田产</span></div><b id="land">0</b></div>
-        <div class="resource-card"><div class="resource-label"><span>声望</span><button class="resource-plus" type="button" data-resource-shortcut="reputation" aria-label="提高声望快捷操作">+</button></div><b id="reputation">0</b></div>
-        <div class="resource-card"><div class="resource-label"><span>体力</span></div><b id="stamina">0</b></div>
-        <div class="resource-card"><div class="resource-label"><span>健康</span></div><b id="health">0</b></div>
-      </div>
-
-      <div id="resource-shortcut-panel" class="resource-shortcut-panel" hidden aria-live="polite"></div>
-      <details id="more-status" class="more-status"><summary>更多状态</summary><div class="more-status-grid"><div><span>战乱</span><b id="unrest">0</b></div><div><span>迁徙准备</span><b id="preparation">0</b></div><div><span>平均饥饿</span><b id="hunger">0</b></div></div></details>
-      <details id="reputation-donation" class="reputation-donation" aria-label="捐钱求名"><summary><strong>捐钱求名</strong><span>1000钱 = +1声望</span></summary><div class="donation-actions" aria-label="捐款金额"><button type="button" data-donate="1000">捐1000 · +1声望</button><button type="button" data-donate="5000">捐5000 · +5声望</button><button type="button" data-donate="10000">捐10000 · +10声望</button></div></details>
       <p id="notice" role="status"></p>
 
-      <div class="layout">
+      <div id="primary-workspace" class="primary-workspace">
         <aside class="side-panel actions-panel">
           <div class="current-card"><span class="eyebrow">当前执笔人</span><h2 id="current-name">—</h2><p id="current-place">—</p></div>
-          <p id="activity-line" class="activity-line"></p><p class="status-line" id="status-line"></p>
-          <div id="time-flow" class="time-flow paused" aria-live="polite"><div class="hourglass-wrap" aria-hidden="true"><div class="hourglass">⏳</div></div><div class="time-flow-info"><strong id="flow-date">290年1月1日</strong><span id="flow-status">时间已暂停</span></div></div>
-          <div class="time-controls"><button id="start-time" class="primary" type="button">▶ 开始时间</button><button id="pause-time" type="button">Ⅱ 暂停</button><label>速度<select id="speed"><option value="1">1× · 看每天</option><option value="5" selected>5× · 推荐</option><option value="20">20× · 快进</option></select></label></div>
-          <section><h2>当前行动 <small>选择后再开始时间</small></h2><div id="actions" class="action-grid"></div></section>
+          <p id="activity-line" class="activity-line"></p>
+          <section><h2>当前行动 <small>选择计划</small></h2><div id="actions" class="action-grid"></div></section>
           <label class="destination-label">迁徙目的地<select id="destination"></select></label>
         </aside>
 
-        <section class="main-panel"><div id="event" class="event-panel" hidden></div><div id="succession" class="succession-panel" hidden></div><details class="chronicle chronicle-fold"><summary class="section-heading"><div><span class="eyebrow">最近家书</span><h2>本家纪事</h2></div><span class="stamp">默认折叠</span></summary><div id="log" class="log"></div></details></section>
+        <section class="main-panel current-stage">
+          <div id="time-flow" class="time-flow paused" aria-live="polite"><div class="hourglass-wrap" aria-hidden="true"><div class="hourglass">⏳</div></div><div class="time-flow-info"><strong id="flow-date">290年1月1日</strong><span id="flow-status">时间已暂停</span></div></div>
+          <div class="time-controls"><button id="start-time" class="primary" type="button">▶ 开始时间</button><button id="pause-time" type="button">Ⅱ 暂停</button><label>速度<select id="speed"><option value="1">1× · 看每天</option><option value="5" selected>5× · 推荐</option><option value="20">20× · 快进</option></select></label></div>
+          <p class="status-line" id="status-line"></p>
+          <div id="event" class="event-panel" hidden></div>
+          <div id="succession" class="succession-panel" hidden></div>
+          <details class="chronicle chronicle-fold"><summary class="section-heading"><div><span class="eyebrow">最近家书</span><h2>本家纪事</h2></div><span class="stamp">默认折叠</span></summary><div id="log" class="log"></div></details>
+        </section>
 
-        <aside class="side-panel archive-panel">
-          <nav class="tabs" aria-label="家族资料页签"><button type="button" data-tab="family" class="active">家族树</button><button type="button" data-tab="relations">关系</button><button type="button" data-tab="assets">产业</button><button type="button" data-tab="timeline">历史</button></nav>
-          <div id="tab-family" class="tab-panel"><p class="tree-instruction">左键查看并高亮关系 · 仅当前执笔人可右键指派工作 · 金线为婚姻，蓝灰线为血缘</p><svg id="tree" class="family-tree" role="img" aria-label="带亲属关系线的可交互家族树"></svg><div id="person-detail" class="person-detail"></div></div>
-          <div id="tab-relations" class="tab-panel" hidden><div id="relations"></div></div>
-          <div id="tab-assets" class="tab-panel" hidden><div id="assets"></div></div>
-          <div id="tab-timeline" class="tab-panel" hidden><div id="timeline"></div></div>
-          <details class="help"><summary>V1.7.1 规则说明</summary><p><strong>紧凑界面：</strong>沿用V1.7.0玩法与存档，仅缩小字号、卡片、按钮和间距；粮市与收支说明默认折叠，展开状态在本次游戏中保留。</p><p><strong>新产业：</strong>在粮铺、布庄、商队之外新增磨坊、油坊、酒坊、客栈、织坊、纸坊、水运船队。产业解锁后仍需花钱购置；购入后不需要主角亲自经营，每个实际推进日自动获得净收益。</p><p><strong>产业解锁奖励：</strong>磨坊+20钱、油坊+80钱、酒坊+120钱、客栈+180钱、织坊+250钱、纸坊+350钱、水运船队+600钱；原置办田产+20钱、粮铺+50钱、布庄+100钱、商队+200钱继续保留。每个项目只发一次。</p><p><strong>家业目标与经营成就：</strong>新增15个里程碑，覆盖实际收获、田产规模、产业日收益、家产、学识和声望。达标自动完成并发放奖金；同一家族存档只领取一次，换后代不会重置。</p><p><strong>产业种类：</strong>所有实际购入的产业都计入“商业产业种类”。因此磨坊、油坊等也可以帮助满足商队所需的至少2种商业产业。</p><p><strong>旧存档：</strong>更新后当前已经满足的V1.7新增家产、田产、产业收益、学识和声望里程碑可以自动结算一次；“初收喜报”只统计升级到V1.7以后实际收获的粮食，不追溯旧档历史收成。</p><p><strong>体力：</strong>劳动消耗体力；体力≤35自动休养，恢复到60后再工作。口粮充足时休养每日恢复1.20体力。</p><p><strong>健康：</strong>健康独立于体力。健康越低，人物每日死亡风险越高；普通休养只恢复体力，不直接恢复健康。</p><p><strong>母亲务农：</strong>初始母亲健在时免费照看前3亩田；超过3亩的部分继续按每3亩1名农工、每人每月6钱自动雇工。母亲务农属于家庭被动劳力，田地不需要本人下田，继续由自动农工打理；母亲去世后前三亩重新计入雇工需求。</p><p><strong>两季收成：</strong>粮食按夏收45粮/亩 + 秋收45粮/亩两季入仓，正常年份全年基础总产量90粮/亩。</p><p><strong>本人工作：</strong>当前执笔人不亲自务农，只能通过短工、家庭副业、求学、休养等人物行动生活；田地由母亲与自动农工经营。</p><p><strong>短工谋生：</strong>春季80%概率找到活、0.8钱/实际工作日；夏季65%·0.8钱；秋季85%·0.9钱；冬季45%·0.7钱。</p><p><strong>兼容：</strong>婚配、婚育和历史主线规则保持不变。</p></details>
+        <aside id="next-goal-panel" class="side-panel next-goal-panel" aria-label="下一步家业目标">
+          <div class="next-goal-heading"><strong>下一步目标</strong><span>等待状态</span></div>
+          <p>开局后这里会显示最接近的产业解锁条件、奖励、产业日收入和最近经营成就。</p>
         </aside>
       </div>
+
+      <section id="detail-tabs-shell" class="side-panel archive-panel detail-tabs-shell">
+        <nav class="tabs" aria-label="家族资料页签"><button type="button" data-tab="family" class="active">家族树</button><button type="button" data-tab="relations">关系</button><button type="button" data-tab="assets">产业</button><button type="button" data-tab="timeline">历史</button></nav>
+        <div id="tab-family" class="tab-panel"><p class="tree-instruction">左键查看并高亮关系 · 仅当前执笔人可右键指派工作 · 金线为婚姻，蓝灰线为血缘</p><svg id="tree" class="family-tree" role="img" aria-label="带亲属关系线的可交互家族树"></svg><div id="person-detail" class="person-detail"></div></div>
+        <div id="tab-relations" class="tab-panel" hidden><div id="relations"></div></div>
+        <div id="tab-assets" class="tab-panel" hidden><div id="assets"></div></div>
+        <div id="tab-timeline" class="tab-panel" hidden><div id="timeline"></div></div>
+        <details class="help"><summary>V1.7.2 规则说明</summary><p><strong>总览重排：</strong>沿用V1.7.1紧凑尺寸与折叠习惯；顶部集中核心状态，左侧只放人物与行动，中间放时间、事件和家书，右侧固定显示下一目标，家族、产业、关系和历史统一放到底部大页签。玩法与存档不变。</p><p><strong>新产业：</strong>在粮铺、布庄、商队之外新增磨坊、油坊、酒坊、客栈、织坊、纸坊、水运船队。产业解锁后仍需花钱购置；购入后不需要主角亲自经营，每个实际推进日自动获得净收益。</p><p><strong>产业解锁奖励：</strong>磨坊+20钱、油坊+80钱、酒坊+120钱、客栈+180钱、织坊+250钱、纸坊+350钱、水运船队+600钱；原置办田产+20钱、粮铺+50钱、布庄+100钱、商队+200钱继续保留。每个项目只发一次。</p><p><strong>家业目标与经营成就：</strong>新增15个里程碑，覆盖实际收获、田产规模、产业日收益、家产、学识和声望。达标自动完成并发放奖金；同一家族存档只领取一次，换后代不会重置。</p><p><strong>产业种类：</strong>所有实际购入的产业都计入“商业产业种类”。因此磨坊、油坊等也可以帮助满足商队所需的至少2种商业产业。</p><p><strong>旧存档：</strong>更新后当前已经满足的V1.7新增家产、田产、产业收益、学识和声望里程碑可以自动结算一次；“初收喜报”只统计升级到V1.7以后实际收获的粮食，不追溯旧档历史收成。</p><p><strong>体力：</strong>劳动消耗体力；体力≤35自动休养，恢复到60后再工作。口粮充足时休养每日恢复1.20体力。</p><p><strong>健康：</strong>健康独立于体力。健康越低，人物每日死亡风险越高；普通休养只恢复体力，不直接恢复健康。</p><p><strong>母亲务农：</strong>初始母亲健在时免费照看前3亩田；超过3亩的部分继续按每3亩1名农工、每人每月6钱自动雇工。母亲务农属于家庭被动劳力，田地不需要本人下田，继续由自动农工打理；母亲去世后前三亩重新计入雇工需求。</p><p><strong>两季收成：</strong>粮食按夏收45粮/亩 + 秋收45粮/亩两季入仓，正常年份全年基础总产量90粮/亩。</p><p><strong>本人工作：</strong>当前执笔人不亲自务农，只能通过短工、家庭副业、求学、休养等人物行动生活；田地由母亲与自动农工经营。</p><p><strong>短工谋生：</strong>春季80%概率找到活、0.8钱/实际工作日；夏季65%·0.8钱；秋季85%·0.9钱；冬季45%·0.7钱。</p><p><strong>兼容：</strong>婚配、婚育和历史主线规则保持不变。</p></details>
+      </section>
     </section>
   </main>
   <script type="module" src="./game.js?v=1.7.0"></script>
@@ -100,5 +117,6 @@
   <script type="module" src="./v168-ui.js?v=1.6.8"></script>
   <script type="module" src="./v170-ui.js?v=1.7.0"></script>
   <script type="module" src="./v171-ui.js?v=1.7.1"></script>
+  <script type="module" src="./v172-ui.js?v=1.7.2"></script>
 </body>
 </html>
