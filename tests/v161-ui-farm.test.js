@@ -5,7 +5,7 @@ import fs from 'node:fs';
 const engineUrl = new URL('../dist/engine-v161.js', import.meta.url);
 
 async function currentEngine() {
-  assert.ok(fs.existsSync(engineUrl), 'V1.6.1 current engine wrapper must exist');
+  assert.ok(fs.existsSync(engineUrl), 'V1.6.1 engine wrapper must remain available');
   return import('../dist/engine-v161.js?v=1.6.1');
 }
 
@@ -70,12 +70,12 @@ test('V1.6.1 farm summary reports when the hired-worker limit still cannot cover
   assert.equal(summary.workerLimitReached, true);
 });
 
-test('V1.6.1 page hides secondary information and adds resource plus shortcuts', () => {
+test('V1.6.2 current page keeps the compact resource shortcuts introduced in V1.6.1', () => {
   const index = fs.readFileSync(new URL('../dist/index.html', import.meta.url), 'utf8');
   const uiPath = new URL('../dist/v161-ui.js', import.meta.url);
 
-  assert.match(index, /V1\.6\.1/);
-  assert.match(index, /engine-v161\.js\?v=1\.6\.1/);
+  assert.match(index, /V1\.6\.2/);
+  assert.match(index, /engine-v162\.js\?v=1\.6\.2/);
   assert.match(index, /data-resource-shortcut="money"/);
   assert.match(index, /data-resource-shortcut="grain"/);
   assert.match(index, /data-resource-shortcut="reputation"/);
@@ -84,7 +84,7 @@ test('V1.6.1 page hides secondary information and adds resource plus shortcuts',
   assert.match(index, /<details[^>]+class="[^"]*chronicle/);
   assert.doesNotMatch(index, /<details[^>]+class="[^"]*chronicle[^"]*"[^>]*\sopen(?:\s|>)/);
 
-  assert.ok(fs.existsSync(uiPath), 'V1.6.1 UI controller must exist');
+  assert.ok(fs.existsSync(uiPath), 'V1.6.1 UI controller remains available for compatibility');
   const ui = fs.readFileSync(uiPath, 'utf8');
   assert.match(ui, /resource-shortcut/);
   assert.match(ui, /buyGrain/);
