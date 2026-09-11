@@ -133,20 +133,28 @@ export function getActions(state) {
 function shortworkSnapshot(state) {
   if (!state || state.phase !== 'playing' || state.endpoint || state.pendingEvent || !state.currentActivity) return [];
   const terms = getShortworkTerms(state);
+  const logStart = state.eventLog?.length || 0;
+  const recovering = state.agriculture?.work?.recovering || {};
   return Base.getFamilyWorkAssignments(state)
     .filter(job => job.assignment === 'shortwork')
-    .map(job => ({
-      personId: job.personId,
-      baseIncome: Number(job.dailyIncome || LEGACY_SHORTWORK_WAGE),
-      available: isShortworkAvailable(state, job.personId),
-      targetIncome: isShortworkAvailable(state, job.personId) ? terms.wage : 0,
-      year: state.year,
-      month: state.month,
-      day: state.day,
-      season: terms.season,
-      availability: terms.availability,
-      wage: terms.wage
-    }));
+    .map(job => {
+      const available = isShortworkAvailable(state, job.personId);
+      return {
+        personId: job.personId,
+        personName: state.people?.[job.personId]?.name || job.name || '',
+        baseIncome: Number(job.dailyIncome || LEGACY_SHORTWORK_WAGE),
+        available,
+        targetIncome: available ? terms.wage : 0,
+        wasRecovering: Boolean(recovering[job.personId]),
+        logStart,
+        year: state.year,
+        month: state.month,
+        day: state.day,
+        season: terms.season,
+        availability: terms.availability,
+        wage: terms.wage
+      };
+    });
 }
 
 function adjustLastDailyWork(state, snapshot) {
@@ -169,11 +177,25 @@ function adjustLastDailyWork(state, snapshot) {
   last.income = round2((last.jobs || []).reduce((sum, job) => sum + Number(job.dailyIncome || 0), 0));
 }
 
+function removeFalseRecoveryLogs(state, snapshot) {
+  if (!snapshot.length || !Array.isArray(state.eventLog)) return;
+  const noWork = snapshot.filter(item => !item.available && !item.wasRecovering && item.personName);
+  if (!noWork.length) return;
+  const logStart = Math.min(...noWork.map(item => item.logStart));
+  const before = state.eventLog.slice(0, logStart);
+  const after = state.eventLog.slice(logStart).filter(entry => {
+    if (entry?.title !== '开始休养') return true;
+    return !noWork.some(item => String(entry.text || '').startsWith(`${item.personName}健康偏低`));
+  });
+  state.eventLog = [...before, ...after];
+}
+
 function settleShortworkBalance(state, snapshot, ledger) {
   if (!snapshot.length) return;
   let moneyAdjustment = 0;
   let actualIncome = 0;
   let foundWork = 0;
+  const recovering = state.agriculture?.work?.recovering;
 
   for (const item of snapshot) {
     const adjustment = round2(item.targetIncome - item.baseIncome);
@@ -185,8 +207,9 @@ function settleShortworkBalance(state, snapshot, ledger) {
     }
 
     const person = state.people?.[item.personId];
-    if (person?.alive && Number(person.health) > 0) {
+    if (person?.alive) {
       person.health = round2(Math.min(100, Number(person.health || 0) + SHORTWORK_HEALTH_COST));
+      if (recovering) recovering[item.personId] = item.wasRecovering;
     }
   }
 
@@ -194,6 +217,7 @@ function settleShortworkBalance(state, snapshot, ledger) {
   if (state.household) state.household.money = state.resources.money;
   if (ledger) ledger.workIncome = round2(Number(ledger.workIncome || 0) + moneyAdjustment);
   adjustLastDailyWork(state, snapshot);
+  removeFalseRecoveryLogs(state, snapshot);
 
   const market = ensureShortworkMarket(state);
   market.lastDay = {
