@@ -10,31 +10,19 @@ async function currentEngine() {
 }
 
 function makeState(E, { seed = 1, land = 20, hiredWorkers = 0, running = true } = {}) {
-  const state = {
-    seed,
-    year: 304,
-    month: 6,
-    day: 1,
-    phase: 'playing',
-    endpoint: false,
-    running,
-    pendingEvent: null,
-    pauseReason: null,
-    region: '洛阳近郊',
-    grainPrice: 1,
-    playerId: 'p1',
-    family: { id: 'family-1', households: [{ assets: [] }] },
-    household: { land, money: 100, grain: 100 },
-    resources: { money: 100, grain: 100, land, hunger: 0 },
-    people: {
-      p1: { id: 'p1', alive: true, age: 30, health: 80, hunger: 0, familyId: 'family-1' },
-      p2: { id: 'p2', alive: true, age: 58, health: 80, hunger: 0, familyId: 'family-1' },
-      p3: { id: 'p3', alive: true, age: 14, health: 80, hunger: 0, familyId: 'family-1' }
-    },
-    eventLog: []
-  };
-  const agriculture = E.ensureAgriculture(state);
-  agriculture.hiredWorkers = hiredWorkers;
+  const state = E.createGame({ surname: '沈', origin: 'peasant', seed });
+  state.year = 304;
+  state.month = 6;
+  state.day = 1;
+  state.running = running;
+  state.pendingEvent = null;
+  state.pauseReason = null;
+  state.household.land = land;
+  state.resources.land = land;
+  state.resources.money = Math.max(1000, Number(state.resources.money) || 0);
+  state.household.money = state.resources.money;
+  state.agriculture.hiredWorkers = hiredWorkers;
+  state.agriculture.weather = {};
   return state;
 }
 
@@ -56,7 +44,7 @@ test('major farm weather automatically applies its yield loss without pausing fo
   assert.ok(majorWeather.yieldModifier < 1);
   assert.equal(majorState.pendingEvent, null);
   assert.equal(majorState.running, true);
-  assert.ok(majorState.eventLog.some(entry => entry.kind === 'warning'));
+  assert.ok(majorState.eventLog.some(entry => entry.kind === 'warning' && /无需额外处置|自动/.test(entry.text)));
 });
 
 test('V1.6.1 farm summary tells exactly how many workers are missing and how many can still be hired', async () => {
@@ -103,4 +91,6 @@ test('V1.6.1 page hides secondary information and adds resource plus shortcuts',
   assert.match(ui, /workersNeeded/);
   assert.match(ui, /remainingWorkerSlots/);
   assert.match(ui, /雇工上限|还能雇|还需/);
+  assert.match(ui, /家庭劳力/);
+  assert.match(ui, /有效经营/);
 });
