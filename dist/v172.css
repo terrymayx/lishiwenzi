@@ -1,0 +1,74 @@
+/* V1.7.2 总览重排：建立在V1.7.1紧凑尺寸之上，只重排信息层级。 */
+.compact-ui #game{display:grid;gap:8px}
+.compact-ui .compact-status{padding:8px 10px;border:1px solid rgba(120,145,160,.18);border-radius:8px;background:rgba(8,27,40,.64);box-shadow:0 6px 18px rgba(0,0,0,.1)}
+.compact-ui .compact-status .topbar{margin:0 0 5px;padding:0 0 5px}
+.compact-ui .compact-person-summary{display:flex;align-items:center;gap:7px;min-height:21px;margin:0 0 5px;color:#a9bec9;font-size:11px;line-height:1.35}
+.compact-ui .compact-person-summary strong{color:#eef4f7;font-size:12px}
+.compact-ui .compact-person-summary span+span::before{content:'·';margin-right:7px;color:#5e7787}
+.compact-ui .compact-status .resource-strip{margin:0}
+.compact-ui .compact-extra-row{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:5px}
+.compact-ui .compact-extra-row>.more-status,.compact-ui .compact-extra-row>.reputation-donation{margin:0}
+.compact-ui #notice{margin:0}
+.compact-ui #notice:not(:empty){margin:0;padding:5px 8px}
+
+.compact-ui .primary-workspace{display:grid;grid-template-areas:'actions stage goal';grid-template-columns:minmax(220px,.78fr) minmax(430px,1.7fr) minmax(250px,.92fr);gap:8px;align-items:start;min-width:0}
+.compact-ui .primary-workspace>.actions-panel{grid-area:actions;grid-column:auto;grid-row:auto;position:static;min-width:0}
+.compact-ui .primary-workspace>.current-stage{grid-area:stage;grid-column:auto;grid-row:auto;min-width:0;padding:9px 10px;border-radius:7px}
+.compact-ui .primary-workspace>.next-goal-panel{grid-area:goal;grid-column:auto;grid-row:auto;min-width:0}
+
+/* 左侧只承担人物与行动，减少重复状态。 */
+.compact-ui .primary-workspace .actions-panel .current-card{margin:-10px -10px 6px}
+.compact-ui .primary-workspace .actions-panel .activity-line{margin-bottom:5px}
+.compact-ui .primary-workspace .actions-panel section{margin-top:7px}
+.compact-ui .primary-workspace .action-grid{gap:4px}
+.compact-ui .primary-workspace .action-card{padding:5px 7px}
+.compact-ui .primary-workspace .destination-label{margin-top:6px}
+
+/* 中央成为“正在发生什么”的主舞台。 */
+.compact-ui .current-stage .time-flow{margin:0 0 5px}
+.compact-ui .current-stage .time-controls{display:grid;grid-template-columns:1fr 1fr minmax(116px,.8fr);gap:4px;padding:0 0 5px}
+.compact-ui .current-stage .status-line{margin:0 0 5px;padding:5px 7px;border:1px solid rgba(120,145,160,.13);border-radius:5px;background:rgba(255,255,255,.02)}
+.compact-ui .current-stage .event-panel,.compact-ui .current-stage .succession-panel{margin:5px 0;padding:9px}
+.compact-ui .current-stage .chronicle{min-height:0;margin-top:5px}
+.compact-ui .current-stage .chronicle .log{max-height:230px}
+.compact-ui .current-stage #economy-panel{margin-bottom:6px}
+
+/* 右侧固定回答“下一步做什么”。 */
+.compact-ui .next-goal-panel{position:sticky;top:8px;display:grid;gap:6px;padding:9px;border-radius:7px;background:rgba(8,27,40,.72)}
+.compact-ui .next-goal-heading{display:flex;align-items:center;justify-content:space-between;gap:6px;padding-bottom:5px;border-bottom:1px solid rgba(120,145,160,.15)}
+.compact-ui .next-goal-heading strong{font-size:13px}
+.compact-ui .next-goal-heading span{font-size:10px;color:#8eabba}
+.compact-ui .next-goal-card{display:grid;gap:5px;padding:8px;border:1px solid rgba(120,145,160,.16);border-radius:6px;background:rgba(255,255,255,.025)}
+.compact-ui .next-goal-card h3{margin:0;font-size:14px}
+.compact-ui .next-goal-card p{margin:0;font-size:10px;line-height:1.45;color:#a9bdc7}
+.compact-ui .next-goal-condition-list{display:grid;gap:2px}
+.compact-ui .next-goal-condition{display:flex;justify-content:space-between;align-items:flex-start;gap:6px;padding:3px 0;border-bottom:1px dashed rgba(120,145,160,.12);font-size:10px;line-height:1.4}
+.compact-ui .next-goal-condition:last-child{border-bottom:0}
+.compact-ui .next-goal-condition.met{color:#9fc4a5}.compact-ui .next-goal-condition.missing{color:#e0afa2}
+.compact-ui .next-goal-condition b{font-size:10px;text-align:right}
+.compact-ui .next-goal-reward{font-size:11px;font-weight:700;color:#e3ca88}
+.compact-ui .next-goal-industry{display:grid;grid-template-columns:1fr auto;gap:3px 7px;padding-top:6px;border-top:1px solid rgba(120,145,160,.15);font-size:10px}
+.compact-ui .next-goal-industry strong{font-size:11px}.compact-ui .next-goal-industry span{color:#8eabba;text-align:right;overflow-wrap:anywhere}
+.compact-ui .next-goal-mini{display:grid;gap:2px;padding-top:6px;border-top:1px solid rgba(120,145,160,.15)}
+.compact-ui .next-goal-mini strong{font-size:11px}.compact-ui .next-goal-mini span{font-size:10px;line-height:1.4;color:#8eabba}
+
+/* 深层资料统一沉到底部大页签。 */
+.compact-ui .detail-tabs-shell{grid-column:auto;grid-row:auto;margin:0;padding:0;border-radius:7px;overflow:hidden;box-shadow:none;min-width:0}
+.compact-ui .detail-tabs-shell .tabs{display:flex;gap:2px;padding:4px 6px;border-bottom:1px solid rgba(120,145,160,.14);background:rgba(8,27,40,.62)}
+.compact-ui .detail-tabs-shell .tabs button{flex:0 0 auto;padding:5px 12px}
+.compact-ui .detail-tabs-shell .tab-panel{padding:7px 9px}
+.compact-ui .detail-tabs-shell .compact-family-map{max-height:440px}
+.compact-ui .detail-tabs-shell .help{margin:2px 8px 7px}
+
+@media(max-width:1150px){
+  .compact-ui .primary-workspace{grid-template-areas:'actions goal' 'stage stage';grid-template-columns:minmax(250px,.8fr) minmax(300px,1.2fr)}
+  .compact-ui .next-goal-panel{position:static}
+  .compact-ui .compact-status .resource-strip{grid-template-columns:repeat(4,minmax(0,1fr))}
+}
+@media(max-width:760px){
+  .compact-ui .compact-extra-row{grid-template-columns:1fr}
+  .compact-ui .primary-workspace{grid-template-areas:'goal' 'actions' 'stage';grid-template-columns:1fr}
+  .compact-ui .current-stage .time-controls{grid-template-columns:1fr 1fr}
+  .compact-ui .current-stage .time-controls label{grid-column:1/-1}
+  .compact-ui .detail-tabs-shell .tabs{overflow-x:auto}
+}
