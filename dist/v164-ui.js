@@ -1,4 +1,4 @@
-import { getHouseholdUnlockStatus, serializeState } from './engine-v164.js?v=1.6.4';
+import { getHouseholdUnlockStatus, serializeState } from './engine-v169.js?v=1.6.9';
 
 const $ = selector => document.querySelector(selector);
 const storageKey = 'luanshi-jia-shu-v3';
@@ -51,6 +51,10 @@ function renderConditions(stage) {
   return box;
 }
 
+function rewardText(stage) {
+  return `解锁奖励：+${Number(stage.rewardMoney || 0)}钱 · 自动到账 · 每阶段仅一次`;
+}
+
 function createLockedHeader(label) {
   const header = document.createElement('div');
   header.className = 'unlock-project-heading';
@@ -76,8 +80,8 @@ function syncProgressionSummary(assets, status) {
     .find(stage => !stage.unlocked);
   const hint = document.createElement('span');
   hint.textContent = locked
-    ? `下一目标：${locked.label}。未满足的条件会用红色提醒。`
-    : '当前家业经营项目已全部解锁。';
+    ? `下一目标：${locked.label}。达成条件自动解锁，并获得 +${locked.rewardMoney}钱里程碑奖励。`
+    : `当前家业经营项目已全部解锁 · 累计里程碑奖励 ${status.totalRewardMoney || 0}钱。`;
   summary.append(title, hint);
 
   const heading = assets.querySelector('h3');
@@ -97,14 +101,14 @@ function syncLandUnlock(status) {
 
   const desc = document.createElement('p');
   desc.className = 'unlock-project-desc';
-  desc.textContent = '先让家里积下一笔真正的家底，达到门槛后才会有人愿意向你出售更多田产。解锁后永久开放。';
+  desc.textContent = `先让家里积下一笔真正的家底，达到门槛后才会有人愿意向你出售更多田产。解锁后永久开放。${rewardText(stage)}`;
   purchase.append(desc, renderConditions(stage));
 
   const lockedButton = document.createElement('button');
   lockedButton.type = 'button';
   lockedButton.className = 'locked-action';
   lockedButton.disabled = true;
-  lockedButton.textContent = '🔒 家产达到80钱后解锁买田';
+  lockedButton.textContent = `🔒 家产达到80钱后解锁 · 奖励+${stage.rewardMoney}钱`;
   purchase.append(lockedButton);
 }
 
@@ -127,7 +131,7 @@ function syncBusinessUnlocks(status) {
     if (!card.querySelector('.unlock-conditions')) {
       const desc = document.createElement('p');
       desc.className = 'unlock-project-desc';
-      desc.textContent = `${stage.storyTitle}：达成全部条件后会永久解锁${stage.label}。`;
+      desc.textContent = `${stage.storyTitle}：达成全部条件后会永久解锁${stage.label}。${rewardText(stage)}`;
       const button = card.querySelector('.business-buy');
       if (button) card.insertBefore(desc, button);
       else card.append(desc);
@@ -139,25 +143,25 @@ function syncBusinessUnlocks(status) {
     const button = card.querySelector('.business-buy');
     if (button) {
       button.disabled = true;
-      button.textContent = '🔒 达成条件后解锁';
+      button.textContent = `🔒 达成条件后解锁 · 奖励+${stage.rewardMoney}钱`;
     }
   }
 }
 
 function showNewUnlocks(status) {
-  if (!status.newlyUnlocked?.length) return;
-  const lastId = status.newlyUnlocked[status.newlyUnlocked.length - 1];
+  if (!status.newlyUnlocked?.length && !status.newRewardMoney) return;
+  const lastId = status.newlyUnlocked?.[status.newlyUnlocked.length - 1] || status.lastReward?.id;
   const stage = status[lastId];
-  if (stage) notice(`家业解锁：${stage.label} · ${stage.storyTitle}`, 'info');
+  if (stage) notice(`🎉 家业突破：${stage.label}已解锁 · 奖励 +${stage.rewardMoney}钱`, 'info');
 
   const assets = $('#assets');
   if (!assets || !stage) return;
   const banner = document.createElement('div');
   banner.className = 'unlock-story-banner';
   const title = document.createElement('strong');
-  title.textContent = `新解锁 · ${stage.storyTitle}`;
+  title.textContent = `🎉 家业突破 · ${stage.storyTitle}`;
   const text = document.createElement('span');
-  text.textContent = stage.story;
+  text.textContent = `${stage.story} 里程碑奖励：+${stage.rewardMoney}钱，已自动到账。`;
   banner.append(title, text);
   const summary = assets.querySelector('#household-progression-summary');
   summary?.insertAdjacentElement('afterend', banner);
@@ -173,7 +177,7 @@ function syncAssetsUnlockUi() {
   syncLandUnlock(status);
   syncBusinessUnlocks(status);
 
-  if (status.newlyUnlocked?.length) {
+  if (status.newlyUnlocked?.length || status.newRewardMoney) {
     saveState(state);
     showNewUnlocks(status);
   }
