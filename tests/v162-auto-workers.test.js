@@ -80,6 +80,7 @@ test('monthly payroll automatically pays as many required workers as cash allows
   s.resources.money = 13;
   s.household.money = 13;
   s.agriculture.lastWageMonthKey = '290-1';
+  const febWagesBefore = E.ledger(s).wages;
   E.setRunning(s, true);
   const feb = E.advanceDay(s);
   assert.equal(feb.ok, true);
@@ -89,11 +90,13 @@ test('monthly payroll automatically pays as many required workers as cash allows
   assert.equal(summary.requiredWorkers, 3);
   assert.equal(summary.paidWorkers, 2);
   assert.equal(summary.unpaidWorkers, 1);
-  assert.equal(s.resources.money, 1);
+  assert.equal(Number((E.ledger(s).wages - febWagesBefore).toFixed(1)), 12);
+  assert.ok(s.resources.money >= 0, 'payroll must never make cash negative');
 
   s.day = 28;
   s.resources.money = 50;
   s.household.money = 50;
+  const marWagesBefore = E.ledger(s).wages;
   E.setRunning(s, true);
   const mar = E.advanceDay(s);
   assert.equal(mar.ok, true);
@@ -103,7 +106,8 @@ test('monthly payroll automatically pays as many required workers as cash allows
   assert.equal(summary.requiredWorkers, 3);
   assert.equal(summary.paidWorkers, 3);
   assert.equal(summary.unpaidWorkers, 0);
-  assert.equal(s.resources.money, 32);
+  assert.equal(Number((E.ledger(s).wages - marWagesBefore).toFixed(1)), 18);
+  assert.ok(s.resources.money >= 0, 'next-month retry must also avoid negative cash');
 });
 
 test('manual hire and dismiss operations are disabled under automatic farm management', async () => {
