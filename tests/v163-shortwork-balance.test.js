@@ -111,10 +111,10 @@ test('a no-work day near the recovery threshold does not falsely force the worke
   assert.equal(state.eventLog.slice(beforeLogs).some(entry => entry.title === '开始休养'), false);
 });
 
-test('current page explains that shortwork is low-income and not guaranteed every day', () => {
+test('current V1.6.4 page keeps V1.6.3 shortwork rules and explains seasonal low-income work', () => {
   const index = fs.readFileSync(new URL('../dist/index.html', import.meta.url), 'utf8');
-  assert.match(index, /V1\.6\.3/);
-  assert.match(index, /engine-v163\.js\?v=1\.6\.3/);
+  assert.match(index, /V1\.6\.4/);
+  assert.match(index, /engine-v164\.js\?v=1\.6\.4/);
   assert.match(index, /短工/);
   assert.match(index, /80%/);
   assert.match(index, /65%/);
