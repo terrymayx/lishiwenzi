@@ -27,3 +27,4 @@ jobs:
       - run: node --check dist/engine-v15.js && node --check dist/v15-ui.js
       - run: node --check dist/engine-v151.js
       - run: node --check dist/engine-v16.js
+      - run: node --check dist/engine-v161.js && node --check dist/v161-ui.js
