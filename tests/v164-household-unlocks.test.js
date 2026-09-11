@@ -122,7 +122,7 @@ test('current page keeps V1.6.4 locked projects with red reminders and explicit 
   assert.match(index, /V1\.6\.7/);
   assert.match(index, /engine-v167\.js\?v=1\.6\.7/);
   assert.match(index, /v164\.css\?v=1\.6\.4/);
-  assert.match(index, /v164-ui\.js\?v=1\.6\.4/);
+  assert.match(index, /v164-ui\.js\?v=1\.6\.9/);
   assert.match(unlockUi, /getHouseholdUnlockStatus/);
   assert.match(unlockUi, /未解锁/);
   assert.match(unlockUi, /还差/);
