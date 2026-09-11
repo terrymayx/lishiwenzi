@@ -119,8 +119,8 @@ test('current page keeps V1.6.4 locked projects with red reminders and explicit 
   const unlockUi = fs.readFileSync(new URL('../dist/v164-ui.js', import.meta.url), 'utf8');
   const css = fs.readFileSync(new URL('../dist/v164.css', import.meta.url), 'utf8');
 
-  assert.match(index, /V1\.6\.6/);
-  assert.match(index, /engine-v166\.js\?v=1\.6\.6/);
+  assert.match(index, /V1\.6\.7/);
+  assert.match(index, /engine-v167\.js\?v=1\.6\.7/);
   assert.match(index, /v164\.css\?v=1\.6\.4/);
   assert.match(index, /v164-ui\.js\?v=1\.6\.4/);
   assert.match(unlockUi, /getHouseholdUnlockStatus/);

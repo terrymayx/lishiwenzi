@@ -113,8 +113,8 @@ test('a no-work day near the recovery threshold does not falsely force the worke
 
 test('current page keeps V1.6.3 seasonal availability while V1.6.5 raises wages', () => {
   const index = fs.readFileSync(new URL('../dist/index.html', import.meta.url), 'utf8');
-  assert.match(index, /V1\.6\.6/);
-  assert.match(index, /engine-v166\.js\?v=1\.6\.6/);
+  assert.match(index, /V1\.6\.7/);
+  assert.match(index, /engine-v167\.js\?v=1\.6\.7/);
   assert.match(index, /短工/);
   assert.match(index, /80%/);
   assert.match(index, /65%/);

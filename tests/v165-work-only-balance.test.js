@@ -96,11 +96,11 @@ test('legacy manual-farming activity migrates to shortwork on load', async () =>
   assert.notEqual(loaded.agriculture.work.assignments[loaded.playerId], 'agriculture');
 });
 
-test('current page preserves V1.6.5 work-only livelihood rules under V1.6.6', () => {
+test('current page preserves V1.6.5 work-only livelihood rules under V1.6.7', () => {
   const index = fs.readFileSync(new URL('../dist/index.html', import.meta.url), 'utf8');
-  assert.match(index, /V1\.6\.6/);
-  assert.match(index, /engine-v166\.js\?v=1\.6\.6/);
+  assert.match(index, /V1\.6\.7/);
+  assert.match(index, /engine-v167\.js\?v=1\.6\.7/);
   assert.match(index, /春季80%概率找到活、0\.8钱\/实际工作日/);
   assert.match(index, /秋季85%·0\.9钱/);
-  assert.match(index, /田地不需要本人下田，继续由自动农工打理/);
+  assert.match(index, /田地不需要本人下田，继续由自动农工打理|母亲务农属于家庭被动劳力/);
 });
