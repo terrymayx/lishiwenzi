@@ -28,6 +28,32 @@ test('V1.6.2 automatically requires one farm worker for every three mu with no 3
   assert.equal(summary.hasWorkerCap, false);
 });
 
+test('more than 30 automatic workers can actually work a 100-mu farm', async () => {
+  const E = await currentEngine();
+  const s = game(E, 1625);
+  s.household.land = 100;
+  s.resources.land = 100;
+  s.resources.grain = 5000;
+  s.household.grain = 5000;
+  s.year = 290;
+  s.month = 3;
+  s.day = 1;
+  const auto = E.ensureAutoFarmWorkers(s);
+  auto.requiredWorkers = 34;
+  auto.paidWorkers = 34;
+  auto.lastPayrollMonthKey = '290-3';
+  for (const person of Object.values(s.people)) person.health = 20;
+
+  for (let i = 0; i < 20; i += 1) {
+    E.setRunning(s, true);
+    const tick = E.advanceDay(s);
+    assert.equal(tick.ok, true);
+    if (s.pendingEvent) throw new Error(`unexpected blocking event: ${s.pendingEvent.title || s.pendingEvent.id}`);
+  }
+
+  assert.ok(s.agriculture.work.sown >= 99.9, `expected automatic workers to cover about 100 mu, got ${s.agriculture.work.sown}`);
+});
+
 test('buying land across a three-mu threshold automatically pays the new worker first-month wage', async () => {
   const E = await currentEngine();
   const s = game(E, 1621);
