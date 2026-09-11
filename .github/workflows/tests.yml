@@ -30,3 +30,4 @@ jobs:
       - run: node --check dist/engine-v161.js && node --check dist/v161-ui.js
       - run: node --check dist/engine-v162.js && node --check dist/v162-ui.js
       - run: node --check dist/engine-v163.js
+      - run: node --check dist/engine-v164.js && node --check dist/v164-ui.js
