@@ -23,6 +23,15 @@ function group(title, className = '') {
   return { section, grid, heading };
 }
 
+function stageDistance(stage) {
+  const missing = (stage?.conditions || []).filter(item => !item.met);
+  if (!missing.length) return 0;
+  return missing.reduce((sum, item) => {
+    const required = Math.max(1, Number(item.required || 1));
+    return sum + Math.min(1, Math.max(0, Number(item.remaining || 0)) / required);
+  }, 0) / missing.length;
+}
+
 function reorganizeBusinesses(state, status) {
   const industrySection = $('#business-industry');
   const originalGrid = industrySection?.querySelector(':scope > .business-grid');
@@ -49,7 +58,11 @@ function reorganizeBusinesses(state, status) {
   remoteGrid.className = 'business-grid v170-group-grid';
   remote.append(remoteSummary, remoteGrid);
 
-  const lockedIds = BUSINESS_ORDER.filter(id => byId.has(id) && !status[id]?.unlocked && Number(summary.businesses[id]?.count || 0) <= 0);
+  const lockedIds = BUSINESS_ORDER
+    .filter(id => byId.has(id) && !status[id]?.unlocked && Number(summary.businesses[id]?.count || 0) <= 0)
+    .map((id, order) => ({ id, order, distance: stageDistance(status[id]) }))
+    .sort((a, b) => a.distance - b.distance || a.order - b.order)
+    .map(item => item.id);
   const nearLocked = new Set(lockedIds.slice(0, 3));
 
   for (const id of BUSINESS_ORDER) {
@@ -87,11 +100,23 @@ function milestoneRow(item) {
   return row;
 }
 
+function rankIncompleteMilestones(items) {
+  return items
+    .map((item, order) => ({
+      item,
+      order,
+      distance: Math.min(1, Math.max(0, Number(item.remaining || 0)) / Math.max(1, Number(item.threshold || 1)))
+    }))
+    .sort((a, b) => a.distance - b.distance || a.order - b.order)
+    .map(entry => entry.item);
+}
+
 function renderMilestones(state) {
   const assets = $('#assets');
   if (!assets) return;
   assets.querySelector('#v170-milestones')?.remove();
   const data = getV170MilestoneStatus(state);
+  const rankedIncomplete = rankIncompleteMilestones(data.incomplete);
   const section = document.createElement('section');
   section.id = 'v170-milestones';
   section.className = 'v170-milestones';
@@ -103,16 +128,16 @@ function renderMilestones(state) {
 
   const nearTitle = document.createElement('p');
   nearTitle.className = 'v170-milestone-hint';
-  nearTitle.textContent = '最近目标：正常经营即可自动完成，达标后奖金直接到账。';
+  nearTitle.textContent = '最近目标：优先显示最接近完成的3项，达标后奖金自动到账。';
   section.append(nearTitle);
   const near = document.createElement('div'); near.className = 'v170-milestone-list';
-  data.incomplete.slice(0, 3).forEach(item => near.append(milestoneRow(item)));
+  rankedIncomplete.slice(0, 3).forEach(item => near.append(milestoneRow(item)));
   if (!near.children.length) {
     const done = document.createElement('p'); done.className = 'v170-all-complete'; done.textContent = '当前15个经营成就已经全部完成。'; near.append(done);
   }
   section.append(near);
 
-  const farther = data.incomplete.slice(3);
+  const farther = rankedIncomplete.slice(3);
   if (farther.length) {
     const details = document.createElement('details'); details.className = 'v170-milestone-details';
     const s = document.createElement('summary'); s.textContent = `更多目标 · ${farther.length}项`;
