@@ -46,13 +46,13 @@ test('reputation donation rejects invalid amounts, insufficient money, and runni
   assert.equal(s.resources.reputation, 10);
 });
 
-test('V1.6.4 keeps the V1.5.3 donation control as a folded reputation shortcut and farm management inside assets', () => {
+test('current page keeps the V1.5.3 donation control as a folded reputation shortcut and farm management inside assets', () => {
   const index = fs.readFileSync(new URL('../dist/index.html', import.meta.url), 'utf8');
   const ui = fs.readFileSync(new URL('../dist/v15-ui.js', import.meta.url), 'utf8');
   const farmUi = fs.readFileSync(new URL('../dist/v13-ui.js', import.meta.url), 'utf8');
 
-  assert.match(index, /V1\.6\.4/);
-  assert.match(index, /engine-v164\.js\?v=1\.6\.4/);
+  assert.match(index, /V1\.6\.5/);
+  assert.match(index, /engine-v165\.js\?v=1\.6\.5/);
   assert.match(index, /<details[^>]+id="reputation-donation"/);
   assert.match(index, /data-resource-shortcut="reputation"/);
   assert.match(index, /1000钱\s*=\s*\+1声望/);
