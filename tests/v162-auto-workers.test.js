@@ -144,13 +144,13 @@ test('manual hire and dismiss operations are disabled under automatic farm manag
   assert.match(E.hireFarmWorkers(s, 1).message, /自动|田产/);
 });
 
-test('V1.6.3 current page keeps the V1.6.2 automatic farm-worker UI and payroll', () => {
+test('V1.6.4 current page keeps the V1.6.2 automatic farm-worker UI and payroll', () => {
   const index = fs.readFileSync(new URL('../dist/index.html', import.meta.url), 'utf8');
   const uiPath = new URL('../dist/v162-ui.js', import.meta.url);
   const cssPath = new URL('../dist/v162.css', import.meta.url);
 
-  assert.match(index, /V1\.6\.3/);
-  assert.match(index, /engine-v163\.js\?v=1\.6\.3/);
+  assert.match(index, /V1\.6\.4/);
+  assert.match(index, /engine-v164\.js\?v=1\.6\.4/);
   assert.match(index, /v162-ui\.js\?v=1\.6\.2/);
   assert.ok(fs.existsSync(uiPath));
   assert.ok(fs.existsSync(cssPath));
