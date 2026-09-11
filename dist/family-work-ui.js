@@ -92,7 +92,7 @@ export function getFamilyBranchGeometry({ anchorX, anchorY, childCenters, childT
   };
 }
 
-/** One UI controller; work, health and save state remain exclusively in the engine. */
+/** One UI controller; only the current protagonist exposes manual work assignment controls. */
 export function createFamilyWorkView(hooks) {
   const tree = document.querySelector('#tree');
   let menu = null, menuPerson = null;
@@ -102,7 +102,7 @@ export function createFamilyWorkView(hooks) {
   }
   function openMenu(id, x, y) {
     const state = hooks.getState(); const person = state?.people?.[id];
-    if (!person) return;
+    if (!person || person.id !== state.playerId) return;
     closeMenu();
     hooks.select(id);
     hooks.pause();
@@ -115,7 +115,7 @@ export function createFamilyWorkView(hooks) {
     const locked = state.phase !== 'playing' || state.endpoint || Boolean(state.pendingEvent) || !person.alive;
     menu.append(el('p','work-menu-hint',!person.alive ? '已故成员不能指派工作。'
       : locked ? '请先处理重大事件或完成继承，再安排工作。'
-      : person.id === state.playerId ? '修改后同步左侧主要行动；时间保持暂停。' : '只修改此人的长期安排；时间保持暂停。'));
+      : '只有当前执笔人可以指派挣钱和务农工作；修改后同步左侧主要行动，时间保持暂停。'));
     for (const job of V14_RULES.FAMILY_ASSIGNMENTS) {
       const button = el('button','work-menu-option'); button.type = 'button'; button.dataset.job = job;
       button.setAttribute('role','menuitem');
@@ -140,12 +140,21 @@ export function createFamilyWorkView(hooks) {
   }
   tree.addEventListener('contextmenu', event => {
     const node = event.target.closest('[data-person]'); if (!node) return;
-    event.preventDefault(); openMenu(node.dataset.person,event.clientX,event.clientY);
+    const state = hooks.getState();
+    event.preventDefault();
+    if (node.dataset.person !== state?.playerId) {
+      hooks.select(node.dataset.person); hooks.render();
+      return;
+    }
+    openMenu(node.dataset.person,event.clientX,event.clientY);
   });
   tree.addEventListener('keydown', event => {
     const node = event.target.closest('[data-person]'); if (!node) return;
     if (event.key === 'ContextMenu' || (event.shiftKey && event.key === 'F10')) {
-      event.preventDefault(); const box=node.getBoundingClientRect();openMenu(node.dataset.person,box.x,box.y+box.height);
+      event.preventDefault();
+      const state = hooks.getState();
+      if (node.dataset.person !== state?.playerId) return;
+      const box=node.getBoundingClientRect();openMenu(node.dataset.person,box.x,box.y+box.height);
     } else if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault();hooks.select(node.dataset.person);hooks.render();
     }
@@ -227,17 +236,22 @@ export function createFamilyWorkView(hooks) {
     tree.append(relationshipLayer);
 
     for(const p of people){
-      const pos=positions.get(p.id),job=jobs.get(p.id);
+      const pos=positions.get(p.id),job=p.id===state.playerId?jobs.get(p.id):null;
       const group=svg('g',{class:`tree-node ${p.alive?'':'dead'} ${p.id===state.selectedPersonId?'selected':''}`,transform:`translate(${pos.x} ${pos.y})`,tabindex:0,role:'button'});
       group.dataset.person=p.id;
-      const status=p.alive?(job?.label||'等待安排'):'已故';
-      group.setAttribute('aria-label',`${p.name}，${Math.floor(p.age)}岁，${status}，健康${healthLabel(p.health)}。右键指派工作`);
-      group.append(svg('title',{},`${p.name} · ${Math.floor(p.age)}岁\n长期安排：${getAssignmentLabel(job?.planned||'idle')}\n今日状态：${status}\n健康：${healthLabel(p.health)}\n日收入参考：${job?.dailyIncome||0}钱\n劳动健康变化：${job?.healthDelta||0}/日（恢复需足粮）`));
+      const status=!p.alive?'已故':p.id===state.playerId?(job?.label||'等待安排'):(p.age<16?'成长中':'家属');
+      const workHint=p.id===state.playerId?'。右键指派工作':'';
+      group.setAttribute('aria-label',`${p.name}，${Math.floor(p.age)}岁，${status}，健康${healthLabel(p.health)}${workHint}`);
+      const titleText=p.id===state.playerId
+        ? `${p.name} · ${Math.floor(p.age)}岁\n长期安排：${getAssignmentLabel(job?.planned||'idle')}\n今日状态：${status}\n健康：${healthLabel(p.health)}\n日收入参考：${job?.dailyIncome||0}钱\n劳动健康变化：${job?.healthDelta||0}/日（恢复需足粮）`
+        : `${p.name} · ${Math.floor(p.age)}岁\n身份：${status}\n健康：${healthLabel(p.health)}\n家属不参与工作指派和挣钱任务。`;
+      group.append(svg('title',{},titleText));
       group.append(svg('rect',{class:'tree-person-card',width:CARD_WIDTH,height:CARD_HEIGHT,rx:8}));
       group.append(svg('text',{x:CARD_WIDTH/2,y:19,'text-anchor':'middle',class:'tree-person-name'},brief(p.name)));
       group.append(svg('text',{x:CARD_WIDTH/2,y:34,'text-anchor':'middle',class:'tree-person-age'},`${Math.floor(p.age)}岁${p.id===state.playerId?' · 执笔人':''}`));
-      const statusNode=svg('text',{x:CARD_WIDTH/2,y:52,'text-anchor':'middle',class:'tree-work-label'},`${p.alive?(icons[job?.assignment]||''):''} ${status}`);
-      statusNode.dataset.job=job?.assignment||'dead';group.append(statusNode);
+      const icon=p.id===state.playerId?(icons[job?.assignment]||''):'';
+      const statusNode=svg('text',{x:CARD_WIDTH/2,y:52,'text-anchor':'middle',class:'tree-work-label'},`${icon} ${status}`);
+      statusNode.dataset.job=p.id===state.playerId?(job?.assignment||'idle'):'family';group.append(statusNode);
       group.append(svg('rect',{x:14,y:61,width:CARD_WIDTH-28,height:4,rx:2,class:'tree-health-track'}));
       const bar=svg('rect',{x:14,y:61,width:(CARD_WIDTH-28)*Math.max(0,Math.min(100,p.health||0))/100,height:4,rx:2,class:'tree-health-fill'});
       bar.dataset.health=p.health<=35?'low':p.health<60?'tired':'good';group.append(bar);
@@ -246,6 +260,13 @@ export function createFamilyWorkView(hooks) {
     }
   }
   function renderDetail(panel, person, state) {
+    if(person.id !== state.playerId){
+      const info=el('p','person-work-detail',person.alive
+        ? `家属不参与工作指派和挣钱任务；健康 ${healthLabel(person.health)}`
+        : `已故 · 最终健康 ${healthLabel(person.health)}`);
+      panel.append(info);
+      return;
+    }
     const job=getFamilyWorkAssignments(state).find(j=>j.personId===person.id);
     const info=el('p','person-work-detail',person.alive
       ? `长期安排：${getAssignmentLabel(job?.planned||'idle')}；今日：${job?.label||'等待安排'}；健康 ${healthLabel(person.health)}`
@@ -254,7 +275,7 @@ export function createFamilyWorkView(hooks) {
     if(!person.alive)return;
     const button=el('button','assign-work-button','指派工作');button.type='button';
     button.addEventListener('click',()=>{const box=button.getBoundingClientRect();openMenu(person.id,box.x,box.y+box.height);});
-    panel.append(button,el('small','work-detail-help','也可右键人物，或键盘 Shift+F10。时间暂停时，图中显示待执行安排。'));
+    panel.append(button,el('small','work-detail-help','仅当前执笔人可以指派工作；也可右键执笔人，或键盘 Shift+F10。'));
   }
   return {renderTree,renderDetail,closeMenu};
 }
