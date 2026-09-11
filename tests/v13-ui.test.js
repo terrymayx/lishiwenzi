@@ -4,9 +4,10 @@ import fs from 'node:fs';
 
 const index = fs.readFileSync(new URL('../dist/index.html', import.meta.url), 'utf8');
 
-test('current page routes V1.6.0 through the passive industry engine while retaining V1.4.2 relation-tree UI', () => {
-  assert.match(index, /V1\.6\.0/);
-  assert.match(index, /engine-v16\.js\?v=1\.6\.0/);
+test('current page routes V1.6.1 through the compact UI engine while retaining V1.4.2 relation-tree UI', () => {
+  assert.match(index, /V1\.6\.1/);
+  assert.match(index, /engine-v161\.js\?v=1\.6\.1/);
+  assert.match(index, /v161-ui\.js\?v=1\.6\.1/);
   assert.match(index, /v15-ui\.js\?v=1\.5\.3/);
   assert.match(index, /v14-ui\.js\?v=1\.4\.2/);
   assert.match(index, /family-work-ui\.js\?v=1\.4\.2/);
