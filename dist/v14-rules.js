@@ -15,6 +15,7 @@ export const getAssignmentLabel=id=>labels[id]||id;
 const actionToJob={longfarm:'longfarm',cultivate:'agriculture',trade:'shortwork',manage:'homecraft',study:'study',rest:'rest'};
 const jobToAction={longfarm:'longfarm',agriculture:'cultivate',shortwork:'trade',homecraft:'manage',study:'study',rest:'rest'};
 const laborPlans=new Set(['longfarm','agriculture','shortwork','homecraft']);
+const workHealth=p=>Number(p?.stamina ?? p?.health ?? 0);
 export const WORK_DESCRIPTIONS = Object.freeze({
  longfarm:'长期负责家中农田，春耕、夏管、秋收；农闲休养，不转短工。农忙健康−0.25/日，秋收−0.35/日，足粮休养+1.20/日。',
  agriculture:'农忙种田，农闲自动短工，下季回田。春夏健康−0.25/日，秋收或短工−0.35/日；短工收入0.9钱/日。',
@@ -43,7 +44,7 @@ export function ensureFamilyWork(s){
  for(const p of Object.values(s.people||{}))if(p.alive&&p.familyId===s.family.id&&!V14_RULES.FAMILY_ASSIGNMENTS.includes(w.assignments[p.id]))w.assignments[p.id]=p.age<16?'study':'agriculture';
  return ag;
 }
-export function getShortworkIncome(p){return p?.alive&&p.age>=16&&p.age<=65&&p.health>20&&p.hunger<80?0.9:0;}
+export function getShortworkIncome(p){return p?.alive&&p.age>=16&&p.age<=65&&workHealth(p)>20&&p.hunger<80?0.9:0;}
 function planned(s,p){
  if(p.id===s.playerId)return s.currentActivity?(actionToJob[s.currentActivity.id]||'other'):'idle';
  return ensureFamilyWork(s).work.assignments[p.id];
@@ -55,8 +56,8 @@ function finished(s){
 export function getFamilyWorkAssignments(s){
  const ag=ensureFamilyWork(s),season=getSeason(s.month),farmDone=finished(s);
  return Object.values(s.people).filter(p=>p.alive&&p.familyId===s.family.id).map(p=>{
-  const original=planned(s,p);
-  const recovering=laborPlans.has(original)&&(p.health<=V14_RULES.AUTO_REST_HEALTH||(ag.work.recovering[p.id]&&p.health<V14_RULES.RESUME_WORK_HEALTH));
+  const original=planned(s,p),stamina=workHealth(p);
+  const recovering=laborPlans.has(original)&&(stamina<=V14_RULES.AUTO_REST_HEALTH||(ag.work.recovering[p.id]&&stamina<V14_RULES.RESUME_WORK_HEALTH));
   let assignment=original,reason='';
   if(recovering){assignment='rest';reason='recovery';}
   else if(original==='longfarm'||original==='agriculture'){
@@ -72,7 +73,7 @@ export function getFamilyWorkAssignments(s){
   const loss=assignment==='agriculture'?(season==='autumn'?V14_RULES.HARVEST_HEALTH_COST:V14_RULES.FARM_HEALTH_COST)
    :assignment==='shortwork'?V14_RULES.SHORTWORK_HEALTH_COST:assignment==='homecraft'?V14_RULES.HOMECRAFT_HEALTH_COST:0;
   const fed=s.resources.grain>=getDailyFoodCost(s);
-  const healthDelta=assignment==='rest'?(fed&&p.health>0?V14_RULES.REST_RECOVERY:0):-loss;
+  const healthDelta=assignment==='rest'?(fed&&stamina>0?V14_RULES.REST_RECOVERY:0):-loss;
   const label=assignment==='agriculture'?getSeasonLabel(s.month)+'中'
    :assignment==='rest'?(reason==='recovery'?'自动休养':reason==='offseason'?'农闲休养':'休养中')
    :assignment==='shortwork'?(reason==='offseason'?'农闲短工':'短工中')
@@ -80,7 +81,7 @@ export function getFamilyWorkAssignments(s){
    :assignment==='idle'?(reason==='hunger'?'缺粮停工':original==='idle'?'等待安排':'无法劳动')
    :({enlist:'军旅中',migrate:'迁徙中',marry:'筹办婚事',child:'商议添丁',prepare:'筹备迁徙'})[s.currentActivity?.id]||'当前事务';
   return {personId:p.id,name:p.name,age:p.age,planned:original,assignment,label,reason,recovering,
-   farmCapacity:capacity,dailyIncome:round(income),foodCost:getPersonFoodCost(p),health:p.health,healthDelta};
+   farmCapacity:capacity,dailyIncome:round(income),foodCost:getPersonFoodCost(p),health:stamina,healthDelta,stamina,staminaDelta:healthDelta};
  });
 }
 const manageable=s=>s&&s.phase==='playing'&&!s.endpoint&&!s.pendingEvent&&!s.running;
@@ -116,18 +117,21 @@ export function settleWorkHealth(s,jobs,{wellFed=false}={}){
  for(const j of jobs){
   const p=s.people[j.personId];if(!p?.alive)continue;
   const wasRecovering=Boolean(w.recovering[p.id]);
-  let delta=j.assignment==='rest'?(wellFed&&p.health>0?V14_RULES.REST_RECOVERY:0):Math.min(0,j.healthDelta);
-  const before=p.health;
-  if(delta)p.health=round(Math.min(100,Math.max(0,p.health+delta)));
-  changes[p.id]=round(p.health-before);
+  const field=Object.prototype.hasOwnProperty.call(p,'stamina')?'stamina':'health';
+  let delta=j.assignment==='rest'?(wellFed&&Number(p[field]||0)>0?V14_RULES.REST_RECOVERY:0):Math.min(0,j.healthDelta);
+  const before=Number(p[field]||0);
+  if(delta)p[field]=round(Math.min(100,Math.max(0,before+delta)));
+  changes[p.id]=round(Number(p[field]||0)-before);
   let recovery=wasRecovering;
-  if(p.health>=V14_RULES.RESUME_WORK_HEALTH)recovery=false;
-  else if(j.recovering||(laborPlans.has(j.planned)&&p.health<=V14_RULES.AUTO_REST_HEALTH))recovery=true;
+  if(Number(p[field]||0)>=V14_RULES.RESUME_WORK_HEALTH)recovery=false;
+  else if(j.recovering||(laborPlans.has(j.planned)&&Number(p[field]||0)<=V14_RULES.AUTO_REST_HEALTH))recovery=true;
   w.recovering[p.id]=recovery;
-  if(!wasRecovering&&recovery)workLog(s,'开始休养',p.name+'健康偏低，自动停工休养；恢复至60后返回原工作。');
+  const vitalName=field==='stamina'?'体力':'健康';
+  if(!wasRecovering&&recovery)workLog(s,'开始休养',p.name+vitalName+'偏低，自动停工休养；恢复至60后返回原工作。');
   if(wasRecovering&&!recovery)workLog(s,'恢复工作',p.name+'已恢复，可以按原安排继续工作。');
  }
  w.lastDailyWork.healthChanges=changes;
+ if(jobs.some(j=>Object.prototype.hasOwnProperty.call(s.people[j.personId]||{},'stamina')))w.lastDailyWork.staminaChanges={...changes};
  return changes;
 }
 export function getFamilyFarmCapacity(s){return getFamilyWorkAssignments(s).reduce((n,p)=>n+p.farmCapacity,0);}

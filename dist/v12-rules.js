@@ -27,8 +27,26 @@ function killFamilyMemberByStarvation(state, person, dateLabel) {
   return true;
 }
 
+function refreshAverageHunger(state) {
+  const householdId = state.family?.id;
+  if (!state.resources || !householdId) return;
+  const alive = Object.values(state.people || {}).filter(person => person.alive && person.familyId === householdId);
+  state.resources.hunger = round1(alive.length
+    ? alive.reduce((sum, person) => sum + clamp(Number(person.hunger) || 0, 0, HUNGER_MAX), 0) / alive.length
+    : 0);
+}
+
 export function applyStarvationRules(state, { playerIdBefore = state.playerId, dateLabel = `${state.year}年${state.month}月${state.day}日` } = {}) {
   if (!state?.people) return { gameOver: false, deaths: [] };
+
+  // V1.6.8 separates stamina from physical health. Reaching 100 hunger no longer
+  // kills instantly here; the base daily engine keeps damaging physical health,
+  // and the V1.6.8 mortality system handles death from deteriorating health.
+  if (Number(state.vitals?.version || 0) >= 168) {
+    refreshAverageHunger(state);
+    return { gameOver: false, deaths: [] };
+  }
+
   const deaths = [];
   const householdId = state.family?.id;
   const starving = Object.values(state.people).filter(person =>
@@ -69,13 +87,7 @@ export function applyStarvationRules(state, { playerIdBefore = state.playerId, d
     if (killFamilyMemberByStarvation(state, person, dateLabel)) deaths.push(person.id);
   }
 
-  if (state.resources && householdId) {
-    const alive = Object.values(state.people).filter(person => person.alive && person.familyId === householdId);
-    state.resources.hunger = round1(alive.length
-      ? alive.reduce((sum, person) => sum + clamp(Number(person.hunger) || 0, 0, HUNGER_MAX), 0) / alive.length
-      : 0);
-  }
-
+  refreshAverageHunger(state);
   return { gameOver: false, deaths };
 }
 

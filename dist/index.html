@@ -4,7 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#102536">
-  <title>乱世家书 · V1.6.7 母亲照看田地</title>
+  <meta name="compatibility-base" content="V1.6.7 engine-v167.js?v=1.6.7">
+  <title>乱世家书 · V1.6.8 体力与健康</title>
   <link rel="stylesheet" href="./style.css?v=1.2.1">
   <link rel="stylesheet" href="./v13.css?v=1.3.0">
   <link rel="stylesheet" href="./v132.css?v=1.3.2">
@@ -17,10 +18,10 @@
   <script type="importmap">
     {
       "imports": {
-        "./engine.js?v=1.2.0": "./engine-v167.js?v=1.6.7",
-        "./engine-v14.js?v=1.4.1": "./engine-v167.js?v=1.6.7",
-        "./engine-v14.js?v=1.4.2": "./engine-v167.js?v=1.6.7",
-        "./engine-v15.js?v=1.5.1": "./engine-v167.js?v=1.6.7",
+        "./engine.js?v=1.2.0": "./engine-v168.js?v=1.6.8",
+        "./engine-v14.js?v=1.4.1": "./engine-v168.js?v=1.6.8",
+        "./engine-v14.js?v=1.4.2": "./engine-v168.js?v=1.6.8",
+        "./engine-v15.js?v=1.5.1": "./engine-v168.js?v=1.6.8",
         "./family-work-ui.js?v=1.4.1": "./family-work-ui.js?v=1.6.4-player-work"
       }
     }
@@ -29,20 +30,20 @@
 <body>
   <main class="app-shell">
     <section id="setup" class="setup-card">
-      <p class="eyebrow">V1.6.7 母亲照看田地 · 290年1月1日</p>
+      <p class="eyebrow">V1.6.8 体力与健康 · 290年1月1日</p>
       <h1>乱世家书</h1>
-      <p class="lead">按天生活、经营田庄和产业、延续家族。母亲健在时会自动照看前3亩田，不领取工钱；超过3亩的部分再自动雇农工。</p>
+      <p class="lead">按天生活、经营田庄和产业、延续家族。劳动消耗体力，休养恢复体力；健康单独记录，健康越低，人物每日死亡风险越高。</p>
       <form id="setup-form">
         <label>家族姓氏<input id="surname" maxlength="8" value="沈" required></label>
         <label>开局身份<select id="origin"></select></label>
         <button class="primary" type="submit">落笔开局</button>
       </form>
-      <p class="fine-print">初始粮食170。田庄夏收45粮/亩、秋收45粮/亩；母亲免费照看前3亩，超出部分每3亩需1名农工，每人每月6钱。</p>
+      <p class="fine-print">新开局健康100；旧存档原“健康”会转为体力并获得100健康。初始粮食170，田庄夏收45粮/亩、秋收45粮/亩。</p>
     </section>
 
     <section id="game" hidden>
       <header class="topbar">
-        <div><p class="eyebrow">乱世家书 · V1.6.7</p><h1 id="date">290年1月1日</h1><p id="chapter">第1章 · 家门初立</p></div>
+        <div><p class="eyebrow">乱世家书 · V1.6.8</p><h1 id="date">290年1月1日</h1><p id="chapter">第1章 · 家门初立</p></div>
         <div class="top-actions"><button id="export" type="button">导出家书</button><label class="file-button">导入家书<input id="import" type="file" accept="application/json,.json"></label><button id="new-game" type="button">另起一门</button></div>
       </header>
 
@@ -52,6 +53,7 @@
         <div class="resource-card"><div class="resource-label"><span>每日口粮</span></div><b id="food-rate">0/日</b></div>
         <div class="resource-card"><div class="resource-label"><span>田产</span></div><b id="land">0</b></div>
         <div class="resource-card"><div class="resource-label"><span>声望</span><button class="resource-plus" type="button" data-resource-shortcut="reputation" aria-label="提高声望快捷操作">+</button></div><b id="reputation">0</b></div>
+        <div class="resource-card"><div class="resource-label"><span>体力</span></div><b id="stamina">0</b></div>
         <div class="resource-card"><div class="resource-label"><span>健康</span></div><b id="health">0</b></div>
       </div>
 
@@ -78,17 +80,18 @@
           <div id="tab-relations" class="tab-panel" hidden><div id="relations"></div></div>
           <div id="tab-assets" class="tab-panel" hidden><div id="assets"></div></div>
           <div id="tab-timeline" class="tab-panel" hidden><div id="timeline"></div></div>
-          <details class="help"><summary>V1.6.7 规则说明</summary><p><strong>母亲务农：</strong>初始母亲健在时会自动照看前3亩田，不领取工资，也不进入工作指派。超过母亲可照看的田地，才按每3亩1名农工、每人每月6钱自动雇人；母亲去世后，这3亩重新计入雇工需求。</p><p><strong>两季收成：</strong>粮食按夏收45粮/亩 + 秋收45粮/亩两季入仓，正常年份全年基础总产量90粮/亩。</p><p><strong>开局粮食：</strong>所有新开局身份初始粮食170；旧存档不会额外补发。</p><p><strong>本人工作：</strong>当前执笔人不再提供“长期务农 / 务农兼短工”行动，只能通过短工、家庭副业、求学、休养等人物行动生活。母亲务农属于家庭被动劳力，不是可指派挣钱任务。</p><p><strong>短工谋生：</strong>春季80%概率找到活、0.8钱/实际工作日；夏季65%·0.8钱；秋季85%·0.9钱；冬季45%·0.7钱。</p><p><strong>家业解锁：</strong>家产达到80钱后永久解锁继续买田；田地达到6亩且家产达到350钱后解锁粮铺；田地12亩、家产700钱且已有粮铺后解锁布庄；家产1500钱且已有至少2种商业产业后解锁商队。</p><p><strong>商业产业：</strong>粮铺180钱→+0.7钱/日，布庄300钱→+1.2钱/日，商队600钱→+2.5钱/日。婚配、婚育和历史主线规则保持不变。</p></details>
+          <details class="help"><summary>V1.6.8 规则说明</summary><p><strong>体力：</strong>原有劳动“健康”改名为体力。短工、家庭副业等劳动消耗体力；体力≤35自动休养，恢复到60后再工作。口粮充足时休养每日恢复1.20体力。</p><p><strong>健康：</strong>新增独立健康值。新开局健康100；旧存档会把旧健康数值转成体力，再获得100健康。普通休养不直接恢复健康，医治、疾病、受伤、饥饿和年老等会影响健康。</p><p><strong>死亡风险：</strong>健康70–100无额外死亡概率；40–69每日0.02%；20–39每日0.15%；10–19每日0.5%；1–9每日2%；健康0直接死亡。健康越低，死亡概率越高。</p><p><strong>饥饿：</strong>饥饿达到100不再立即判定饿死，而会持续损伤健康；健康恶化后才进入真正的死亡风险。</p><p><strong>母亲务农：</strong>初始母亲健在时会自动照看前3亩田，不领取工资，也不进入工作指派。田地不需要本人下田，继续由母亲与自动农工打理；超过母亲可照看的田地，才按每3亩1名农工、每人每月6钱自动雇人；母亲去世后，这3亩重新计入雇工需求。</p><p><strong>两季收成：</strong>粮食按夏收45粮/亩 + 秋收45粮/亩两季入仓，正常年份全年基础总产量90粮/亩。</p><p><strong>本人工作：</strong>当前执笔人不再提供“长期务农 / 务农兼短工”行动，只能通过短工、家庭副业、求学、休养等人物行动生活。母亲务农属于家庭被动劳力，不是可指派挣钱任务。</p><p><strong>短工谋生：</strong>春季80%概率找到活、0.8钱/实际工作日；夏季65%·0.8钱；秋季85%·0.9钱；冬季45%·0.7钱。</p><p><strong>家业解锁：</strong>家产达到80钱后永久解锁继续买田；田地达到6亩且家产达到350钱后解锁粮铺；田地12亩、家产700钱且已有粮铺后解锁布庄；家产1500钱且已有至少2种商业产业后解锁商队。</p><p><strong>商业产业：</strong>粮铺180钱→+0.7钱/日，布庄300钱→+1.2钱/日，商队600钱→+2.5钱/日。婚配、婚育和历史主线规则保持不变。</p></details>
         </aside>
       </div>
     </section>
   </main>
-  <script type="module" src="./game.js?v=1.6.7"></script>
+  <script type="module" src="./game.js?v=1.6.8"></script>
   <script type="module" src="./v14-ui.js?v=1.4.2"></script>
   <script type="module" src="./v15-ui.js?v=1.5.3"></script>
   <script type="module" src="./v162-ui.js?v=1.6.2"></script>
   <script type="module" src="./v164-ui.js?v=1.6.4"></script>
   <script type="module" src="./v165-ui.js?v=1.6.5"></script>
   <script type="module" src="./v167-ui.js?v=1.6.7"></script>
+  <script type="module" src="./v168-ui.js?v=1.6.8"></script>
 </body>
 </html>

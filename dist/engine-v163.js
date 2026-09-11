@@ -166,12 +166,14 @@ function adjustLastDailyWork(state, snapshot) {
     if (!item) continue;
     job.dailyIncome = item.targetIncome;
     if (!item.available) job.healthDelta = 0;
+    if (!item.available) job.staminaDelta = 0;
   }
-  if (last.healthChanges) {
+  for (const changes of [last.healthChanges, last.staminaChanges]) {
+    if (!changes) continue;
     for (const item of snapshot) {
       if (item.available) continue;
-      const current = Number(last.healthChanges[item.personId] || 0);
-      if (current < 0) last.healthChanges[item.personId] = round2(Math.min(0, current + SHORTWORK_HEALTH_COST));
+      const current = Number(changes[item.personId] || 0);
+      if (current < 0) changes[item.personId] = round2(Math.min(0, current + SHORTWORK_HEALTH_COST));
     }
   }
   last.income = round2((last.jobs || []).reduce((sum, job) => sum + Number(job.dailyIncome || 0), 0));
@@ -185,7 +187,10 @@ function removeFalseRecoveryLogs(state, snapshot) {
   const before = state.eventLog.slice(0, logStart);
   const after = state.eventLog.slice(logStart).filter(entry => {
     if (entry?.title !== '开始休养') return true;
-    return !noWork.some(item => String(entry.text || '').startsWith(`${item.personName}健康偏低`));
+    return !noWork.some(item => {
+      const text = String(entry.text || '');
+      return text.startsWith(`${item.personName}健康偏低`) || text.startsWith(`${item.personName}体力偏低`);
+    });
   });
   state.eventLog = [...before, ...after];
 }
@@ -208,7 +213,8 @@ function settleShortworkBalance(state, snapshot, ledger) {
 
     const person = state.people?.[item.personId];
     if (person?.alive) {
-      person.health = round2(Math.min(100, Number(person.health || 0) + SHORTWORK_HEALTH_COST));
+      const field = Object.prototype.hasOwnProperty.call(person, 'stamina') ? 'stamina' : 'health';
+      person[field] = round2(Math.min(100, Number(person[field] || 0) + SHORTWORK_HEALTH_COST));
       if (recovering) recovering[item.personId] = item.wasRecovering;
     }
   }
