@@ -25,6 +25,11 @@ function game(E, seed = 1700) {
   return state;
 }
 
+function markLegacyLandRewardSettled(state) {
+  state.householdProgression.unlocked.landPurchase = true;
+  state.householdMilestoneRewards.claimed.landPurchase = true;
+}
+
 test('V1.7 defines ten passive businesses including seven new industries', async () => {
   const E = await currentEngine();
   assert.equal(Object.keys(E.V170_BUSINESSES).length, 10);
@@ -40,6 +45,7 @@ test('V1.7 defines ten passive businesses including seven new industries', async
 test('mill unlocks at 3 mu and 180 household assets, grants 20 money once, and can be purchased', async () => {
   const E = await currentEngine();
   const state = game(E, 1701);
+  markLegacyLandRewardSettled(state);
   state.household.land = 3;
   state.resources.land = 3;
   setAssetValue(E, state, 180);
@@ -116,6 +122,7 @@ test('V1.7 defines fifteen one-time family milestones with the approved rewards'
 test('milestone money is automatic, persistent, and never paid twice', async () => {
   const E = await currentEngine();
   const state = game(E, 1704);
+  markLegacyLandRewardSettled(state);
   setAssetValue(E, state, 500);
   const before = state.resources.money;
   let milestones = E.getV170MilestoneStatus(state);
