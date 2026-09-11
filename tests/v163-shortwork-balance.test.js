@@ -90,6 +90,27 @@ test('a no-work shortwork day earns nothing and does not consume shortwork healt
   assert.equal(state.people[state.playerId].health, beforeHealth);
 });
 
+test('a no-work day near the recovery threshold does not falsely force the worker into recovery', async () => {
+  const E = await currentEngine();
+  const state = game(E, 1634);
+  state.year = 290;
+  const day = findDay(E, state, 1, false);
+  assert.notEqual(day, null);
+  state.day = day;
+  state.month = 1;
+  state.people[state.playerId].health = 35.2;
+  state.agriculture.work.recovering[state.playerId] = false;
+  const beforeLogs = state.eventLog.length;
+
+  E.setRunning(state, true);
+  const result = E.advanceDay(state);
+
+  assert.equal(result.ok, true);
+  assert.equal(state.people[state.playerId].health, 35.2);
+  assert.equal(state.agriculture.work.recovering[state.playerId], false);
+  assert.equal(state.eventLog.slice(beforeLogs).some(entry => entry.title === '开始休养'), false);
+});
+
 test('current page explains that shortwork is low-income and not guaranteed every day', () => {
   const index = fs.readFileSync(new URL('../dist/index.html', import.meta.url), 'utf8');
   assert.match(index, /V1\.6\.3/);
