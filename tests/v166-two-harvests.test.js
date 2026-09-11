@@ -105,10 +105,10 @@ test('loading an old V1.6.5 save does not grant the new-game 50 grain bonus', as
   assert.equal(loaded.household.grain, before);
 });
 
-test('current page exposes V1.6.6 two-season harvest rules', () => {
+test('current page exposes V1.6.6 two-season harvest rules under V1.6.7', () => {
   const index = fs.readFileSync(new URL('../dist/index.html', import.meta.url), 'utf8');
-  assert.match(index, /V1\.6\.6/);
-  assert.match(index, /engine-v166\.js\?v=1\.6\.6/);
+  assert.match(index, /V1\.6\.7/);
+  assert.match(index, /engine-v167\.js\?v=1\.6\.7/);
   assert.match(index, /夏收/);
   assert.match(index, /秋收/);
   assert.match(index, /初始粮食.*170|120.*170|\+50/);
