@@ -46,15 +46,15 @@ test('reputation donation rejects invalid amounts, insufficient money, and runni
   assert.equal(s.resources.reputation, 10);
 });
 
-test('V1.6.0 keeps the V1.5.3 donation control above the attribute strip and farm management inside assets', () => {
+test('V1.6.1 keeps the V1.5.3 donation control as a folded reputation shortcut and farm management inside assets', () => {
   const index = fs.readFileSync(new URL('../dist/index.html', import.meta.url), 'utf8');
   const ui = fs.readFileSync(new URL('../dist/v15-ui.js', import.meta.url), 'utf8');
   const farmUi = fs.readFileSync(new URL('../dist/v13-ui.js', import.meta.url), 'utf8');
 
-  assert.match(index, /V1\.6\.0/);
-  assert.match(index, /id="reputation-donation"/);
+  assert.match(index, /V1\.6\.1/);
+  assert.match(index, /<details[^>]+id="reputation-donation"/);
+  assert.match(index, /data-resource-shortcut="reputation"/);
   assert.match(index, /1000钱\s*=\s*\+1声望/);
-  assert.ok(index.indexOf('id="reputation-donation"') < index.indexOf('class="resource-strip"'));
   assert.match(index, /data-donate="1000"/);
   assert.match(index, /data-donate="5000"/);
   assert.match(index, /data-donate="10000"/);
