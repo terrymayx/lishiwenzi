@@ -158,11 +158,35 @@ function laborFeedbackText(summary) {
   return `⚠ 缺工${summary.idleAcres}亩 · 还需${summary.workersNeeded}名农工 · 当前雇工 ${summary.hiredWorkers}/${summary.maxHiredWorkers}人 · 还能雇${summary.remainingWorkerSlots}人${tail}`;
 }
 
+function updateFarmStat(dashboard, label, value) {
+  const cell = [...dashboard.querySelectorAll('.farm-stat')]
+    .find(item => item.querySelector('span')?.textContent === label);
+  const number = cell?.querySelector('b');
+  if (number) number.textContent = value;
+}
+
+function syncHireButtons(dashboard, state, summary) {
+  const laborActions = [...dashboard.querySelectorAll('.farm-actions')]
+    .find(group => group.querySelector('strong')?.textContent.includes('雇工'));
+  if (!laborActions) return;
+  const buttons = [...laborActions.querySelectorAll('button')];
+  const plusOne = buttons.find(button => button.textContent.includes('雇工 +1'));
+  const plusThree = buttons.find(button => button.textContent.includes('雇工 +3'));
+  const isBlocked = blocked(state);
+  if (plusOne) plusOne.disabled = isBlocked || summary.remainingWorkerSlots < 1 || Number(state.resources?.money || 0) < 6;
+  if (plusThree) plusThree.disabled = isBlocked || summary.remainingWorkerSlots < 3 || Number(state.resources?.money || 0) < 18;
+}
+
 function syncFarmLaborFeedback() {
   const state = window.__luanshiState;
   const dashboard = document.querySelector('.farm-dashboard');
   if (!state || !dashboard) return;
   const summary = getFarmSummary(state);
+
+  updateFarmStat(dashboard, '家庭劳力', `可管${summary.familyCapacity}亩`);
+  updateFarmStat(dashboard, '雇工', `${summary.hiredWorkers}人 · 可管${summary.hiredCapacity}亩`);
+  updateFarmStat(dashboard, '有效经营', `${summary.productiveAcres}/${summary.land}亩`);
+
   let line = dashboard.querySelector('.farm-labor-feedback');
   if (!line) {
     line = document.createElement('p');
@@ -180,6 +204,7 @@ function syncFarmLaborFeedback() {
   if (laborTitle) {
     laborTitle.textContent = `雇工 ${summary.hiredWorkers}/${summary.maxHiredWorkers}人 · 每人可负责3亩，每月6钱`;
   }
+  syncHireButtons(dashboard, state, summary);
 }
 
 function refreshCompactUi() {
