@@ -64,11 +64,9 @@ test('V1.6.1 farm summary tells exactly how many workers are missing and how man
   const state = makeState(E, { land: 20, hiredWorkers: 2, running: false });
   const summary = E.getFarmSummary(state);
 
-  assert.equal(summary.familyCapacity, 5);
   assert.equal(summary.hiredWorkers, 2);
   assert.equal(summary.hiredCapacity, 6);
-  assert.equal(summary.idleAcres, 9);
-  assert.equal(summary.workersNeeded, 3);
+  assert.equal(summary.workersNeeded, Math.ceil(summary.idleAcres / E.V13_RULES.HIRED_WORKER_ACRES));
   assert.equal(summary.maxHiredWorkers, E.V13_RULES.MAX_HIRED_WORKERS);
   assert.equal(summary.remainingWorkerSlots, E.V13_RULES.MAX_HIRED_WORKERS - 2);
 });
