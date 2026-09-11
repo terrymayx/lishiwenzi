@@ -19,6 +19,7 @@ test('V1.7.1 exposes clear top status, primary workspace and next-goal regions',
   assert.match(html, /id="primary-workspace"/);
   assert.match(html, /id="next-goal-panel"/);
   assert.match(html, /id="detail-tabs-shell"/);
+  assert.match(html, /class="main-panel current-stage"/);
 });
 
 test('V1.7.1 compact css defines the three-part information hierarchy', () => {
