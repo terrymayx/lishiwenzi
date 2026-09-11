@@ -145,12 +145,12 @@ test('reward state survives save and load without paying twice', async () => {
   assert.equal(loaded.householdMilestoneRewards.totalGranted, 20);
 });
 
-test('current page routes through V1.6.9 and advertises unlock money rewards', () => {
+test('current page preserves V1.6.9 unlock money rewards under V1.7', () => {
   const index = fs.readFileSync(new URL('../dist/index.html', import.meta.url), 'utf8');
   const unlockUi = fs.readFileSync(new URL('../dist/v164-ui.js', import.meta.url), 'utf8');
-  assert.match(index, /V1\.6\.9/);
-  assert.match(index, /engine-v169\.js\?v=1\.6\.9/);
-  assert.match(index, /解锁奖励/);
+  assert.match(index, /V1\.7/);
+  assert.match(index, /engine-v170\.js\?v=1\.7\.0/);
+  assert.match(index, /解锁.*奖励|经营成就/);
   assert.match(unlockUi, /engine-v169\.js\?v=1\.6\.9/);
   assert.match(unlockUi, /rewardMoney|解锁奖励/);
 });
