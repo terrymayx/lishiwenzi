@@ -8,7 +8,7 @@
   <meta name="compatibility-v168" content="V1.6.8 engine-v168.js?v=1.6.8">
   <meta name="compatibility-v169" content="V1.6.9 engine-v169.js?v=1.6.9">
   <meta name="compatibility-v164-ui" content="v164-ui.js?v=1.6.9">
-  <title>乱世家书 · V1.7.0 家业发展与经营成就</title>
+  <title>乱世家书 · V1.7.1 紧凑界面</title>
   <link rel="stylesheet" href="./style.css?v=1.2.1">
   <link rel="stylesheet" href="./v13.css?v=1.3.0">
   <link rel="stylesheet" href="./v132.css?v=1.3.2">
@@ -19,6 +19,7 @@
   <link rel="stylesheet" href="./v162.css?v=1.6.2">
   <link rel="stylesheet" href="./v164.css?v=1.6.4">
   <link rel="stylesheet" href="./v170.css?v=1.7.0">
+  <link rel="stylesheet" href="./v171.css?v=1.7.1">
   <script type="importmap">
     {
       "imports": {
@@ -31,10 +32,10 @@
     }
   </script>
 </head>
-<body>
+<body class="compact-ui">
   <main class="app-shell">
     <section id="setup" class="setup-card">
-      <p class="eyebrow">V1.7.0 家业发展与经营成就 · 290年1月1日</p>
+      <p class="eyebrow">V1.7.1 紧凑界面 · 290年1月1日</p>
       <h1>乱世家书</h1>
       <p class="lead">按天生活、经营田庄和产业、延续家族。新增磨坊、油坊、酒坊、客栈、织坊、纸坊、水运船队，并用家业目标、经营成就和里程碑奖励贯穿长期发展。</p>
       <form id="setup-form">
@@ -47,7 +48,7 @@
 
     <section id="game" hidden>
       <header class="topbar">
-        <div><p class="eyebrow">乱世家书 · V1.7.0</p><h1 id="date">290年1月1日</h1><p id="chapter">第1章 · 家门初立</p></div>
+        <div><p class="eyebrow">乱世家书 · V1.7.1</p><h1 id="date">290年1月1日</h1><p id="chapter">第1章 · 家门初立</p></div>
         <div class="top-actions"><button id="export" type="button">导出家书</button><label class="file-button">导入家书<input id="import" type="file" accept="application/json,.json"></label><button id="new-game" type="button">另起一门</button></div>
       </header>
 
@@ -84,7 +85,7 @@
           <div id="tab-relations" class="tab-panel" hidden><div id="relations"></div></div>
           <div id="tab-assets" class="tab-panel" hidden><div id="assets"></div></div>
           <div id="tab-timeline" class="tab-panel" hidden><div id="timeline"></div></div>
-          <details class="help"><summary>V1.7.0 规则说明</summary><p><strong>新产业：</strong>在粮铺、布庄、商队之外新增磨坊、油坊、酒坊、客栈、织坊、纸坊、水运船队。产业解锁后仍需花钱购置；购入后不需要主角亲自经营，每个实际推进日自动获得净收益。</p><p><strong>产业解锁奖励：</strong>磨坊+20钱、油坊+80钱、酒坊+120钱、客栈+180钱、织坊+250钱、纸坊+350钱、水运船队+600钱；原置办田产+20钱、粮铺+50钱、布庄+100钱、商队+200钱继续保留。每个项目只发一次。</p><p><strong>家业目标与经营成就：</strong>新增15个里程碑，覆盖实际收获、田产规模、产业日收益、家产、学识和声望。达标自动完成并发放奖金；同一家族存档只领取一次，换后代不会重置。</p><p><strong>产业种类：</strong>所有实际购入的产业都计入“商业产业种类”。因此磨坊、油坊等也可以帮助满足商队所需的至少2种商业产业。</p><p><strong>旧存档：</strong>更新后当前已经满足的V1.7新增家产、田产、产业收益、学识和声望里程碑可以自动结算一次；“初收喜报”只统计升级到V1.7以后实际收获的粮食，不追溯旧档历史收成。</p><p><strong>体力：</strong>劳动消耗体力；体力≤35自动休养，恢复到60后再工作。口粮充足时休养每日恢复1.20体力。</p><p><strong>健康：</strong>健康独立于体力。健康越低，人物每日死亡风险越高；普通休养只恢复体力，不直接恢复健康。</p><p><strong>母亲务农：</strong>初始母亲健在时免费照看前3亩田；超过3亩的部分继续按每3亩1名农工、每人每月6钱自动雇工。母亲务农属于家庭被动劳力，田地不需要本人下田，继续由自动农工打理；母亲去世后前三亩重新计入雇工需求。</p><p><strong>两季收成：</strong>粮食按夏收45粮/亩 + 秋收45粮/亩两季入仓，正常年份全年基础总产量90粮/亩。</p><p><strong>本人工作：</strong>当前执笔人不亲自务农，只能通过短工、家庭副业、求学、休养等人物行动生活；田地由母亲与自动农工经营。</p><p><strong>短工谋生：</strong>春季80%概率找到活、0.8钱/实际工作日；夏季65%·0.8钱；秋季85%·0.9钱；冬季45%·0.7钱。</p><p><strong>兼容：</strong>婚配、婚育和历史主线规则保持不变。</p></details>
+          <details class="help"><summary>V1.7.1 规则说明</summary><p><strong>紧凑界面：</strong>沿用V1.7.0玩法与存档，仅缩小字号、卡片、按钮和间距；粮市与收支说明默认折叠，展开状态在本次游戏中保留。</p><p><strong>新产业：</strong>在粮铺、布庄、商队之外新增磨坊、油坊、酒坊、客栈、织坊、纸坊、水运船队。产业解锁后仍需花钱购置；购入后不需要主角亲自经营，每个实际推进日自动获得净收益。</p><p><strong>产业解锁奖励：</strong>磨坊+20钱、油坊+80钱、酒坊+120钱、客栈+180钱、织坊+250钱、纸坊+350钱、水运船队+600钱；原置办田产+20钱、粮铺+50钱、布庄+100钱、商队+200钱继续保留。每个项目只发一次。</p><p><strong>家业目标与经营成就：</strong>新增15个里程碑，覆盖实际收获、田产规模、产业日收益、家产、学识和声望。达标自动完成并发放奖金；同一家族存档只领取一次，换后代不会重置。</p><p><strong>产业种类：</strong>所有实际购入的产业都计入“商业产业种类”。因此磨坊、油坊等也可以帮助满足商队所需的至少2种商业产业。</p><p><strong>旧存档：</strong>更新后当前已经满足的V1.7新增家产、田产、产业收益、学识和声望里程碑可以自动结算一次；“初收喜报”只统计升级到V1.7以后实际收获的粮食，不追溯旧档历史收成。</p><p><strong>体力：</strong>劳动消耗体力；体力≤35自动休养，恢复到60后再工作。口粮充足时休养每日恢复1.20体力。</p><p><strong>健康：</strong>健康独立于体力。健康越低，人物每日死亡风险越高；普通休养只恢复体力，不直接恢复健康。</p><p><strong>母亲务农：</strong>初始母亲健在时免费照看前3亩田；超过3亩的部分继续按每3亩1名农工、每人每月6钱自动雇工。母亲务农属于家庭被动劳力，田地不需要本人下田，继续由自动农工打理；母亲去世后前三亩重新计入雇工需求。</p><p><strong>两季收成：</strong>粮食按夏收45粮/亩 + 秋收45粮/亩两季入仓，正常年份全年基础总产量90粮/亩。</p><p><strong>本人工作：</strong>当前执笔人不亲自务农，只能通过短工、家庭副业、求学、休养等人物行动生活；田地由母亲与自动农工经营。</p><p><strong>短工谋生：</strong>春季80%概率找到活、0.8钱/实际工作日；夏季65%·0.8钱；秋季85%·0.9钱；冬季45%·0.7钱。</p><p><strong>兼容：</strong>婚配、婚育和历史主线规则保持不变。</p></details>
         </aside>
       </div>
     </section>
@@ -98,5 +99,6 @@
   <script type="module" src="./v167-ui.js?v=1.6.7"></script>
   <script type="module" src="./v168-ui.js?v=1.6.8"></script>
   <script type="module" src="./v170-ui.js?v=1.7.0"></script>
+  <script type="module" src="./v171-ui.js?v=1.7.1"></script>
 </body>
 </html>

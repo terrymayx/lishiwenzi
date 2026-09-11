@@ -1,0 +1,250 @@
+/* V1.7.1: compact layout, no page zoom and no gameplay changes. Loaded last. */
+:root { font-size: 14px; }
+body.compact-ui { font-size: 13px; line-height: 1.5; }
+.compact-ui .app-shell { width: min(1360px, 100%); padding: 10px 14px 16px; }
+.compact-ui h1, .compact-ui h2, .compact-ui h3 { line-height: 1.35; letter-spacing: .035em; }
+.compact-ui h2 { font-size: 15px; margin-bottom: 8px; }
+.compact-ui h3 { font-size: 14px; margin-bottom: 6px; }
+.compact-ui p { margin-bottom: 8px; }
+.compact-ui button, .compact-ui input, .compact-ui select, .compact-ui .file-button { line-height: 1.4; }
+.compact-ui button, .compact-ui .file-button { min-height: 28px; }
+.compact-ui input, .compact-ui select { padding: 5px 8px; min-height: 30px; font-size: 12px; }
+.compact-ui input[type="checkbox"] { min-height: 0; }
+.compact-ui label { gap: 4px; }
+.compact-ui :is(button, input, select, summary, .file-button):focus-visible { outline: 2px solid #e0bb80; outline-offset: 2px; }
+.compact-ui .eyebrow { font-size: 11px; letter-spacing: .09em; margin-bottom: 3px; }
+.compact-ui .fine-print, .compact-ui .stamp { font-size: 11px; line-height: 1.5; }
+.compact-ui .fine-print { margin-top: 8px; }
+.compact-ui .setup-card { width: min(520px, 100%); margin: 4vh auto; padding: 22px; border-radius: 8px; }
+.compact-ui .setup-card h1 { font-size: 30px; }
+.compact-ui .setup-card .lead { margin: 12px 0 16px; font-size: 13px; line-height: 1.6; }
+.compact-ui #setup-form { gap: 9px; }
+.compact-ui .primary { padding: 6px 10px; font-size: 13px; }
+.compact-ui .topbar { padding: 2px 0 8px; gap: 10px; align-items: center; }
+.compact-ui .topbar h1 { font-size: 24px; margin: 1px 0 3px; }
+.compact-ui #chapter { font-size: 11px; }
+.compact-ui .top-actions { gap: 5px; }
+.compact-ui .top-actions button, .compact-ui .file-button { padding: 5px 9px; font-size: 12px; }
+
+/* Undo the old generic .resource-strip div padding on nested labels. */
+.compact-ui .resource-strip { grid-template-columns: repeat(7, minmax(0, 1fr)); border-radius: 6px; }
+.compact-ui .resource-strip > .resource-card { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 5px; padding: 6px 8px; min-width: 0; }
+.compact-ui .resource-strip .resource-label { display: contents; padding: 0; border: 0; }
+.compact-ui .resource-label > span { grid-column: 1; grid-row: 1; font-size: 11px; white-space: nowrap; }
+.compact-ui .resource-strip .resource-card > b { grid-column: 2; grid-row: 1; font-size: 15px; line-height: 1.3; text-align: right; overflow-wrap: anywhere; min-width: 0; }
+.compact-ui .resource-plus { grid-column: 3; grid-row: 1; width: 26px; height: 26px; min-height: 26px; padding: 0; font-size: 17px; }
+.compact-ui .more-status, .compact-ui .reputation-donation { margin-top: 4px; border-radius: 5px; }
+.compact-ui .more-status > summary, .compact-ui .reputation-donation > summary { padding: 4px 8px; font-size: 11px; }
+.compact-ui .reputation-donation > summary { flex-direction: row; align-items: center; flex-wrap: wrap; gap: 3px 8px; }
+.compact-ui .reputation-donation > summary span { font-size: 11px; }
+.compact-ui .more-status-grid > div { padding: 5px 8px; }
+.compact-ui .more-status-grid span { font-size: 11px; }
+.compact-ui .donation-actions { gap: 4px; }
+.compact-ui .donation-actions button { padding: 4px 8px; font-size: 11px; }
+.compact-ui .reputation-donation .donation-actions { padding: 3px 8px 6px; }
+.compact-ui #notice { min-height: 0; margin: 5px 0; font-size: 12px; line-height: 1.45; overflow-wrap: anywhere; }
+.compact-ui #notice:empty { margin: 0; height: 6px; }
+.compact-ui .resource-shortcut-panel { gap: 5px; padding: 8px; margin-top: 5px; border-radius: 6px; }
+.compact-ui .resource-shortcut-panel > strong { font-size: 13px; }
+.compact-ui .resource-shortcut-panel > span { font-size: 11px; }
+.compact-ui .resource-shortcut-actions { gap: 5px; }
+.compact-ui .resource-shortcut-actions button { padding: 5px 8px; font-size: 12px; }
+
+.compact-ui .layout { display: grid; grid-template-columns: 280px minmax(0, 1fr); grid-template-rows: auto 1fr; gap: 10px; align-items: start; }
+.compact-ui .side-panel { padding: 10px; border-radius: 7px; }
+.compact-ui .actions-panel { position: static; grid-column: 1; grid-row: 1 / span 2; }
+.compact-ui .main-panel { grid-column: 2; grid-row: 1; }
+.compact-ui .archive-panel { grid-column: 2; grid-row: 2; padding: 0; box-shadow: none; }
+.compact-ui .current-card { margin: -10px -10px 8px; padding: 9px 10px; }
+.compact-ui .current-card h2 { font-size: 17px; margin-bottom: 2px; }
+.compact-ui .current-card p { font-size: 11px; margin: 0; }
+.compact-ui .activity-line { font-size: 13px; margin: 0 0 4px; line-height: 1.4; }
+.compact-ui .status-line { font-size: 11px; margin: 0 0 6px; line-height: 1.45; }
+.compact-ui .time-flow { min-height: 48px; padding: 6px 8px; margin: 6px 0; gap: 8px; }
+.compact-ui .hourglass-wrap { width: 32px; min-width: 32px; height: 32px; }
+.compact-ui .hourglass { font-size: 23px; }
+.compact-ui .time-flow-info { gap: 1px; }
+.compact-ui .time-flow-info strong { font-size: 13px; letter-spacing: 0; }
+.compact-ui .time-flow-info span { font-size: 11px; }
+.compact-ui .time-controls { gap: 5px; padding: 6px 0; }
+.compact-ui .time-controls label { display: grid; grid-template-columns: 28px minmax(0,1fr); align-items: center; font-size: 11px; }
+.compact-ui .time-controls button { padding: 5px 6px; font-size: 12px; }
+.compact-ui .actions-panel section { margin-top: 10px; }
+.compact-ui .actions-panel section h2 { flex-wrap: wrap; gap: 2px; margin-bottom: 6px; }
+.compact-ui .actions-panel h2 small { font-size: 11px; }
+.compact-ui .action-grid { gap: 5px; }
+.compact-ui .action-card { padding: 6px 8px; gap: 2px 5px; border-radius: 4px; }
+.compact-ui .action-card strong { font-size: 13px; line-height: 1.4; }
+.compact-ui .action-card span { font-size: 12px; line-height: 1.4; }
+.compact-ui .action-card span { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
+.compact-ui .action-card:is(.selected, :focus-visible, :hover) span { -webkit-line-clamp: unset; }
+.compact-ui .action-card small[data-compact-repeat] { display: none; }
+.compact-ui .action-card small { font-size: 11px; line-height: 1.4; margin-top: 1px; }
+.compact-ui .destination-label { margin-top: 8px; font-size: 11px; }
+
+.compact-ui .economy-panel { padding: 9px 10px; margin-bottom: 8px; border-radius: 7px; }
+.compact-ui .economy-panel h2 { margin-bottom: 6px; }
+.compact-ui .budget-grid { gap: 5px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.compact-ui .budget-grid > div { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 2px 6px; padding: 6px 8px; border-radius: 4px; min-width: 0; }
+.compact-ui .budget-grid small { font-size: 11px; }
+.compact-ui .budget-grid strong { margin: 0; font-size: 12px; }
+.compact-ui .economy-panel details { padding: 5px 0; font-size: 12px; }
+.compact-ui .economy-panel details:first-of-type { margin-top: 6px; }
+.compact-ui .economy-panel summary { line-height: 1.6; }
+.compact-ui .economy-panel p { font-size: 11px; line-height: 1.5; margin: 5px 0; }
+.compact-ui .economy-panel button { padding: 4px 7px; font-size: 11px; margin: 4px 4px 2px 0; }
+.compact-ui .economy-panel label { font-size: 12px; margin-top: 6px; }
+.compact-ui .economy-panel input[type="number"] { width: 80px; }
+.compact-ui .chronicle { border-radius: 6px; }
+.compact-ui .chronicle .section-heading { align-items: center; padding: 6px 10px; gap: 8px; }
+.compact-ui .chronicle .section-heading > div { display: flex; align-items: center; gap: 8px; }
+.compact-ui .chronicle .section-heading h2 { font-size: 13px; }
+.compact-ui .chronicle .eyebrow { margin: 0; font-size: 11px; }
+.compact-ui .chronicle .section-heading::after { font-size: 11px; }
+.compact-ui .chronicle .log { padding: 2px 10px 7px; max-height: 260px; }
+.compact-ui .chronicle .log-row { padding: 7px 0; }
+.compact-ui .log-row p { font-size: 12px; line-height: 1.5; margin: 3px 0 0; }
+.compact-ui .log-row small { font-size: 11px; }
+.compact-ui .event-panel, .compact-ui .succession-panel { padding: 10px; margin-bottom: 8px; border-radius: 6px; }
+.compact-ui .event-panel p, .compact-ui .succession-panel p { line-height: 1.55; font-size: 13px; margin-bottom: 7px; }
+.compact-ui .event-option { padding: 7px 8px; margin-top: 5px; gap: 2px; border-radius: 4px; }
+.compact-ui .event-option strong { font-size: 13px; }
+.compact-ui .event-option span { font-size: 12px; }
+.compact-ui .succession-row { padding: 6px 0; font-size: 12px; flex-wrap: wrap; }
+.compact-ui .succession-row button { padding: 5px 8px; font-size: 12px; }
+.compact-ui .tabs button { padding: 6px 4px; font-size: 12px; }
+.compact-ui .tab-panel { padding: 8px 10px; }
+.compact-ui .tree-instruction { margin-bottom: 5px; font-size: 11px; }
+.compact-ui #tree.family-tree { min-width: 0 !important; min-height: 0 !important; width: auto; max-width: none; margin: 0 auto; }
+.compact-ui .managed-tree .tree-node .tree-person-name { font-size: 15px !important; }
+.compact-ui .managed-tree .tree-node .tree-person-age, .compact-ui .managed-tree .tree-node .tree-health-value { font-size: 12.5px !important; }
+.compact-ui .managed-tree .tree-node .tree-work-label { font-size: 13.75px !important; }
+.compact-ui .person-detail { padding-top: 7px; font-size: 12px; line-height: 1.45; }
+.compact-ui .person-detail h3 { font-size: 14px; }
+.compact-ui .person-detail p { margin: 3px 0; }
+.compact-ui .person-work-detail { padding-top: 5px; }
+.compact-ui .assign-work-button { padding: 4px 8px; margin: 3px 0; font-size: 12px; }
+.compact-ui .work-detail-help { font-size: 11px; line-height: 1.4; }
+.compact-ui .work-context-menu { width: 280px; padding: 8px; border-radius: 7px; }
+.compact-ui .work-menu-title { font-size: 13px; padding: 2px 4px; }
+.compact-ui .work-menu-hint { font-size: 11px; margin: 4px; }
+.compact-ui .work-menu-option { padding: 5px 7px; margin: 4px 0; }
+.compact-ui .work-menu-option strong { font-size: 12px; margin-bottom: 1px; }
+.compact-ui .work-menu-option small { font-size: 11px; }
+.compact-ui #relations p, .compact-ui #assets p { padding: 5px 0; font-size: 12px; line-height: 1.45; }
+.compact-ui #timeline { gap: 7px; padding: 7px 0; }
+.compact-ui .timeline-row { min-width: 150px; gap: 5px; padding: 8px; font-size: 12px; }
+.compact-ui .timeline-row small { font-size: 11px; }
+.compact-ui .help { padding: 7px 10px; margin-top: 3px; font-size: 11px; line-height: 1.5; }
+.compact-ui .help p { margin: 6px 0 0; }
+
+.compact-ui .land-purchase { gap: 5px; padding: 6px 0; }
+.compact-ui .land-purchase .land-buy { margin-top: 0; padding: 5px; font-size: 11px; }
+.compact-ui .farm-dashboard { gap: 7px; margin: 7px 0; padding: 8px; border-radius: 5px; }
+.compact-ui .farm-dashboard h4 { font-size: 13px; }
+.compact-ui .farm-stats { grid-template-columns: repeat(3,minmax(0,1fr)); gap: 5px; }
+.compact-ui .farm-stat { padding: 5px 6px; gap: 2px; border-radius: 4px; }
+.compact-ui .farm-stat span { font-size: 11px; }
+.compact-ui .farm-stat b { font-size: 13px; }
+.compact-ui .farm-season-badge { font-size: 11px; padding: 3px 6px; }
+.compact-ui .farm-progress { gap: 5px; }
+.compact-ui .farm-progress-row { font-size: 11px; gap: 5px; }
+.compact-ui .farm-progress-track { height: 5px; }
+.compact-ui .farm-actions { gap: 5px; }
+.compact-ui .farm-actions button { padding: 5px; font-size: 11px; }
+.compact-ui .farm-weather { padding: 5px; font-size: 11px; }
+.compact-ui .auto-worker-feedback, .compact-ui .auto-worker-purchase-hint { font-size: 12px; padding: 6px 8px; margin: 6px 0; line-height: 1.45; border-radius: 5px; }
+.compact-ui .auto-farm-note, .compact-ui .farm-labor-feedback { padding: 6px 8px !important; margin: 6px 0 !important; font-size: 11px !important; line-height: 1.45 !important; }
+.compact-ui .business-industry { margin: 8px 0; padding: 8px; border-radius: 6px; }
+.compact-ui .business-heading { gap: 5px; margin-bottom: 4px; }
+.compact-ui .business-heading > strong { font-size: 14px; }
+.compact-ui .business-income-summary { font-size: 12px; }
+.compact-ui .business-hint { font-size: 11px; margin: 3px 0 6px; }
+.compact-ui .business-grid { grid-template-columns: repeat(3,minmax(0,1fr)); gap: 6px; }
+.compact-ui .business-card { gap: 3px; padding: 7px; border-radius: 5px; }
+.compact-ui .business-card > strong { font-size: 13px; }
+.compact-ui .business-card > span { font-size: 12px; }
+.compact-ui .business-card > small { font-size: 11px; min-height: 0; line-height: 1.4; }
+.compact-ui .business-card button { font-size: 11px; padding: 5px 6px; }
+.compact-ui .v170-business-group, .compact-ui .v170-remote-businesses, .compact-ui .v170-milestones { margin-top: 7px; padding: 7px; border-radius: 5px; }
+.compact-ui .v170-group-grid { margin-top: 6px; }
+.compact-ui .v170-group-heading strong, .compact-ui .v170-milestone-heading strong { font-size: 13px; }
+.compact-ui .v170-milestone-heading, .compact-ui .v170-milestone-top { flex-direction: row; align-items: center; flex-wrap: wrap; gap: 2px 6px; }
+.compact-ui .v170-milestone-heading span, .compact-ui .v170-milestone-top span, .compact-ui .unlock-earned { font-size: 11px; }
+.compact-ui .v170-milestones { gap: 5px; }
+.compact-ui .v170-milestone-list { gap: 5px; margin-top: 4px; }
+.compact-ui .v170-milestone-row { padding: 6px 8px; gap: 2px; border-radius: 4px; }
+.compact-ui .v170-milestone-row strong { font-size: 12px; }
+.compact-ui .v170-milestone-row small { font-size: 11px; }
+.compact-ui .v170-remote-businesses > summary, .compact-ui .v170-milestone-details > summary { font-size: 12px; padding: 3px 0; }
+.compact-ui .household-progression-summary { margin: 6px 0; padding: 7px 8px; gap: 4px 8px; border-radius: 5px; background: #203a46; color: var(--paper); }
+.compact-ui .household-progression-summary > span { color: #c4d4d6; font-size: 12px; }
+.compact-ui .unlock-project-card.locked { background: #202f39; opacity: 1; }
+.compact-ui .unlock-project-heading { flex-wrap: wrap; gap: 3px 5px; }
+.compact-ui .unlock-project-heading strong { font-size: 13px; color: var(--paper); }
+.compact-ui .unlock-badge { font-size: 11px; padding: 1px 5px; }
+.compact-ui .unlock-badge.locked { color: #ffaea3; background: #482a30; border-color: #96565a; }
+.compact-ui #assets .unlock-project-desc { color: #bdced1; font-size: 11px; line-height: 1.45; padding: 4px 0; margin: 2px 0; }
+.compact-ui .unlock-conditions { margin: 4px 0; gap: 4px; }
+.compact-ui .unlock-condition { flex-direction: row; align-items: baseline; flex-wrap: wrap; gap: 1px 5px; padding: 4px 5px; border-radius: 4px; font-size: 11px; }
+.compact-ui .unlock-condition.met { background: #233e36; color: #b7dcc7; }
+.compact-ui .unlock-condition.missing { background: #442e33; color: #ffb6ac; }
+.compact-ui .unlock-remaining { white-space: normal; color: #ffb6ac; font-size: 11px; }
+.compact-ui .locked-land-purchase { margin: 7px 0; padding: 8px; border-radius: 5px; }
+.compact-ui .locked-action { padding: 5px 6px; font-size: 11px; border: 1px solid var(--line); border-radius: 4px; background: #203746; color: var(--paper); }
+.compact-ui .unlock-story-banner { padding: 7px 8px; margin: 5px 0; border-radius: 5px; background: #393725; color: var(--paper); }
+.compact-ui .unlock-story-banner strong { font-size: 13px; }
+.compact-ui .unlock-story-banner span { font-size: 12px; color: #d8cbb0; line-height: 1.45; }
+
+@media (max-width: 1050px) {
+  .compact-ui .layout { grid-template-columns: 252px minmax(0,1fr); gap: 8px; }
+  .compact-ui .resource-strip { grid-template-columns: repeat(4,minmax(0,1fr)); }
+  .compact-ui .business-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .compact-ui .budget-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+}
+@media (max-width: 760px) {
+  .compact-ui .app-shell { padding: 8px; }
+  .compact-ui .layout { display: flex; flex-direction: column; gap: 8px; }
+  .compact-ui .side-panel, .compact-ui .main-panel { width: 100%; margin: 0; }
+  .compact-ui .actions-panel { order: 1; }
+  .compact-ui .main-panel { order: 2; }
+  .compact-ui .archive-panel { order: 3; }
+  .compact-ui .topbar { display: flex; flex-wrap: wrap; }
+  .compact-ui .topbar h1 { font-size: 21px; }
+  .compact-ui .top-actions { margin-top: 0; justify-content: start; }
+  .compact-ui .resource-strip { grid-template-columns: repeat(3,minmax(0,1fr)); }
+  .compact-ui .resource-strip > .resource-card { gap: 4px; padding: 5px 6px; }
+  .compact-ui .resource-strip .resource-card > b { font-size: 14px; }
+  .compact-ui .action-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .compact-ui .budget-grid { grid-template-columns: repeat(3,minmax(0,1fr)); }
+  .compact-ui .farm-stats { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .compact-ui .farm-actions, .compact-ui .land-purchase { grid-template-columns: repeat(3,minmax(0,1fr)); }
+  .compact-ui .more-status-grid { grid-template-columns: repeat(3,minmax(0,1fr)); }
+}
+@media (max-width: 480px) {
+  .compact-ui .resource-strip { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .compact-ui .budget-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .compact-ui .business-grid { grid-template-columns: minmax(0,1fr); }
+  .compact-ui .farm-actions, .compact-ui .land-purchase { grid-template-columns: repeat(2,minmax(0,1fr)); }
+}
+@media (pointer: coarse), (max-width: 480px) {
+  .compact-ui button, .compact-ui .file-button { min-height: 36px; }
+  .compact-ui .resource-plus { width: 32px; height: 36px; min-height: 36px; }
+  .compact-ui input, .compact-ui select { font-size: 16px; min-height: 36px; }
+  .compact-ui input[type="checkbox"] { min-height: 0; }
+  .compact-ui summary { min-height: 32px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .compact-ui .hourglass, .compact-ui .time-flow::after { animation: none !important; }
+  .compact-ui .relation-line { transition: none; }
+}
+
+@media (min-width: 1100px) {
+  .compact-ui #tab-family:not([hidden]) { display: grid; grid-template-columns: 270px minmax(0,1fr); gap: 6px 10px; align-items: start; }
+  .compact-ui #tab-family > .tree-instruction { grid-column: 1 / -1; }
+  .compact-ui #tab-family > .compact-family-map { grid-column: 1; }
+  .compact-ui #tab-family > .person-detail { grid-column: 2; padding-top: 0; }
+}
+
+.compact-ui .compact-family-map { min-width: 0; max-width: 100%; overflow-x: auto; overscroll-behavior-x: contain; }
+.compact-ui .compact-family-map:focus-visible { outline: 2px solid #e0bb80; outline-offset: 2px; }
