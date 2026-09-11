@@ -5,8 +5,8 @@ import fs from 'node:fs';
 const index = fs.readFileSync(new URL('../dist/index.html', import.meta.url), 'utf8');
 
 test('current page keeps the relation-tree and legacy UI compatibility layers', () => {
-  assert.match(index, /V1\.6\.6/);
-  assert.match(index, /engine-v166\.js\?v=1\.6\.6/);
+  assert.match(index, /V1\.6\.7/);
+  assert.match(index, /engine-v167\.js\?v=1\.6\.7/);
   assert.match(index, /v162-ui\.js\?v=1\.6\.2/);
   assert.match(index, /v15-ui\.js\?v=1\.5\.3/);
   assert.match(index, /v14-ui\.js\?v=1\.4\.2/);
