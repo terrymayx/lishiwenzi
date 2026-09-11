@@ -1,0 +1,16 @@
+.v170-business-group,.v170-remote-businesses,.v170-milestones{margin-top:14px;border:1px solid rgba(120,145,160,.28);border-radius:12px;padding:12px;background:rgba(255,255,255,.025)}
+.v170-group-heading,.v170-milestone-heading,.v170-milestone-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.v170-group-heading strong,.v170-milestone-heading strong{font-size:14px}
+.v170-milestone-heading span,.v170-milestone-top span,.unlock-earned{font-size:12px;color:#8fb3c7}
+.v170-remote-businesses>summary,.v170-milestone-details>summary{cursor:pointer;font-weight:700;color:#b9cbd6;padding:4px 0}
+.v170-group-grid{margin-top:10px}
+.v170-milestones{display:grid;gap:10px}
+.v170-milestone-hint,.v170-all-complete{margin:0;color:#91a8b5;font-size:12px}
+.v170-milestone-list{display:grid;gap:8px;margin-top:8px}
+.v170-milestone-row{display:grid;gap:5px;padding:9px 10px;border-radius:9px;background:rgba(11,31,45,.48);border:1px solid rgba(119,150,165,.16)}
+.v170-milestone-row.pending strong{color:#e8eef2}
+.v170-milestone-row.completed{opacity:.72}
+.v170-milestone-row.completed strong{color:#9fc5a5}
+.v170-milestone-row small{color:#91a8b5}
+.unlock-earned{display:block;margin:4px 0 8px}
+@media (max-width:900px){.v170-milestone-heading,.v170-milestone-top{align-items:flex-start;flex-direction:column;gap:3px}}
