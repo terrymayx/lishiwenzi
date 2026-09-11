@@ -74,8 +74,8 @@ test('current page keeps the compact resource shortcuts introduced in V1.6.1', (
   const index = fs.readFileSync(new URL('../dist/index.html', import.meta.url), 'utf8');
   const uiPath = new URL('../dist/v161-ui.js', import.meta.url);
 
-  assert.match(index, /V1\.6\.5/);
-  assert.match(index, /engine-v165\.js\?v=1\.6\.5/);
+  assert.match(index, /V1\.6\.6/);
+  assert.match(index, /engine-v166\.js\?v=1\.6\.6/);
   assert.match(index, /data-resource-shortcut="money"/);
   assert.match(index, /data-resource-shortcut="grain"/);
   assert.match(index, /data-resource-shortcut="reputation"/);
