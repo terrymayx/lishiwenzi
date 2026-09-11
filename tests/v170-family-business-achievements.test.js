@@ -50,6 +50,8 @@ test('V1.7 defines fifteen one-time household achievements', async () => {
 test('mill unlocks at 3 mu and 180 asset, grants 20 once, then can be bought', async () => {
   const engine = await E();
   const state = game(engine, 1701);
+  state.householdProgression.unlocked.landPurchase = true;
+  state.householdMilestoneRewards.claimed.landPurchase = true;
   state.household.land = 3; state.resources.land = 3;
   setAssetValue(engine, state, 180);
   const before = state.resources.money;
