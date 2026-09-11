@@ -105,11 +105,11 @@ test('old V1.5.3 saves migrate with zero industries', async () => {
   assert.deepEqual(loaded.industry.businesses, { grainShop: 0, clothShop: 0, caravan: 0 });
 });
 
-test('V1.6.1 page keeps V1.6.0 passive business management and routes through the current engine', () => {
+test('V1.6.2 page keeps V1.6.0 passive business management and routes through the current engine', () => {
   const index = fs.readFileSync(new URL('../dist/index.html', import.meta.url), 'utf8');
   const gameUi = fs.readFileSync(new URL('../dist/game.js', import.meta.url), 'utf8');
-  assert.match(index, /V1\.6\.1/);
-  assert.match(index, /engine-v161\.js\?v=1\.6\.1/);
+  assert.match(index, /V1\.6\.2/);
+  assert.match(index, /engine-v162\.js\?v=1\.6\.2/);
   assert.match(index, /v160\.css\?v=1\.6\.0/);
   assert.match(gameUi, /商业产业/);
   assert.match(gameUi, /产业总收入/);
