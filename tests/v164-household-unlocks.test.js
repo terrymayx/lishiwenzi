@@ -116,17 +116,18 @@ test('legacy saves preserve access to land and businesses they already own', asy
 
 test('V1.6.4 page shows locked projects with red reminders and explicit progress conditions', () => {
   const index = fs.readFileSync(new URL('../dist/index.html', import.meta.url), 'utf8');
-  const gameUi = fs.readFileSync(new URL('../dist/game.js', import.meta.url), 'utf8');
+  const unlockUi = fs.readFileSync(new URL('../dist/v164-ui.js', import.meta.url), 'utf8');
   const css = fs.readFileSync(new URL('../dist/v164.css', import.meta.url), 'utf8');
 
   assert.match(index, /V1\.6\.4/);
   assert.match(index, /engine-v164\.js\?v=1\.6\.4/);
   assert.match(index, /v164\.css\?v=1\.6\.4/);
-  assert.match(gameUi, /getHouseholdUnlockStatus/);
-  assert.match(gameUi, /未解锁/);
-  assert.match(gameUi, /还差/);
-  assert.match(gameUi, /unlock-badge/);
-  assert.match(gameUi, /unlock-condition/);
+  assert.match(index, /v164-ui\.js\?v=1\.6\.4/);
+  assert.match(unlockUi, /getHouseholdUnlockStatus/);
+  assert.match(unlockUi, /未解锁/);
+  assert.match(unlockUi, /还差/);
+  assert.match(unlockUi, /unlock-badge/);
+  assert.match(unlockUi, /unlock-condition/);
   assert.match(css, /\.unlock-badge\.locked/);
   assert.match(css, /#c62828|#b71c1c|crimson|red/i);
 });
