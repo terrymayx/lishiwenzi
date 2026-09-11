@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#102536">
-  <title>乱世家书 · V1.6.5 纯打工生计</title>
+  <title>乱世家书 · V1.6.6 两季收成</title>
   <link rel="stylesheet" href="./style.css?v=1.2.1">
   <link rel="stylesheet" href="./v13.css?v=1.3.0">
   <link rel="stylesheet" href="./v132.css?v=1.3.2">
@@ -17,10 +17,10 @@
   <script type="importmap">
     {
       "imports": {
-        "./engine.js?v=1.2.0": "./engine-v165.js?v=1.6.5",
-        "./engine-v14.js?v=1.4.1": "./engine-v165.js?v=1.6.5",
-        "./engine-v14.js?v=1.4.2": "./engine-v165.js?v=1.6.5",
-        "./engine-v15.js?v=1.5.1": "./engine-v165.js?v=1.6.5",
+        "./engine.js?v=1.2.0": "./engine-v166.js?v=1.6.6",
+        "./engine-v14.js?v=1.4.1": "./engine-v166.js?v=1.6.6",
+        "./engine-v14.js?v=1.4.2": "./engine-v166.js?v=1.6.6",
+        "./engine-v15.js?v=1.5.1": "./engine-v166.js?v=1.6.6",
         "./family-work-ui.js?v=1.4.1": "./family-work-ui.js?v=1.6.4-player-work"
       }
     }
@@ -29,20 +29,20 @@
 <body>
   <main class="app-shell">
     <section id="setup" class="setup-card">
-      <p class="eyebrow">V1.6.5 纯打工生计 · 290年1月1日</p>
+      <p class="eyebrow">V1.6.6 两季收成 · 290年1月1日</p>
       <h1>乱世家书</h1>
-      <p class="lead">按天生活、经营田庄和产业、延续家族。本人不再亲自务农，田地统一交给自动农工打理；前期主要靠短工和副业谋生。</p>
+      <p class="lead">按天生活、经营田庄和产业、延续家族。田地由自动农工打理，粮食改为夏收与秋收两季入仓；新开局初始粮食由120提高到170。</p>
       <form id="setup-form">
         <label>家族姓氏<input id="surname" maxlength="8" value="沈" required></label>
         <label>开局身份<select id="origin"></select></label>
         <button class="primary" type="submit">落笔开局</button>
       </form>
-      <p class="fine-print">家产80钱后解锁继续买田；田地6亩且家产350钱解锁粮铺。只有当前执笔人本人可以工作挣钱，田地由自动农工经营。</p>
+      <p class="fine-print">初始粮食120→170（+50）。田庄夏收45粮/亩、秋收45粮/亩；全年正常基础总产量仍为90粮/亩。</p>
     </section>
 
     <section id="game" hidden>
       <header class="topbar">
-        <div><p class="eyebrow">乱世家书 · V1.6.5</p><h1 id="date">290年1月1日</h1><p id="chapter">第1章 · 家门初立</p></div>
+        <div><p class="eyebrow">乱世家书 · V1.6.6</p><h1 id="date">290年1月1日</h1><p id="chapter">第1章 · 家门初立</p></div>
         <div class="top-actions"><button id="export" type="button">导出家书</button><label class="file-button">导入家书<input id="import" type="file" accept="application/json,.json"></label><button id="new-game" type="button">另起一门</button></div>
       </header>
 
@@ -119,12 +119,12 @@
           <div id="tab-relations" class="tab-panel" hidden><div id="relations"></div></div>
           <div id="tab-assets" class="tab-panel" hidden><div id="assets"></div></div>
           <div id="tab-timeline" class="tab-panel" hidden><div id="timeline"></div></div>
-          <details class="help"><summary>V1.6.5 规则说明</summary><p><strong>本人工作：</strong>当前执笔人不再提供“长期务农 / 务农兼短工”行动，只能通过短工、家庭副业、求学、休养等人物行动生活。母亲、配偶和其他家属仍不参与挣钱任务。</p><p><strong>短工谋生：</strong>春季80%概率找到活、0.8钱/实际工作日；夏季65%·0.8钱；秋季85%·0.9钱；冬季45%·0.7钱。找活概率保持不变，每个有活日比上一版提高0.2钱；没找到活当天0收入，也不扣短工健康。</p><p><strong>田地经营：</strong>田地不需要本人下田，继续由自动农工打理。系统按田产每3亩配置1名农工，每人每月6钱；买田跨过新的3亩档位时自动增配并支付新增农工首月工资。</p><p><strong>家业解锁：</strong>家产达到80钱后永久解锁继续买田；田地达到6亩且家产达到350钱后解锁粮铺；田地12亩、家产700钱且已有粮铺后解锁布庄；家产1500钱且已有至少2种商业产业后解锁商队。未解锁项目不会隐藏，会显示红色“未解锁”、当前进度和还差多少。</p><p><strong>资源快捷操作：</strong>钱、粮、声望旁边的“+”继续提供常用入口；钱可快速选择谋生或进入产业，粮可直接购买，声望会展开捐钱求名。</p><p><strong>农业灾害：</strong>大旱、大水、蝗灾、倒春寒等直接按灾害倍率影响收成，不再暂停让你花钱救田。</p><p><strong>商业产业：</strong>粮铺180钱→+0.7钱/日，布庄300钱→+1.2钱/日，商队600钱→+2.5钱/日。婚配、婚育和历史主线规则保持不变。</p></details>
+          <details class="help"><summary>V1.6.6 规则说明</summary><p><strong>两季收成：</strong>粮食改为夏收与秋收两季入仓。原每亩全年90粮拆分为夏收45粮/亩 + 秋收45粮/亩，正常年份的全年总产量不直接翻倍；夏季先入一批粮，秋季再入第二批。</p><p><strong>开局粮食：</strong>所有新开局身份初始粮食由120提高到170，即增加50粮；旧存档不会额外补发50粮。</p><p><strong>本人工作：</strong>当前执笔人不再提供“长期务农 / 务农兼短工”行动，只能通过短工、家庭副业、求学、休养等人物行动生活。母亲、配偶和其他家属仍不参与挣钱任务。</p><p><strong>短工谋生：</strong>春季80%概率找到活、0.8钱/实际工作日；夏季65%·0.8钱；秋季85%·0.9钱；冬季45%·0.7钱。没找到活当天0收入，也不扣短工健康。</p><p><strong>田地经营：</strong>田地不需要本人下田，继续由自动农工打理。系统按田产每3亩配置1名农工，每人每月6钱；买田跨过新的3亩档位时自动增配并支付新增农工首月工资。</p><p><strong>家业解锁：</strong>家产达到80钱后永久解锁继续买田；田地达到6亩且家产达到350钱后解锁粮铺；田地12亩、家产700钱且已有粮铺后解锁布庄；家产1500钱且已有至少2种商业产业后解锁商队。</p><p><strong>农业灾害：</strong>大旱、大水、蝗灾、倒春寒等直接按灾害倍率影响对应收成，不再暂停让你花钱救田。</p><p><strong>商业产业：</strong>粮铺180钱→+0.7钱/日，布庄300钱→+1.2钱/日，商队600钱→+2.5钱/日。婚配、婚育和历史主线规则保持不变。</p></details>
         </aside>
       </div>
     </section>
   </main>
-  <script type="module" src="./game.js?v=1.6.5"></script>
+  <script type="module" src="./game.js?v=1.6.6"></script>
   <script type="module" src="./v14-ui.js?v=1.4.2"></script>
   <script type="module" src="./v15-ui.js?v=1.5.3"></script>
   <script type="module" src="./v162-ui.js?v=1.6.2"></script>
