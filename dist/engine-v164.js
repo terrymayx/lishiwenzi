@@ -9,6 +9,10 @@ export const V164_UNLOCKS = Object.freeze({
   caravan: Object.freeze({ assetValue: 1500, businessTypes: 2 })
 });
 
+export const V164_WORK_POLICY = Object.freeze({
+  onlyCurrentProtagonistWorks: true
+});
+
 const STAGE_META = Object.freeze({
   landPurchase: Object.freeze({
     label: '置办田产',
@@ -43,6 +47,25 @@ function expose(state) {
 function addLog(state, kind, title, text) {
   state.eventLog ??= [];
   state.eventLog.push({ year: state.year, month: state.month, day: state.day, kind, title, text });
+}
+
+function neutralizeNonPlayerWork(state) {
+  if (!state) return state;
+  const agriculture = Base.ensureFamilyWork?.(state);
+  const work = agriculture?.work;
+  if (!work?.assignments) return state;
+
+  for (const person of Object.values(state.people || {})) {
+    if (!person?.alive || person.id === state.playerId || person.familyId !== state.family?.id) continue;
+    const current = work.assignments[person.id];
+    if (person.age < 16) {
+      work.assignments[person.id] = 'study';
+    } else if (!['study', 'rest'].includes(current)) {
+      work.assignments[person.id] = 'rest';
+    }
+    if (work.recovering) work.recovering[person.id] = false;
+  }
+  return state;
 }
 
 function ownedBusinessTypes(state) {
@@ -195,6 +218,32 @@ export function getHouseholdUnlockStatus(state) {
   };
 }
 
+export function getFamilyWorkAssignments(state) {
+  neutralizeNonPlayerWork(state);
+  return Base.getFamilyWorkAssignments(state).map(job => job.personId === state.playerId
+    ? job
+    : { ...job, dailyIncome: 0, farmCapacity: 0 });
+}
+
+export function getFarmSummary(state) {
+  neutralizeNonPlayerWork(state);
+  return Base.getFarmSummary(state);
+}
+
+export function getHouseholdBudget(state) {
+  neutralizeNonPlayerWork(state);
+  return Base.getHouseholdBudget(state);
+}
+
+export function setFamilyWorkAssignment(state, id, job) {
+  if (!state?.people?.[id]) return { ok: false, message: '未找到该人物。' };
+  if (id !== state.playerId) {
+    neutralizeNonPlayerWork(state);
+    return { ok: false, message: '只有当前执笔人本人可以指派工作；母亲和其他家属不参与挣钱任务。' };
+  }
+  return Base.setFamilyWorkAssignment(state, id, job);
+}
+
 function missingRequirementMessage(stage) {
   const missing = stage.conditions.filter(condition => !condition.met);
   if (!missing.length) return `${stage.label}尚未解锁。`;
@@ -206,12 +255,14 @@ function missingRequirementMessage(stage) {
 }
 
 function prepareNew(state) {
+  neutralizeNonPlayerWork(state);
   ensureProgression(state, { migrateLegacy: false });
   evaluateUnlocks(state);
   return expose(state);
 }
 
 function prepareLoaded(state, hadProgression) {
+  neutralizeNonPlayerWork(state);
   ensureProgression(state, { migrateLegacy: !hadProgression });
   evaluateUnlocks(state);
   return expose(state);
@@ -249,8 +300,10 @@ export function buyBusiness(state, businessId, count = 1) {
 }
 
 export function advanceDay(state) {
+  neutralizeNonPlayerWork(state);
   ensureProgression(state);
   const result = Base.advanceDay(state);
+  neutralizeNonPlayerWork(state);
   if (result?.ok) evaluateUnlocks(state);
   expose(state);
   return result;

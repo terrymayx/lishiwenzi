@@ -21,7 +21,7 @@
         "./engine-v14.js?v=1.4.1": "./engine-v164.js?v=1.6.4",
         "./engine-v14.js?v=1.4.2": "./engine-v164.js?v=1.6.4",
         "./engine-v15.js?v=1.5.1": "./engine-v164.js?v=1.6.4",
-        "./family-work-ui.js?v=1.4.1": "./family-work-ui.js?v=1.4.2"
+        "./family-work-ui.js?v=1.4.1": "./family-work-ui.js?v=1.6.4-player-work"
       }
     }
   </script>
@@ -37,7 +37,7 @@
         <label>开局身份<select id="origin"></select></label>
         <button class="primary" type="submit">落笔开局</button>
       </form>
-      <p class="fine-print">家产80钱后解锁继续买田；田地6亩且家产350钱解锁粮铺。未解锁项目会显示红色提醒、当前进度和还差多少，解锁后永久开放。</p>
+      <p class="fine-print">家产80钱后解锁继续买田；田地6亩且家产350钱解锁粮铺。只有当前执笔人本人可以指派工作挣钱，其他家属不参与工作指派。</p>
     </section>
 
     <section id="game" hidden>
@@ -115,11 +115,11 @@
 
         <aside class="side-panel archive-panel">
           <nav class="tabs" aria-label="家族资料页签"><button type="button" data-tab="family" class="active">家族树</button><button type="button" data-tab="relations">关系</button><button type="button" data-tab="assets">产业</button><button type="button" data-tab="timeline">历史</button></nav>
-          <div id="tab-family" class="tab-panel"><p class="tree-instruction">左键查看并高亮关系 · 右键指派工作 · 金线为婚姻，蓝灰线为血缘</p><svg id="tree" class="family-tree" role="img" aria-label="带亲属关系线的可交互家族树"></svg><div id="person-detail" class="person-detail"></div></div>
+          <div id="tab-family" class="tab-panel"><p class="tree-instruction">左键查看并高亮关系 · 仅当前执笔人可右键指派工作 · 金线为婚姻，蓝灰线为血缘</p><svg id="tree" class="family-tree" role="img" aria-label="带亲属关系线的可交互家族树"></svg><div id="person-detail" class="person-detail"></div></div>
           <div id="tab-relations" class="tab-panel" hidden><div id="relations"></div></div>
           <div id="tab-assets" class="tab-panel" hidden><div id="assets"></div></div>
           <div id="tab-timeline" class="tab-panel" hidden><div id="timeline"></div></div>
-          <details class="help"><summary>V1.6.4 规则说明</summary><p><strong>家业解锁：</strong>家产达到80钱后永久解锁继续买田；田地达到6亩且家产达到350钱后解锁粮铺；田地12亩、家产700钱且已有粮铺后解锁布庄；家产1500钱且已有至少2种商业产业后解锁商队。未解锁项目不会隐藏，会显示红色“未解锁”、当前进度和还差多少。</p><p><strong>短工谋生：</strong>春季80%概率找到活、0.6钱/实际工作日；夏季65%·0.6钱；秋季85%·0.7钱；冬季45%·0.5钱。没找到活当天0收入，也不会扣短工健康。</p><p><strong>资源快捷操作：</strong>钱、粮、声望旁边的“+”继续提供常用入口；钱可快速选择谋生或进入产业，粮可直接购买，声望会展开捐钱求名。</p><p><strong>农业灾害：</strong>大旱、大水、蝗灾、倒春寒等直接按灾害倍率影响收成，不再暂停让你花钱救田。</p><p><strong>田庄农工：</strong>系统按田产每3亩自动配置1名农工，每人每月6钱，没有30人上限。买田跨过新的3亩档位时，会自动增配农工并支付新增农工首月工资。</p><p><strong>商业产业：</strong>粮铺180钱→+0.7钱/日，布庄300钱→+1.2钱/日，商队600钱→+2.5钱/日。婚配、婚育和历史主线规则保持不变。</p></details>
+          <details class="help"><summary>V1.6.4 规则说明</summary><p><strong>工作指派：</strong>只有当前执笔人本人可以被指派短工、家庭副业、亲自务农等工作。母亲、配偶和其他家属不再参与挣钱任务，也不提供家庭农作劳力；未成年家属仍可自然处于求学状态。田庄自动农工照常工作。</p><p><strong>家业解锁：</strong>家产达到80钱后永久解锁继续买田；田地达到6亩且家产达到350钱后解锁粮铺；田地12亩、家产700钱且已有粮铺后解锁布庄；家产1500钱且已有至少2种商业产业后解锁商队。未解锁项目不会隐藏，会显示红色“未解锁”、当前进度和还差多少。</p><p><strong>短工谋生：</strong>春季80%概率找到活、0.6钱/实际工作日；夏季65%·0.6钱；秋季85%·0.7钱；冬季45%·0.5钱。没找到活当天0收入，也不会扣短工健康。</p><p><strong>资源快捷操作：</strong>钱、粮、声望旁边的“+”继续提供常用入口；钱可快速选择谋生或进入产业，粮可直接购买，声望会展开捐钱求名。</p><p><strong>农业灾害：</strong>大旱、大水、蝗灾、倒春寒等直接按灾害倍率影响收成，不再暂停让你花钱救田。</p><p><strong>田庄农工：</strong>系统按田产每3亩自动配置1名农工，每人每月6钱，没有30人上限。买田跨过新的3亩档位时，会自动增配农工并支付新增农工首月工资。</p><p><strong>商业产业：</strong>粮铺180钱→+0.7钱/日，布庄300钱→+1.2钱/日，商队600钱→+2.5钱/日。婚配、婚育和历史主线规则保持不变。</p></details>
         </aside>
       </div>
     </section>
