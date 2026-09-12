@@ -2,7 +2,7 @@ import {
   advanceMonth,
   getMonthTurnStatus,
   serializeState
-} from './engine-v180.js?v=1.8.0';
+} from './engine-v180.js?v=1.8.1';
 
 const STORAGE_KEY = 'luanshi-jia-shu-v3';
 let settling = false;
@@ -141,9 +141,9 @@ function renderMonthlyState() {
   const statusLine = document.querySelector('#status-line');
   if (!button) return;
 
-  document.title = '乱世家书 · V1.8.0 月度回合制';
+  document.title = '乱世家书 · V1.8.1 现金任务门槛';
   document.querySelectorAll('.topbar .eyebrow, #setup .eyebrow').forEach(node => {
-    if (/乱世家书|V1\.7\.6/.test(node.textContent || '')) node.textContent = node.closest('#setup') ? 'V1.8.0 月度回合制 · 290年1月1日' : '乱世家书 · V1.8.0';
+    if (/乱世家书|V1\.7\.6|V1\.8\.0/.test(node.textContent || '')) node.textContent = node.closest('#setup') ? 'V1.8.1 现金任务门槛 · 290年1月1日' : '乱世家书 · V1.8.1';
   });
 
   const blockedByDecision = Boolean(current.pendingEvent) || current.phase === 'succession' || current.phase === 'guardian';
