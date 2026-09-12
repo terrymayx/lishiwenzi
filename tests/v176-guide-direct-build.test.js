@@ -9,7 +9,7 @@ test('V1.7.6 loads the direct-build guide helper and cache-busts the overview la
   const html = read('dist/index.html');
   assert.match(html, /V1\.7\.6/);
   assert.match(html, /v172-ui\.js\?v=1\.7\.6/);
-  assert.match(html, /v176-ui\.js\?v=1\.7\.6/);
+  assert.match(html, /v176-ui\.js\?v=1\.7\.6(?:\.1)?/);
   assert.match(html, /game\.js\?v=1\.7\.6/);
 });
 
@@ -34,4 +34,11 @@ test('guide action presents land, build and caravan verbs plus cash-shortage fee
   assert.match(ui, /现钱不足/);
   assert.match(ui, /暂停时间后/);
   assert.match(ui, /data-guide-action/);
+});
+
+test('direct-build button renders after legacy overview timers so it cannot be overwritten', () => {
+  const ui = read('dist/v176-ui.js');
+  // v172/v174 both rebuild #next-goal-panel through zero-delay timers. V1.7.6 must defer
+  // one additional timer turn, otherwise the legacy overview renderer can erase the button.
+  assert.match(ui, /window\.setTimeout\(\(\) => \{\s*window\.setTimeout\(\(\) => \{[\s\S]*?renderGuideAction\(window\.__luanshiState\)/);
 });

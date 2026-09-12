@@ -180,9 +180,13 @@ let scheduled = false;
 function schedule() {
   if (scheduled) return;
   scheduled = true;
+  // v172/v174 rebuild the whole goal panel in zero-delay timers. Defer one extra
+  // timer turn so this V1.7.6 action is attached to the final panel, not erased by it.
   window.setTimeout(() => {
-    scheduled = false;
-    renderGuideAction(window.__luanshiState);
+    window.setTimeout(() => {
+      scheduled = false;
+      renderGuideAction(window.__luanshiState);
+    }, 0);
   }, 0);
 }
 
