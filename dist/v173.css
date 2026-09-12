@@ -1,0 +1,7 @@
+/* V1.7.3 产业限额与首次建成奖励提示；继续沿用 V1.7.1/1.7.2 紧凑布局。 */
+.compact-ui .v173-limit-hint{margin:4px 0 7px;padding:5px 7px;border:1px dashed rgba(231,207,145,.28);border-radius:6px;color:#b9cbd5;background:rgba(231,207,145,.04)}
+.compact-ui .business-card.v173-at-limit{border-color:rgba(159,197,165,.28);background:rgba(159,197,165,.035)}
+.compact-ui .business-card.v173-at-limit .business-buy{opacity:.72;cursor:not-allowed}
+.compact-ui .business-card.v173-idle-overflow{border-color:rgba(228,183,170,.38)}
+.compact-ui .business-card.v173-idle-overflow .unlock-earned{color:#e4b7aa}
+.compact-ui .unlock-earned{line-height:1.35}
