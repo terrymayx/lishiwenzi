@@ -99,3 +99,13 @@ test('ordinary asset milestones still use total household assets', async () => {
   const milestones = E.getV170MilestoneStatus(state);
   assert.equal(milestones.byId.assets500.completed, true, 'side achievements should remain based on total household assets');
 });
+
+test('V1.8.1 page publishes the cash-threshold guide rule and cache-busts the current engine', () => {
+  const index = fs.readFileSync(new URL('../dist/index.html', import.meta.url), 'utf8');
+  assert.match(index, /V1\.8\.1/);
+  assert.match(index, /当前任务.*现金|现金.*当前任务/);
+  assert.match(index, /普通经营成就.*家产|家产.*经营成就/);
+  assert.match(index, /engine-v180\.js\?v=1\.8\.1/);
+  assert.match(index, /game\.js\?v=1\.8\.1/);
+  assert.match(index, /v180-ui\.js\?v=1\.8\.1/);
+});
