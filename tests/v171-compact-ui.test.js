@@ -12,19 +12,21 @@ test('compact UI remains the base while the current release stylesheet wins the 
   const compactIndex = sheets.indexOf('./v171.css?v=1.7.1');
   const overviewIndex = sheets.indexOf('./v172.css?v=1.7.2');
   const industryIndex = sheets.indexOf('./v173.css?v=1.7.3');
-  const currentIndex = sheets.indexOf('./v174.css?v=1.7.4');
+  const guideIndex = sheets.indexOf('./v174.css?v=1.7.4');
+  const currentIndex = sheets.indexOf('./v180.css?v=1.8.0');
   assert.ok(compactIndex >= 0, 'V1.7.1 compact stylesheet is retained');
   assert.ok(overviewIndex > compactIndex, 'V1.7.2 overview stylesheet layers on top of compact UI');
   assert.ok(industryIndex > overviewIndex, 'V1.7.3 industry state styling remains layered on top of the overview');
-  assert.ok(currentIndex > industryIndex, 'V1.7.4 guide styling remains the current visual layer');
-  assert.equal(sheets.at(-1), './v174.css?v=1.7.4');
+  assert.ok(guideIndex > industryIndex, 'V1.7.4 guide styling remains layered on top of industry state styling');
+  assert.ok(currentIndex > guideIndex, 'V1.8.0 monthly-turn styling is the current visual layer');
+  assert.equal(sheets.at(-1), './v180.css?v=1.8.0');
   assert.match(html, /v171-ui\.js\?v=1\.7\.1/);
 });
 
-test('current release keeps the compact viewport and routes gameplay through V1.7.5', () => {
+test('current release keeps the compact viewport and routes gameplay through V1.8.0', () => {
   const map = JSON.parse(html.match(/<script type="importmap">([\s\S]*?)<\/script>/)[1]);
-  assert.equal(map.imports['./engine.js?v=1.2.0'], './engine-v175.js?v=1.7.5');
-  assert.equal(map.imports['./engine-v174.js?v=1.7.4'], './engine-v175.js?v=1.7.5');
+  assert.equal(map.imports['./engine.js?v=1.2.0'], './engine-v180.js?v=1.8.0');
+  assert.equal(map.imports['./engine-v174.js?v=1.7.4'], './engine-v180.js?v=1.8.0');
   assert.equal(map.imports['./family-work-ui.js?v=1.4.1'], './family-work-ui.js?v=1.6.4-player-work');
   assert.match(html, /width=device-width, initial-scale=1/);
   assert.doesNotMatch(html, /user-scalable=no|maximum-scale=1/);
