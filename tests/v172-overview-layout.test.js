@@ -45,3 +45,13 @@ test('V1.7.2 next-goal helper remains view-only and reads current progression', 
   assert.doesNotMatch(js, /buyLand\(/);
   assert.doesNotMatch(js, /resources\.money\s*=/);
 });
+
+test('next-goal panel keeps the strict guide current task visible after threshold readiness', () => {
+  const js = read('dist/v172-ui.js');
+  assert.match(js, /guideCurrentId/);
+  assert.match(js, /请点击“置办”并成功买下至少1亩新田/);
+  assert.match(js, /只有购买成功才算完成/);
+  assert.match(js, /置办成功.*后到账/);
+  assert.match(js, /条件达标只代表可以建设，不会自动完成任务/);
+  assert.doesNotMatch(js, /description\.textContent = stage\s*\? `\$\{stage\.storyTitle \|\| stage\.label\} · 达成全部条件后自动解锁/);
+});

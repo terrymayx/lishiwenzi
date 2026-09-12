@@ -22,6 +22,8 @@ function milestoneDistance(item) {
 }
 
 function nearestLockedStage(status) {
+  const guideCurrentId = status?.guideCurrentId;
+  if (guideCurrentId && status?.[guideCurrentId]) return status[guideCurrentId];
   return STAGE_ORDER
     .map((id, order) => ({ order, stage: status?.[id] }))
     .filter(entry => entry.stage && !entry.stage.unlocked)
@@ -87,12 +89,13 @@ export function renderNextGoalPanel(state) {
   const industry = getIndustrySummary(state);
   const stage = nearestLockedStage(household);
   const milestone = nearestMilestone(state);
+  const strictGuide = Boolean(household?.guideCurrentId);
   panel.replaceChildren();
 
   const heading = document.createElement('div');
   heading.className = 'next-goal-heading';
   const headingTitle = document.createElement('strong');
-  headingTitle.textContent = '下一步目标';
+  headingTitle.textContent = strictGuide ? '当前任务' : '下一步目标';
   const headingMeta = document.createElement('span');
   headingMeta.textContent = `家产 ${Number(household?.assetValue || 0).toFixed(1)}钱`;
   heading.append(headingTitle, headingMeta);
@@ -101,11 +104,21 @@ export function renderNextGoalPanel(state) {
   const card = document.createElement('section');
   card.className = 'next-goal-card';
   const title = document.createElement('h3');
-  title.textContent = stage?.label || '家业项目已全部解锁';
+  title.textContent = stage?.label || (strictGuide ? '家业主线已全部完成' : '家业项目已全部解锁');
   const description = document.createElement('p');
-  description.textContent = stage
-    ? `${stage.storyTitle || stage.label} · 达成全部条件后自动解锁。`
-    : '继续扩大经营规模，并完成尚未达成的家业成就。';
+  if (!stage) {
+    description.textContent = '继续扩大经营规模，并完成尚未达成的家业成就。';
+  } else if (strictGuide && stage.id === 'landPurchase') {
+    description.textContent = stage.unlocked
+      ? '置办条件已经满足。请点击“置办”并成功买下至少1亩新田；只有购买成功才算完成，随后才解锁下一项。'
+      : '先达到置办新田的家产条件；达到条件后仍需点击“置办”并成功购买，才算完成任务。';
+  } else if (strictGuide) {
+    description.textContent = stage.unlocked
+      ? `${stage.label}的条件已经满足。请实际点击建设并成功建成；只有建成后才算完成，随后才解锁下一项。`
+      : `先满足${stage.label}的全部条件；条件达标只代表可以建设，不会自动完成任务。`;
+  } else {
+    description.textContent = `${stage.storyTitle || stage.label} · 达成全部条件后自动解锁。`;
+  }
   card.append(title, description);
 
   if (stage) {
@@ -116,7 +129,9 @@ export function renderNextGoalPanel(state) {
 
     const reward = document.createElement('div');
     reward.className = 'next-goal-reward';
-    reward.textContent = `解锁奖励 +${Number(stage.rewardMoney || 0)}钱 · 自动到账`;
+    reward.textContent = strictGuide
+      ? `完成奖励 +${Number(stage.rewardMoney || 0)}钱 · ${stage.id === 'landPurchase' ? '置办成功' : '实际建成'}后到账`
+      : `解锁奖励 +${Number(stage.rewardMoney || 0)}钱 · 自动到账`;
     card.append(reward);
   }
   panel.append(card);
