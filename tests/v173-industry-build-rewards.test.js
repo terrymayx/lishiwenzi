@@ -156,10 +156,11 @@ test('old saves that already received an unlock reward never receive the new bui
   assert.equal(loaded.resources.money, before - E.V170_BUSINESSES.mill.price);
 });
 
-test('current page routes gameplay through V1.7.3 and advertises first-build rewards and limits', () => {
+test('current page retains V1.7.3 industry limits beneath the V1.7.4 guide-chain policy', () => {
   const index = fs.readFileSync(new URL('../dist/index.html', import.meta.url), 'utf8');
   assert.match(index, /V1\.7\.3/);
   assert.match(index, /engine-v173\.js\?v=1\.7\.3/);
-  assert.match(index, /首次建成奖励/);
+  assert.match(index, /完成奖励/);
   assert.match(index, /产业上限|已达上限/);
+  assert.match(index, /V1\.7\.4 家业引导链/);
 });
