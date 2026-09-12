@@ -12,7 +12,7 @@ test('V1.7.2 keeps V1.7.1 compact density and remains the overview layout base',
   assert.match(html, /body class="compact-ui"/);
   assert.match(html, /v171\.css\?v=1\.7\.1/);
   assert.match(html, /v172\.css\?v=1\.7\.2/);
-  assert.match(html, /v172-ui\.js\?v=1\.7\.(?:2|3)/);
+  assert.match(html, /v172-ui\.js\?v=1\.7\.(?:2|3|4)/);
 });
 
 test('V1.7.2 separates status, actions, current stage, next goal and detail tabs', () => {
