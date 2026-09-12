@@ -1,0 +1,23 @@
+/* V1.7.4 家业引导链：一次只突出一个主目标。 */
+.compact-ui .v174-guide-panel{display:flex;flex-direction:column;gap:7px}
+.compact-ui .v174-guide-heading span{font-weight:700}
+.compact-ui .v174-guide-card{border-width:1px}
+.compact-ui .v174-guide-card.ready{box-shadow:0 0 0 1px rgba(214,184,112,.18) inset}
+.compact-ui .v174-condition-list{display:grid;gap:3px;margin:6px 0}
+.compact-ui .v174-condition{display:flex;justify-content:space-between;gap:8px;padding:3px 0;border-bottom:1px dashed rgba(255,255,255,.06);font-size:.88em}
+.compact-ui .v174-condition.missing{opacity:.88}
+.compact-ui .v174-condition.guide-gate{font-weight:700}
+.compact-ui .v174-guide-cost,.compact-ui .v174-guide-reward,.compact-ui .v174-next-preview{margin-top:5px;padding:5px 7px;border-radius:6px;background:rgba(255,255,255,.035)}
+.compact-ui .v174-guide-reward{font-weight:800}
+.compact-ui .v174-next-preview{font-size:.88em;opacity:.9}
+.compact-ui .v174-chain-progress{display:flex;flex-wrap:wrap;gap:4px;margin-top:2px}
+.compact-ui .v174-chain-progress span{padding:3px 6px;border-radius:999px;border:1px solid rgba(255,255,255,.09);font-size:.76em}
+.compact-ui .v174-chain-progress .done{opacity:.72}
+.compact-ui .v174-chain-progress .current{font-weight:800;border-color:rgba(214,184,112,.42)}
+.compact-ui .v174-chain-progress .locked{opacity:.38}
+.compact-ui .business-card.v174-current-goal,.compact-ui .unlock-project-card.v174-current-goal,.compact-ui .unlock-project.v174-current-goal{outline:1px solid rgba(214,184,112,.46);outline-offset:-1px}
+.compact-ui .business-card.v174-chain-locked,.compact-ui .unlock-project-card.v174-chain-locked,.compact-ui .unlock-project.v174-chain-locked{opacity:.46;filter:saturate(.55)}
+.compact-ui .business-card.v174-chain-locked .business-buy{cursor:not-allowed}
+.compact-ui .business-card.v174-guide-completed .v174-card-guide-line{opacity:.78}
+.compact-ui .v174-card-guide-line{display:block;margin:4px 0;line-height:1.35}
+.compact-ui .v174-chain-hint{margin-top:5px;font-weight:650}
