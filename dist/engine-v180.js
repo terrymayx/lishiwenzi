@@ -10,6 +10,20 @@ export const V180_MONTHLY_TURN_POLICY = Object.freeze({
   reportAtMonthEnd: true
 });
 
+export const V181_GUIDE_CASH_THRESHOLDS = Object.freeze({
+  landPurchase: 80,
+  mill: 180,
+  grainShop: 350,
+  clothShop: 700,
+  oilPress: 1000,
+  caravan: 1500,
+  winery: 2200,
+  inn: 3500,
+  weavingWorkshop: 5500,
+  paperMill: 8000,
+  waterFleet: 15000
+});
+
 function expose(state) {
   if (typeof window !== 'undefined' && state) window.__luanshiState = state;
   return state;
@@ -34,6 +48,104 @@ function sameDate(a, b) {
 
 function number(value) {
   return Number.isFinite(Number(value)) ? Number(value) : 0;
+}
+
+function round2(value) {
+  return Math.round(number(value) * 100) / 100;
+}
+
+function currentCash(state) {
+  return Math.max(0, round2(state?.resources?.money));
+}
+
+function cashCondition(state, id) {
+  const required = Number(V181_GUIDE_CASH_THRESHOLDS[id] || 0);
+  if (!required) return null;
+  const current = currentCash(state);
+  return {
+    label: '现金',
+    current,
+    required,
+    unit: '钱',
+    met: current >= required,
+    remaining: round2(Math.max(0, required - current)),
+    cashGuide: true
+  };
+}
+
+function replaceAssetWithCashCondition(state, id, conditions = []) {
+  const cash = cashCondition(state, id);
+  if (!cash) return [...conditions];
+  let replaced = false;
+  const next = (conditions || []).map(condition => {
+    if (condition?.label !== '家产') return { ...condition };
+    replaced = true;
+    return cash;
+  });
+  if (!replaced) next.push(cash);
+  return next;
+}
+
+function conditionsReady(conditions = []) {
+  return conditions.length > 0 && conditions.every(condition => Boolean(condition?.met));
+}
+
+function patchCurrentHouseholdStatus(state, source) {
+  const currentId = source?.guideCurrentId;
+  if (!currentId || !V181_GUIDE_CASH_THRESHOLDS[currentId] || !source?.[currentId]) {
+    return { ...source, cashValue: currentCash(state) };
+  }
+  const stage = source[currentId];
+  if (stage.guideCompleted) return { ...source, cashValue: currentCash(state) };
+  const conditions = replaceAssetWithCashCondition(state, currentId, stage.conditions || []);
+  const ready = conditionsReady(conditions);
+  return {
+    ...source,
+    cashValue: currentCash(state),
+    newlyUnlocked: (source.newlyUnlocked || []).filter(id => id !== currentId || ready),
+    [currentId]: {
+      ...stage,
+      conditions,
+      unlocked: ready,
+      allConditionsMet: ready,
+      rewardAvailableOnBuild: Boolean(stage.rewardAvailableOnBuild) && ready,
+      buildState: ready ? 'available' : 'locked'
+    }
+  };
+}
+
+function patchCurrentGuideStatus(state, source) {
+  const currentId = source?.current?.id;
+  if (!currentId || !V181_GUIDE_CASH_THRESHOLDS[currentId]) return source;
+  const current = source.current;
+  const conditions = replaceAssetWithCashCondition(state, currentId, current.conditions || []);
+  const ready = conditionsReady(conditions);
+  const patchedCurrent = {
+    ...current,
+    conditions,
+    thresholdReady: current.completed ? true : ready,
+    canComplete: Boolean(current.current) && ready
+  };
+  const list = (source.list || []).map(item => item.id === currentId ? patchedCurrent : item);
+  const byId = { ...(source.byId || {}), [currentId]: patchedCurrent };
+  return {
+    ...source,
+    list,
+    byId,
+    current: patchedCurrent,
+    cashValue: currentCash(state)
+  };
+}
+
+function missingCurrentGuideMessage(current) {
+  const missing = (current?.conditions || []).filter(condition => !condition.met);
+  if (!missing.length) return `${current?.label || '当前任务'}尚未具备执行条件。`;
+  const detail = missing.map(condition => {
+    if (condition.label === '现金') return `现金还差${condition.remaining}${condition.unit || '钱'}`;
+    if (condition.label?.startsWith('已有')) return condition.label;
+    return `${condition.label}还差${condition.remaining}${condition.unit || ''}`;
+  }).join('，');
+  return `${current?.label || '当前任务'}尚未具备执行条件：${detail}。`;
 }
 
 function resourceSnapshot(state) {
@@ -166,6 +278,30 @@ function interruption(state, turn, result = null, started = false) {
   };
 }
 
+export function getHouseholdUnlockStatus(state) {
+  return patchCurrentHouseholdStatus(state, Base.getHouseholdUnlockStatus(state));
+}
+
+export function getV174GuideStatus(state) {
+  return patchCurrentGuideStatus(state, Base.getV174GuideStatus(state));
+}
+
+export function buyLand(state, acres = 1) {
+  const guide = getV174GuideStatus(state);
+  if (guide.current?.id === 'landPurchase' && !guide.current.thresholdReady) {
+    return { ok: false, message: missingCurrentGuideMessage(guide.current) };
+  }
+  return Base.buyLand(state, acres);
+}
+
+export function buyBusiness(state, businessId, count = 1) {
+  const guide = getV174GuideStatus(state);
+  if (guide.current?.id === businessId && !guide.current.thresholdReady) {
+    return { ok: false, message: missingCurrentGuideMessage(guide.current) };
+  }
+  return Base.buyBusiness(state, businessId, count);
+}
+
 export function getMonthTurnStatus(state) {
   if (!state) return { version: 180, active: false, lastReport: null };
   const turn = ensureMonthTurn(state);
@@ -256,5 +392,9 @@ export const __v180Test = Object.freeze({
   nextMonthTarget,
   resourceSnapshot,
   playerSnapshot,
-  buildReport
+  buildReport,
+  cashCondition,
+  replaceAssetWithCashCondition,
+  patchCurrentHouseholdStatus,
+  patchCurrentGuideStatus
 });
