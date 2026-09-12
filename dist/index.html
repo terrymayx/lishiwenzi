@@ -13,8 +13,9 @@
   <meta name="compatibility-v173" content="V1.7.3 产业建设引导 engine-v173.js?v=1.7.3">
   <meta name="compatibility-v174" content="V1.7.4 家业引导链 engine-v174.js?v=1.7.4">
   <meta name="compatibility-v175" content="V1.7.5 严格完成制 engine-v175.js?v=1.7.5">
+  <meta name="compatibility-v176" content="V1.7.6 任务内直接建设">
   <meta name="compatibility-v164-ui" content="v164-ui.js?v=1.6.9">
-  <title>乱世家书 · V1.7.5 家业奖励完成制</title>
+  <title>乱世家书 · V1.7.6 任务内直接建设</title>
   <link rel="stylesheet" href="./style.css?v=1.2.1">
   <link rel="stylesheet" href="./v13.css?v=1.3.0">
   <link rel="stylesheet" href="./v132.css?v=1.3.2">
@@ -47,21 +48,21 @@
 <body class="compact-ui">
   <main class="app-shell">
     <section id="setup" class="setup-card">
-      <p class="eyebrow">V1.7.5 家业奖励完成制 · 290年1月1日</p>
+      <p class="eyebrow">V1.7.6 任务内直接建设 · 290年1月1日</p>
       <h1>乱世家书</h1>
-      <p class="lead">按天生活、经营田庄和产业、延续家族。家业链严格按“完成”推进：达到条件不算完成；真正购买或建成后才发奖励；完成后才解锁下一项。</p>
+      <p class="lead">按天生活、经营田庄和产业、延续家族。家业链严格按“完成”推进：达到条件不算完成；条件满足后会在当前任务中直接出现置办/建设按钮，真正购买或建成后才发奖励并解锁下一项。</p>
       <form id="setup-form">
         <label>家族姓氏<input id="surname" maxlength="8" value="沈" required></label>
         <label>开局身份<select id="origin"></select></label>
         <button class="primary" type="submit">落笔开局</button>
       </form>
-      <p class="fine-print">当前唯一主目标会一直显示在右侧：置办新田 → 磨坊 → 粮铺 → 布庄 → 油坊 → 第一支商队 → 酒坊 → 客栈 → 织坊 → 纸坊 → 水运船队。门槛只表示“现在可以做”，不再代表“已经完成”。</p>
+      <p class="fine-print">当前唯一主目标会一直显示在右侧：置办新田 → 磨坊 → 粮铺 → 布庄 → 油坊 → 第一支商队 → 酒坊 → 客栈 → 织坊 → 纸坊 → 水运船队。门槛只表示“现在可以做”；满足后直接在任务卡内操作，实际成功才算完成。</p>
     </section>
 
     <section id="game" hidden>
       <section id="compact-status" class="compact-status" aria-label="当前状态总览">
         <header class="topbar">
-          <div><p class="eyebrow">乱世家书 · V1.7.5</p><h1 id="date">290年1月1日</h1><p id="chapter">第1章 · 家门初立</p></div>
+          <div><p class="eyebrow">乱世家书 · V1.7.6</p><h1 id="date">290年1月1日</h1><p id="chapter">第1章 · 家门初立</p></div>
           <div class="top-actions"><button id="export" type="button">导出家书</button><label class="file-button">导入家书<input id="import" type="file" accept="application/json,.json"></label><button id="new-game" type="button">另起一门</button></div>
         </header>
         <div id="compact-person-summary" class="compact-person-summary" aria-live="polite">等待开局</div>
@@ -102,7 +103,7 @@
 
         <aside id="next-goal-panel" class="side-panel next-goal-panel" aria-label="家业引导链当前目标">
           <div class="next-goal-heading"><strong>家业引导链</strong><span>等待状态</span></div>
-          <p>开局后这里只显示当前唯一主目标；达到条件只表示可以执行，真正购买或建成后才发奖励，完成后才解锁下一项。</p>
+          <p>开局后这里只显示当前唯一主目标；达到条件只表示可以执行，满足条件后会出现直接操作按钮，真正购买或建成后才发奖励，完成后才解锁下一项。</p>
         </aside>
       </div>
 
@@ -112,11 +113,11 @@
         <div id="tab-relations" class="tab-panel" hidden><div id="relations"></div></div>
         <div id="tab-assets" class="tab-panel" hidden><div id="assets"></div></div>
         <div id="tab-timeline" class="tab-panel" hidden><div id="timeline"></div></div>
-        <details class="help"><summary>V1.7.5 规则说明</summary><p><strong>家业引导链：</strong>家业按严格顺序推进。当前任务只有在真实购买或建成后才完成；后面的任务即使数值提前达标，也继续锁定。</p><p><strong>门槛不是完成：</strong>家产、田地、声望、学识等达到要求，只代表当前任务已经具备执行条件。达到条件不算完成，不发任务奖励，也不解锁下一项。</p><p><strong>什么叫完成：</strong>置办新田必须真正购买至少1亩新田；产业任务必须真正购置并建成对应产业。真正购买或建成后才发奖励，完成后才解锁下一项。</p><p><strong>主线顺序：</strong>置办新田 → 磨坊 → 粮铺 → 布庄 → 油坊 → 第一支商队 → 酒坊 → 客栈 → 织坊 → 纸坊 → 水运船队。</p><p><strong>完成奖励：</strong>置办新田+20钱；磨坊+20钱、粮铺+50钱、布庄+100钱、油坊+80钱、第一支商队+200钱、酒坊+120钱、客栈+180钱、织坊+250钱、纸坊+350钱、水运船队+600钱。每项最多结算一次。</p><p><strong>旧存档修复：</strong>V1.7.5会重新核对真实完成证据：新购田地记录和实际持有产业才算完成；仅仅达到门槛、旧解锁标记或被错误推断的前置任务不会再算完成。已经实际到账过的旧奖励不会重复发放。</p><p><strong>产业上限：</strong>磨坊、粮铺、布庄、油坊、酒坊、客栈、织坊、纸坊、水运船队最多1份；商队最多2支。第一支商队完成主线后仍可购置第二支，以满足水运船队的2支商队条件。</p><p><strong>家业目标与经营成就：</strong>15个普通经营里程碑继续作为侧面成就，达标后自动奖励；家业引导链任务奖励则只在真实购买或建成后结算。</p><p><strong>体力：</strong>劳动消耗体力；体力≤35自动休养，恢复到60后再工作。口粮充足时休养每日恢复1.20体力。</p><p><strong>健康：</strong>健康独立于体力。健康越低，人物每日死亡风险越高；普通休养只恢复体力，不直接恢复健康。</p><p><strong>母亲务农：</strong>初始母亲健在时免费照看前3亩田；超过3亩的部分继续按每3亩1名农工、每人每月6钱自动雇工。母亲务农属于家庭被动劳力，田地不需要本人下田，继续由自动农工打理；母亲去世后前三亩重新计入雇工需求。</p><p><strong>两季收成：</strong>粮食按夏收45粮/亩 + 秋收45粮/亩两季入仓，正常年份全年基础总产量90粮/亩。</p><p><strong>本人工作：</strong>当前执笔人不亲自务农，只能通过短工、家庭副业、求学、休养等人物行动生活；田地由母亲与自动农工经营。</p><p><strong>短工谋生：</strong>春季80%概率找到活、0.8钱/实际工作日；夏季65%·0.8钱；秋季85%·0.9钱；冬季45%·0.7钱。</p><p><strong>兼容：</strong>婚配、婚育、历史主线、紧凑总览布局和产业限额继续保留。</p></details>
+        <details class="help"><summary>V1.7.6 规则说明</summary><p><strong>家业引导链：</strong>家业按严格顺序推进。当前任务只有在真实购买或建成后才完成；后面的任务即使数值提前达标，也继续锁定。</p><p><strong>门槛不是完成：</strong>家产、田地、声望、学识等达到要求，只代表当前任务已经具备执行条件。达到条件不算完成，不发任务奖励，也不解锁下一项。</p><p><strong>任务内直接操作：</strong>当前任务满足全部前置条件后，会直接出现“置办1亩”“建造/开设产业”或“组建商队/船队”按钮。玩家无需再去产业页寻找入口；只有按钮操作实际成功，任务才完成。</p><p><strong>什么叫完成：</strong>置办新田必须真正购买至少1亩新田；产业任务必须真正购置并建成对应产业。真正购买或建成后才发奖励，完成后才解锁下一项。</p><p><strong>主线顺序：</strong>置办新田 → 磨坊 → 粮铺 → 布庄 → 油坊 → 第一支商队 → 酒坊 → 客栈 → 织坊 → 纸坊 → 水运船队。</p><p><strong>完成奖励：</strong>置办新田+20钱；磨坊+20钱、粮铺+50钱、布庄+100钱、油坊+80钱、第一支商队+200钱、酒坊+120钱、客栈+180钱、织坊+250钱、纸坊+350钱、水运船队+600钱。每项最多结算一次。</p><p><strong>旧存档修复：</strong>V1.7.5会重新核对真实完成证据：新购田地记录和实际持有产业才算完成；仅仅达到门槛、旧解锁标记或被错误推断的前置任务不会再算完成。已经实际到账过的旧奖励不会重复发放。</p><p><strong>产业上限：</strong>磨坊、粮铺、布庄、油坊、酒坊、客栈、织坊、纸坊、水运船队最多1份；商队最多2支。第一支商队完成主线后仍可购置第二支，以满足水运船队的2支商队条件。</p><p><strong>家业目标与经营成就：</strong>15个普通经营里程碑继续作为侧面成就，达标后自动奖励；家业引导链任务奖励则只在真实购买或建成后结算。</p><p><strong>体力：</strong>劳动消耗体力；体力≤35自动休养，恢复到60后再工作。口粮充足时休养每日恢复1.20体力。</p><p><strong>健康：</strong>健康独立于体力。健康越低，人物每日死亡风险越高；普通休养只恢复体力，不直接恢复健康。</p><p><strong>母亲务农：</strong>初始母亲健在时免费照看前3亩田；超过3亩的部分继续按每3亩1名农工、每人每月6钱自动雇工。母亲务农属于家庭被动劳力，田地不需要本人下田，继续由自动农工打理；母亲去世后前三亩重新计入雇工需求。</p><p><strong>两季收成：</strong>粮食按夏收45粮/亩 + 秋收45粮/亩两季入仓，正常年份全年基础总产量90粮/亩。</p><p><strong>本人工作：</strong>当前执笔人不亲自务农，只能通过短工、家庭副业、求学、休养等人物行动生活；田地由母亲与自动农工经营。</p><p><strong>短工谋生：</strong>春季80%概率找到活、0.8钱/实际工作日；夏季65%·0.8钱；秋季85%·0.9钱；冬季45%·0.7钱。</p><p><strong>兼容：</strong>婚配、婚育、历史主线、紧凑总览布局和产业限额继续保留。</p></details>
       </section>
     </section>
   </main>
-  <script type="module" src="./game.js?v=1.7.5"></script>
+  <script type="module" src="./game.js?v=1.7.6"></script>
   <script type="module" src="./v14-ui.js?v=1.4.2"></script>
   <script type="module" src="./v15-ui.js?v=1.5.3"></script>
   <script type="module" src="./v162-ui.js?v=1.6.2"></script>
@@ -126,8 +127,9 @@
   <script type="module" src="./v168-ui.js?v=1.6.8"></script>
   <script type="module" src="./v170-ui.js?v=1.7.5"></script>
   <script type="module" src="./v171-ui.js?v=1.7.1"></script>
-  <script type="module" src="./v172-ui.js?v=1.7.5"></script>
+  <script type="module" src="./v172-ui.js?v=1.7.6"></script>
   <script type="module" src="./v173-ui.js?v=1.7.5"></script>
   <script type="module" src="./v174-ui.js?v=1.7.5"></script>
+  <script type="module" src="./v176-ui.js?v=1.7.6"></script>
 </body>
 </html>
