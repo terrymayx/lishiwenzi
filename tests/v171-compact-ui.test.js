@@ -6,20 +6,22 @@ import { execFileSync } from 'node:child_process';
 const read = path => fs.readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
 const html = read('dist/index.html');
 
-test('compact UI remains the base while the current overview stylesheet wins the cascade', () => {
+test('compact UI remains the base while the current release stylesheet wins the cascade', () => {
   assert.match(html, /<body class="compact-ui">/);
   const sheets = [...html.matchAll(/<link rel="stylesheet" href="([^"]+)"/g)].map(m => m[1]);
   const compactIndex = sheets.indexOf('./v171.css?v=1.7.1');
   const overviewIndex = sheets.indexOf('./v172.css?v=1.7.2');
+  const currentIndex = sheets.indexOf('./v173.css?v=1.7.3');
   assert.ok(compactIndex >= 0, 'V1.7.1 compact stylesheet is retained');
   assert.ok(overviewIndex > compactIndex, 'V1.7.2 overview stylesheet layers on top of compact UI');
-  assert.equal(sheets.at(-1), './v172.css?v=1.7.2');
+  assert.ok(currentIndex > overviewIndex, 'V1.7.3 industry state styling layers on top of the overview');
+  assert.equal(sheets.at(-1), './v173.css?v=1.7.3');
   assert.match(html, /v171-ui\.js\?v=1\.7\.1/);
 });
 
-test('UI-only release keeps the V1.7 gameplay engine and a scalable viewport', () => {
+test('current release keeps the compact viewport and routes gameplay through V1.7.3', () => {
   const map = JSON.parse(html.match(/<script type="importmap">([\s\S]*?)<\/script>/)[1]);
-  assert.equal(map.imports['./engine.js?v=1.2.0'], './engine-v170.js?v=1.7.0');
+  assert.equal(map.imports['./engine.js?v=1.2.0'], './engine-v173.js?v=1.7.3');
   assert.equal(map.imports['./family-work-ui.js?v=1.4.1'], './family-work-ui.js?v=1.6.4-player-work');
   assert.match(html, /width=device-width, initial-scale=1/);
   assert.doesNotMatch(html, /user-scalable=no|maximum-scale=1/);
