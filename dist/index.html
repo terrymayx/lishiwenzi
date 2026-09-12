@@ -9,8 +9,10 @@
   <meta name="compatibility-v169" content="V1.6.9 engine-v169.js?v=1.6.9">
   <meta name="compatibility-v170" content="V1.7.0 engine-v170.js?v=1.7.0">
   <meta name="compatibility-v171" content="V1.7.1 紧凑界面">
+  <meta name="compatibility-v172" content="V1.7.2 总览重排">
+  <meta name="compatibility-v173" content="V1.7.3 产业建设引导 engine-v173.js?v=1.7.3">
   <meta name="compatibility-v164-ui" content="v164-ui.js?v=1.6.9">
-  <title>乱世家书 · V1.7.2 总览重排</title>
+  <title>乱世家书 · V1.7.3 产业建设引导</title>
   <link rel="stylesheet" href="./style.css?v=1.2.1">
   <link rel="stylesheet" href="./v13.css?v=1.3.0">
   <link rel="stylesheet" href="./v132.css?v=1.3.2">
@@ -23,13 +25,15 @@
   <link rel="stylesheet" href="./v170.css?v=1.7.0">
   <link rel="stylesheet" href="./v171.css?v=1.7.1">
   <link rel="stylesheet" href="./v172.css?v=1.7.2">
+  <link rel="stylesheet" href="./v173.css?v=1.7.3">
   <script type="importmap">
     {
       "imports": {
-        "./engine.js?v=1.2.0": "./engine-v170.js?v=1.7.0",
-        "./engine-v14.js?v=1.4.1": "./engine-v170.js?v=1.7.0",
-        "./engine-v14.js?v=1.4.2": "./engine-v170.js?v=1.7.0",
-        "./engine-v15.js?v=1.5.1": "./engine-v170.js?v=1.7.0",
+        "./engine.js?v=1.2.0": "./engine-v173.js?v=1.7.3",
+        "./engine-v14.js?v=1.4.1": "./engine-v173.js?v=1.7.3",
+        "./engine-v14.js?v=1.4.2": "./engine-v173.js?v=1.7.3",
+        "./engine-v15.js?v=1.5.1": "./engine-v173.js?v=1.7.3",
+        "./engine-v170.js?v=1.7.0": "./engine-v173.js?v=1.7.3",
         "./family-work-ui.js?v=1.4.1": "./family-work-ui.js?v=1.6.4-player-work"
       }
     }
@@ -38,21 +42,21 @@
 <body class="compact-ui">
   <main class="app-shell">
     <section id="setup" class="setup-card">
-      <p class="eyebrow">V1.7.2 总览重排 · 290年1月1日</p>
+      <p class="eyebrow">V1.7.3 产业建设引导 · 290年1月1日</p>
       <h1>乱世家书</h1>
-      <p class="lead">按天生活、经营田庄和产业、延续家族。V1.7.2沿用紧凑尺寸，把状态、行动、当前事件、下一目标和深层资料重新分层，让玩家一眼知道现在发生什么、下一步做什么。</p>
+      <p class="lead">按天生活、经营田庄和产业、延续家族。产业达到门槛只开放建设资格，真正第一次建成后才获得奖励；同时限制产业数量，控制后期被动收入增长。</p>
       <form id="setup-form">
         <label>家族姓氏<input id="surname" maxlength="8" value="沈" required></label>
         <label>开局身份<select id="origin"></select></label>
         <button class="primary" type="submit">落笔开局</button>
       </form>
-      <p class="fine-print">只调整UI布局与信息优先级；V1.7.0产业、里程碑、健康、体力、农业和存档规则全部保持不变。新开局健康100，初始粮食170。</p>
+      <p class="fine-print">V1.7.3沿用紧凑总览布局。大多数产业最多1份，商队最多2支；旧存档超额产业保留，但超出产业上限的部分闲置且不再产出。</p>
     </section>
 
     <section id="game" hidden>
       <section id="compact-status" class="compact-status" aria-label="当前状态总览">
         <header class="topbar">
-          <div><p class="eyebrow">乱世家书 · V1.7.2</p><h1 id="date">290年1月1日</h1><p id="chapter">第1章 · 家门初立</p></div>
+          <div><p class="eyebrow">乱世家书 · V1.7.3</p><h1 id="date">290年1月1日</h1><p id="chapter">第1章 · 家门初立</p></div>
           <div class="top-actions"><button id="export" type="button">导出家书</button><label class="file-button">导入家书<input id="import" type="file" accept="application/json,.json"></label><button id="new-game" type="button">另起一门</button></div>
         </header>
         <div id="compact-person-summary" class="compact-person-summary" aria-live="polite">等待开局</div>
@@ -93,7 +97,7 @@
 
         <aside id="next-goal-panel" class="side-panel next-goal-panel" aria-label="下一步家业目标">
           <div class="next-goal-heading"><strong>下一步目标</strong><span>等待状态</span></div>
-          <p>开局后这里会显示最接近的产业解锁条件、奖励、产业日收入和最近经营成就。</p>
+          <p>开局后这里会优先提示已经解锁但尚未建设的产业，并显示首次建成奖励和产业上限。</p>
         </aside>
       </div>
 
@@ -103,20 +107,21 @@
         <div id="tab-relations" class="tab-panel" hidden><div id="relations"></div></div>
         <div id="tab-assets" class="tab-panel" hidden><div id="assets"></div></div>
         <div id="tab-timeline" class="tab-panel" hidden><div id="timeline"></div></div>
-        <details class="help"><summary>V1.7.2 规则说明</summary><p><strong>总览重排：</strong>沿用V1.7.1紧凑尺寸与折叠习惯；顶部集中核心状态，左侧只放人物与行动，中间放时间、事件和家书，右侧固定显示下一目标，家族、产业、关系和历史统一放到底部大页签。玩法与存档不变。</p><p><strong>新产业：</strong>在粮铺、布庄、商队之外新增磨坊、油坊、酒坊、客栈、织坊、纸坊、水运船队。产业解锁后仍需花钱购置；购入后不需要主角亲自经营，每个实际推进日自动获得净收益。</p><p><strong>产业解锁奖励：</strong>磨坊+20钱、油坊+80钱、酒坊+120钱、客栈+180钱、织坊+250钱、纸坊+350钱、水运船队+600钱；原置办田产+20钱、粮铺+50钱、布庄+100钱、商队+200钱继续保留。每个项目只发一次。</p><p><strong>家业目标与经营成就：</strong>新增15个里程碑，覆盖实际收获、田产规模、产业日收益、家产、学识和声望。达标自动完成并发放奖金；同一家族存档只领取一次，换后代不会重置。</p><p><strong>产业种类：</strong>所有实际购入的产业都计入“商业产业种类”。因此磨坊、油坊等也可以帮助满足商队所需的至少2种商业产业。</p><p><strong>旧存档：</strong>更新后当前已经满足的V1.7新增家产、田产、产业收益、学识和声望里程碑可以自动结算一次；“初收喜报”只统计升级到V1.7以后实际收获的粮食，不追溯旧档历史收成。</p><p><strong>体力：</strong>劳动消耗体力；体力≤35自动休养，恢复到60后再工作。口粮充足时休养每日恢复1.20体力。</p><p><strong>健康：</strong>健康独立于体力。健康越低，人物每日死亡风险越高；普通休养只恢复体力，不直接恢复健康。</p><p><strong>母亲务农：</strong>初始母亲健在时免费照看前3亩田；超过3亩的部分继续按每3亩1名农工、每人每月6钱自动雇工。母亲务农属于家庭被动劳力，田地不需要本人下田，继续由自动农工打理；母亲去世后前三亩重新计入雇工需求。</p><p><strong>两季收成：</strong>粮食按夏收45粮/亩 + 秋收45粮/亩两季入仓，正常年份全年基础总产量90粮/亩。</p><p><strong>本人工作：</strong>当前执笔人不亲自务农，只能通过短工、家庭副业、求学、休养等人物行动生活；田地由母亲与自动农工经营。</p><p><strong>短工谋生：</strong>春季80%概率找到活、0.8钱/实际工作日；夏季65%·0.8钱；秋季85%·0.9钱；冬季45%·0.7钱。</p><p><strong>兼容：</strong>婚配、婚育和历史主线规则保持不变。</p></details>
+        <details class="help"><summary>V1.7.3 规则说明</summary><p><strong>产业建设引导：</strong>达到产业门槛时只开放建设资格，不再立即发放产业奖励；真正第一次购置并建成该产业时，首次建成奖励才自动到账。这样奖励直接引导玩家把资金投入产业。</p><p><strong>首次建成奖励：</strong>磨坊+20钱、粮铺+50钱、布庄+100钱、油坊+80钱、商队+200钱、酒坊+120钱、客栈+180钱、织坊+250钱、纸坊+350钱、水运船队+600钱。每种产业只领取一次；置办田产+20钱仍属于普通家业里程碑，达到条件自动结算。</p><p><strong>产业上限：</strong>磨坊、粮铺、布庄、油坊、酒坊、客栈、织坊、纸坊、水运船队最多1份；商队最多2支。达到上限后不能继续购置，防止后期被动收入无限滚雪球。</p><p><strong>旧存档超额产业：</strong>不会删除，也不会扣除原资产；但只有产业上限以内的数量继续生效并产生每日收入，超出部分显示为闲置。旧档已经领取过的产业解锁奖励不会因为新规则再次发放，旧档已经建成的产业也不会补领一次。</p><p><strong>家业目标与经营成就：</strong>15个普通里程碑继续保持达标自动发奖，覆盖实际收获、田产规模、产业有效日收益、家产、学识和声望；只有“产业奖励”改为首次建成后发放。</p><p><strong>总览布局：</strong>沿用V1.7.2紧凑总览；右侧下一目标优先显示“已经开放但尚未建设”的产业，让玩家一眼知道下一笔钱应该投在哪里。</p><p><strong>产业种类：</strong>所有实际购入的产业都计入商业产业种类。磨坊、油坊等仍可帮助满足商队需要的至少2种商业产业；水运船队要求的2支商队仍可达到，因为商队上限保留为2。</p><p><strong>体力：</strong>劳动消耗体力；体力≤35自动休养，恢复到60后再工作。口粮充足时休养每日恢复1.20体力。</p><p><strong>健康：</strong>健康独立于体力。健康越低，人物每日死亡风险越高；普通休养只恢复体力，不直接恢复健康。</p><p><strong>母亲务农：</strong>初始母亲健在时免费照看前3亩田；超过3亩的部分继续按每3亩1名农工、每人每月6钱自动雇工。母亲务农属于家庭被动劳力，田地不需要本人下田，继续由自动农工打理；母亲去世后前三亩重新计入雇工需求。</p><p><strong>两季收成：</strong>粮食按夏收45粮/亩 + 秋收45粮/亩两季入仓，正常年份全年基础总产量90粮/亩。</p><p><strong>本人工作：</strong>当前执笔人不亲自务农，只能通过短工、家庭副业、求学、休养等人物行动生活；田地由母亲与自动农工经营。</p><p><strong>短工谋生：</strong>春季80%概率找到活、0.8钱/实际工作日；夏季65%·0.8钱；秋季85%·0.9钱；冬季45%·0.7钱。</p><p><strong>兼容：</strong>婚配、婚育、历史主线和存档格式保持不变。</p></details>
       </section>
     </section>
   </main>
-  <script type="module" src="./game.js?v=1.7.0"></script>
+  <script type="module" src="./game.js?v=1.7.3"></script>
   <script type="module" src="./v14-ui.js?v=1.4.2"></script>
   <script type="module" src="./v15-ui.js?v=1.5.3"></script>
   <script type="module" src="./v162-ui.js?v=1.6.2"></script>
-  <script type="module" src="./v164-ui.js?v=1.7.0"></script>
+  <script type="module" src="./v164-ui.js?v=1.7.3"></script>
   <script type="module" src="./v165-ui.js?v=1.6.5"></script>
   <script type="module" src="./v167-ui.js?v=1.6.7"></script>
   <script type="module" src="./v168-ui.js?v=1.6.8"></script>
-  <script type="module" src="./v170-ui.js?v=1.7.0"></script>
+  <script type="module" src="./v170-ui.js?v=1.7.3"></script>
   <script type="module" src="./v171-ui.js?v=1.7.1"></script>
-  <script type="module" src="./v172-ui.js?v=1.7.2"></script>
+  <script type="module" src="./v172-ui.js?v=1.7.3"></script>
+  <script type="module" src="./v173-ui.js?v=1.7.3"></script>
 </body>
 </html>
