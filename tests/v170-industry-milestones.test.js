@@ -153,12 +153,12 @@ test('new V1.7 milestones may reward qualifying old saves, while harvest starts 
   assert.ok(loaded.resources.money >= moneyBefore + 70);
 });
 
-test('current page retains V1.7 industry milestone UI beneath the V1.7.5 strict guide layer', () => {
+test('current page retains V1.7 industry milestone UI beneath later guide layers', () => {
   const index = fs.readFileSync(new URL('../dist/index.html', import.meta.url), 'utf8');
   assert.match(index, /V1\.7\.0/);
   assert.match(index, /engine-v170\.js\?v=1\.7\.0/);
   assert.match(index, /v170-ui\.js\?v=1\.7\.(?:0|3|4|5)/);
   assert.match(index, /v170\.css\?v=1\.7\.0/);
   assert.match(index, /磨坊|油坊|酒坊|客栈|织坊|纸坊|水运船队/);
-  assert.match(index, /经营成就|家业目标|里程碑/);
+  assert.match(index, /经营成就|家业目标|里程碑|家业引导链/);
 });

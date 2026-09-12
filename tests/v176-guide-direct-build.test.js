@@ -5,12 +5,12 @@ import { execFileSync } from 'node:child_process';
 
 const read = path => fs.readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
 
-test('V1.7.6 loads the direct-build guide helper and cache-busts the overview layer', () => {
+test('V1.7.6 direct-build guide remains loaded under V1.8.0 monthly turns', () => {
   const html = read('dist/index.html');
   assert.match(html, /V1\.7\.6/);
-  assert.match(html, /v172-ui\.js\?v=1\.7\.6/);
-  assert.match(html, /v176-ui\.js\?v=1\.7\.6(?:\.1)?/);
-  assert.match(html, /game\.js\?v=1\.7\.6/);
+  assert.match(html, /v172-ui\.js\?v=(?:1\.7\.6|1\.8\.0)/);
+  assert.match(html, /v176-ui\.js\?v=(?:1\.7\.6(?:\.1)?|1\.8\.0)/);
+  assert.match(html, /game\.js\?v=(?:1\.7\.6|1\.8\.0)/);
 });
 
 test('guide action only appears after threshold readiness and reuses real purchase APIs', () => {

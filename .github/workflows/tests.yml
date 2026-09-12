@@ -42,3 +42,4 @@ jobs:
       - run: node --check dist/engine-v174.js && node --check dist/v174-ui.js
       - run: node --check dist/engine-v175.js
       - run: node --check dist/v176-ui.js
+      - run: node --check dist/engine-v180.js && node --check dist/v180-ui.js
