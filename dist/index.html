@@ -15,8 +15,9 @@
   <meta name="compatibility-v175" content="V1.7.5 严格完成制 engine-v175.js?v=1.7.5">
   <meta name="compatibility-v176" content="V1.7.6 任务内直接建设">
   <meta name="compatibility-v180" content="V1.8.0 月度回合制 engine-v180.js?v=1.8.0">
+  <meta name="compatibility-v181" content="V1.8.1 当前任务现金门槛 engine-v180.js?v=1.8.1">
   <meta name="compatibility-v164-ui" content="v164-ui.js?v=1.6.9">
-  <title>乱世家书 · V1.8.0 月度回合制</title>
+  <title>乱世家书 · V1.8.1 现金任务门槛</title>
   <link rel="stylesheet" href="./style.css?v=1.2.1">
   <link rel="stylesheet" href="./v13.css?v=1.3.0">
   <link rel="stylesheet" href="./v132.css?v=1.3.2">
@@ -35,13 +36,13 @@
   <script type="importmap">
     {
       "imports": {
-        "./engine.js?v=1.2.0": "./engine-v180.js?v=1.8.0",
-        "./engine-v14.js?v=1.4.1": "./engine-v180.js?v=1.8.0",
-        "./engine-v14.js?v=1.4.2": "./engine-v180.js?v=1.8.0",
-        "./engine-v15.js?v=1.5.1": "./engine-v180.js?v=1.8.0",
-        "./engine-v170.js?v=1.7.0": "./engine-v180.js?v=1.8.0",
-        "./engine-v173.js?v=1.7.3": "./engine-v180.js?v=1.8.0",
-        "./engine-v174.js?v=1.7.4": "./engine-v180.js?v=1.8.0",
+        "./engine.js?v=1.2.0": "./engine-v180.js?v=1.8.1",
+        "./engine-v14.js?v=1.4.1": "./engine-v180.js?v=1.8.1",
+        "./engine-v14.js?v=1.4.2": "./engine-v180.js?v=1.8.1",
+        "./engine-v15.js?v=1.5.1": "./engine-v180.js?v=1.8.1",
+        "./engine-v170.js?v=1.7.0": "./engine-v180.js?v=1.8.1",
+        "./engine-v173.js?v=1.7.3": "./engine-v180.js?v=1.8.1",
+        "./engine-v174.js?v=1.7.4": "./engine-v180.js?v=1.8.1",
         "./family-work-ui.js?v=1.4.1": "./family-work-ui.js?v=1.6.4-player-work"
       }
     }
@@ -50,7 +51,7 @@
 <body class="compact-ui">
   <main class="app-shell">
     <section id="setup" class="setup-card">
-      <p class="eyebrow">V1.8.0 月度回合制 · 290年1月1日</p>
+      <p class="eyebrow">V1.8.1 现金任务门槛 · 290年1月1日</p>
       <h1>乱世家书</h1>
       <p class="lead">每次选择本月行动后，点击“度过本月”推进一个月。底层仍逐日结算吃饭、短工、体力、健康、产业、田庄与历史；重大事件会在月中打断，处理后继续本月。</p>
       <form id="setup-form">
@@ -58,13 +59,13 @@
         <label>开局身份<select id="origin"></select></label>
         <button class="primary" type="submit">落笔开局</button>
       </form>
-      <p class="fine-print">月初可选择行动、买粮、买田、建设产业；点击“度过本月”后快速结算到下月。月末会生成月报。家业引导链仍严格按真实购买/建成完成：达到门槛只代表可以做，不会自动领奖或开启下一项。</p>
+      <p class="fine-print">月初可选择行动、买粮、买田、建设产业；点击“度过本月”后快速结算到下月。当前任务的金额门槛按手中现金判断，不再按总家产判断；达到门槛仍只代表可以执行，真实购买或建成后才完成任务。</p>
     </section>
 
     <section id="game" hidden>
       <section id="compact-status" class="compact-status" aria-label="当前状态总览">
         <header class="topbar">
-          <div><p class="eyebrow">乱世家书 · V1.8.0</p><h1 id="date">290年1月1日</h1><p id="chapter">第1章 · 家门初立</p></div>
+          <div><p class="eyebrow">乱世家书 · V1.8.1</p><h1 id="date">290年1月1日</h1><p id="chapter">第1章 · 家门初立</p></div>
           <div class="top-actions"><button id="export" type="button">导出家书</button><label class="file-button">导入家书<input id="import" type="file" accept="application/json,.json"></label><button id="new-game" type="button">另起一门</button></div>
         </header>
         <div id="compact-person-summary" class="compact-person-summary" aria-live="polite">等待开局</div>
@@ -106,7 +107,7 @@
 
         <aside id="next-goal-panel" class="side-panel next-goal-panel" aria-label="家业引导链当前目标">
           <div class="next-goal-heading"><strong>家业引导链</strong><span>等待状态</span></div>
-          <p>开局后这里只显示当前唯一主目标；达到条件只表示可以执行，满足条件后会出现直接操作按钮，真正购买或建成后才发奖励，完成后才解锁下一项。</p>
+          <p>这里只显示当前唯一主目标。当前任务的金额条件检查现金；现金、田地、声望、学识等条件满足后才出现直接操作按钮，真正购买或建成后才发奖励并解锁下一项。</p>
         </aside>
       </div>
 
@@ -116,11 +117,11 @@
         <div id="tab-relations" class="tab-panel" hidden><div id="relations"></div></div>
         <div id="tab-assets" class="tab-panel" hidden><div id="assets"></div></div>
         <div id="tab-timeline" class="tab-panel" hidden><div id="timeline"></div></div>
-        <details class="help"><summary>V1.8.0 规则说明</summary><p><strong>月度回合：</strong>选择当前执笔人的本月行动后，点击“度过本月”。一次点击以一个月为玩家回合，不再持续播放时间。</p><p><strong>底层仍按天：</strong>月度按钮不会把经济粗暴改成“每月一次”。系统仍会逐日计算吃饭、饥饿、体力、健康、短工是否找到活、产业日收入、田庄与人物成长。</p><p><strong>月中中断：</strong>重大历史、需要选择的随机/剧情事件、断粮危机、主角死亡与继承等会立刻中断本月。处理后保留原来的月份目标，可点击“继续本月”。</p><p><strong>月报：</strong>完整度过一个月后自动生成月报，汇总钱粮、田产、声望、人物状态和本月纪事。</p><p><strong>即时经营：</strong>买粮、买田、捐钱、建设产业仍然是即时操作，不需要浪费一个回合。家业任务满足门槛后直接在右侧出现置办/建造按钮。</p><p><strong>家业引导链：</strong>家业按严格顺序推进。当前任务只有在真实购买或建成后才完成；后面的任务即使数值提前达标，也继续锁定。</p><p><strong>门槛不是完成：</strong>家产、田地、声望、学识等达到要求，只代表当前任务已经具备执行条件。达到条件不算完成，不发任务奖励，也不解锁下一项。</p><p><strong>任务内直接操作：</strong>当前任务满足全部前置条件后，会直接出现“置办1亩”“建造/开设产业”或“组建商队/船队”按钮。玩家无需再去产业页寻找入口；只有按钮操作实际成功，任务才完成。</p><p><strong>主线顺序：</strong>置办新田 → 磨坊 → 粮铺 → 布庄 → 油坊 → 第一支商队 → 酒坊 → 客栈 → 织坊 → 纸坊 → 水运船队。</p><p><strong>完成奖励：</strong>置办新田+20钱；磨坊+20钱、粮铺+50钱、布庄+100钱、油坊+80钱、第一支商队+200钱、酒坊+120钱、客栈+180钱、织坊+250钱、纸坊+350钱、水运船队+600钱。每项最多结算一次。</p><p><strong>产业上限：</strong>磨坊、粮铺、布庄、油坊、酒坊、客栈、织坊、纸坊、水运船队最多1份；商队最多2支。</p><p><strong>体力与健康：</strong>劳动消耗体力；体力≤35自动休养，恢复到60后再工作。健康独立于体力，健康越低每日死亡风险越高。</p><p><strong>田庄：</strong>母亲健在时免费照看前3亩；超过3亩的部分按每3亩1名农工、每人每月6钱自动雇工。夏收与秋收仍按原有具体日期进入仓储。</p><p><strong>短工谋生：</strong>仍按每天判定是否找到活，月底只做汇总；春80%·0.8钱/工作日，夏65%·0.8钱，秋85%·0.9钱，冬45%·0.7钱。</p><p><strong>兼容：</strong>婚配、婚育、历史主线、紧凑总览布局、家业完成制、任务内直接建设与产业限额全部继续保留。</p></details>
+        <details class="help"><summary>V1.8.1 规则说明</summary><p><strong>月度回合：</strong>选择当前执笔人的本月行动后，点击“度过本月”。一次点击以一个月为玩家回合，不再持续播放时间。</p><p><strong>底层仍按天：</strong>月度按钮不会把经济粗暴改成“每月一次”。系统仍会逐日计算吃饭、饥饿、体力、健康、短工是否找到活、产业日收入、田庄与人物成长。</p><p><strong>月中中断：</strong>重大历史、需要选择的随机/剧情事件、断粮危机、主角死亡与继承等会立刻中断本月。处理后保留原来的月份目标，可点击“继续本月”。</p><p><strong>月报：</strong>完整度过一个月后自动生成月报，汇总钱粮、田产、声望、人物状态和本月纪事。</p><p><strong>当前任务现金门槛：</strong>家业引导链里当前任务的金额条件统一检查手中现金，不再用田地、铺面等资产估值凑“家产”门槛。例如磨坊要求180钱时，必须当前现金达到180钱。</p><p><strong>门槛不是完成：</strong>现金、田地、声望、学识等达到要求，只代表当前任务已经具备执行条件。达到条件不算完成，不发任务奖励，也不解锁下一项。</p><p><strong>任务内直接操作：</strong>当前任务满足全部前置条件后，会直接出现“置办1亩”“建造/开设产业”或“组建商队/船队”按钮。玩家无需再去产业页寻找入口；只有按钮操作实际成功，任务才完成。</p><p><strong>家业引导链：</strong>家业按严格顺序推进。当前任务只有在真实购买或建成后才完成；后面的任务即使数值提前达标，也继续锁定。</p><p><strong>普通经营成就：</strong>小康之家、家底渐厚、家资丰足、富甲乡里等普通经营成就仍按总家产判断，不受当前任务现金门槛规则影响。</p><p><strong>主线顺序：</strong>置办新田 → 磨坊 → 粮铺 → 布庄 → 油坊 → 第一支商队 → 酒坊 → 客栈 → 织坊 → 纸坊 → 水运船队。</p><p><strong>完成奖励：</strong>置办新田+20钱；磨坊+20钱、粮铺+50钱、布庄+100钱、油坊+80钱、第一支商队+200钱、酒坊+120钱、客栈+180钱、织坊+250钱、纸坊+350钱、水运船队+600钱。每项最多结算一次。</p><p><strong>产业上限：</strong>磨坊、粮铺、布庄、油坊、酒坊、客栈、织坊、纸坊、水运船队最多1份；商队最多2支。</p><p><strong>体力与健康：</strong>劳动消耗体力；体力≤35自动休养，恢复到60后再工作。健康独立于体力，健康越低每日死亡风险越高。</p><p><strong>田庄：</strong>母亲健在时免费照看前3亩；超过3亩的部分按每3亩1名农工、每人每月6钱自动雇工。夏收与秋收仍按原有具体日期进入仓储。</p><p><strong>短工谋生：</strong>仍按每天判定是否找到活，月底只做汇总；春80%·0.8钱/工作日，夏65%·0.8钱，秋85%·0.9钱，冬45%·0.7钱。</p><p><strong>兼容：</strong>婚配、婚育、历史主线、紧凑总览布局、家业完成制、任务内直接建设、月度回合与产业限额全部继续保留。</p></details>
       </section>
     </section>
   </main>
-  <script type="module" src="./game.js?v=1.8.0"></script>
+  <script type="module" src="./game.js?v=1.8.1"></script>
   <script type="module" src="./v14-ui.js?v=1.4.2"></script>
   <script type="module" src="./v15-ui.js?v=1.5.3"></script>
   <script type="module" src="./v162-ui.js?v=1.6.2"></script>
@@ -130,10 +131,10 @@
   <script type="module" src="./v168-ui.js?v=1.6.8"></script>
   <script type="module" src="./v170-ui.js?v=1.7.5"></script>
   <script type="module" src="./v171-ui.js?v=1.7.1"></script>
-  <script type="module" src="./v172-ui.js?v=1.8.0"></script>
+  <script type="module" src="./v172-ui.js?v=1.8.1"></script>
   <script type="module" src="./v173-ui.js?v=1.7.5"></script>
   <script type="module" src="./v174-ui.js?v=1.7.5"></script>
-  <script type="module" src="./v176-ui.js?v=1.8.0"></script>
-  <script type="module" src="./v180-ui.js?v=1.8.0"></script>
+  <script type="module" src="./v176-ui.js?v=1.8.1"></script>
+  <script type="module" src="./v180-ui.js?v=1.8.1"></script>
 </body>
 </html>
