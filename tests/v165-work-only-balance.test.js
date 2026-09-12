@@ -2,68 +2,91 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 
-const engine = () => import('../dist/engine-v165.js?v=1.6.5-test');
+const enginePath = new URL('../dist/engine-v165.js', import.meta.url);
+
+async function currentEngine() {
+  assert.ok(fs.existsSync(enginePath), 'V1.6.5 current engine wrapper must exist');
+  return import('../dist/engine-v165.js?v=1.6.5');
+}
 
 function makeGame(E, seed = 1650) {
   const state = E.createGame({ surname: '沈', origin: 'peasant', seed });
-  state.pendingEvent = null;
+  state.resources.grain = 1000;
+  state.household.grain = 1000;
+  state.resources.money = 100;
+  state.household.money = 100;
   state.chapterSeen[1] = true;
-  state.resources.grain = 10000;
-  state.household.grain = 10000;
-  state.resources.money = 1000;
-  state.household.money = 1000;
   return state;
 }
 
+function findDay(E, state, month, available) {
+  const days = E.MONTH_DAYS[month - 1];
+  state.month = month;
+  for (let day = 1; day <= days; day += 1) {
+    state.day = day;
+    if (E.isShortworkAvailable(state, state.playerId) === available) return day;
+  }
+  return null;
+}
+
+test('V1.6.5 raises actual shortwork wages by 0.2 while keeping availability unchanged', async () => {
+  const E = await currentEngine();
+  assert.deepEqual(E.V165_SHORTWORK_TERMS.spring, { availability: 0.8, wage: 0.8 });
+  assert.deepEqual(E.V165_SHORTWORK_TERMS.summer, { availability: 0.65, wage: 0.8 });
+  assert.deepEqual(E.V165_SHORTWORK_TERMS.autumn, { availability: 0.85, wage: 0.9 });
+  assert.deepEqual(E.V165_SHORTWORK_TERMS.winter, { availability: 0.45, wage: 0.7 });
+});
+
 test('manual farming actions are removed and cannot be selected', async () => {
-  const E = await engine();
+  const E = await currentEngine();
   const state = makeGame(E, 1651);
-  const ids = E.availableActivities(state).map(activity => activity.id);
-  assert.doesNotMatch(ids.join(','), /longfarm|cultivate|farm/);
+  const ids = E.getActions(state).map(action => action.id);
+  assert.equal(ids.includes('longfarm'), false);
+  assert.equal(ids.includes('cultivate'), false);
+  assert.equal(ids.includes('trade'), true);
   assert.equal(E.selectActivity(state, 'longfarm').ok, false);
   assert.equal(E.selectActivity(state, 'cultivate').ok, false);
 });
 
 test('an available spring shortwork day now pays 0.8 money', async () => {
-  const E = await engine();
+  const E = await currentEngine();
   const state = makeGame(E, 1652);
-  state.year = 290;
-  state.month = 3;
-  state.day = 1;
-  const player = state.people[state.playerId];
-  let date = null;
-  for (let day = 1; day <= 31; day += 1) {
-    state.day = day;
-    if (E.getShortworkDay(state, player).available) {
-      date = day;
-      break;
-    }
-  }
-  assert.ok(date);
-  state.day = date;
   assert.equal(E.selectActivity(state, 'trade').ok, true);
-  state.running = true;
-  const before = state.resources.money;
-  E.advanceDay(state);
-  assert.equal(Number((state.resources.money - before).toFixed(2)), 0.8);
+  const day = findDay(E, state, 4, true);
+  assert.notEqual(day, null);
+  state.month = 4;
+  state.day = day;
+  const beforeMoney = state.resources.money;
+  const beforeWorkIncome = E.ledger(state).workIncome;
+  E.setRunning(state, true);
+  const result = E.advanceDay(state);
+  assert.equal(result.ok, true);
+  assert.equal(Number((state.resources.money - beforeMoney).toFixed(2)), 0.8);
+  assert.equal(Number((E.ledger(state).workIncome - beforeWorkIncome).toFixed(2)), 0.8);
 });
 
 test('land remains operated by automatic farm workers while protagonist does shortwork', async () => {
-  const E = await engine();
+  const E = await currentEngine();
   const state = makeGame(E, 1653);
-  state.resources.land = 6;
-  state.household.land = 6;
-  E.__v162Test.reconcileAutoFarmWorkers(state, { chargeNew: false });
-  const beforeLand = state.resources.land;
+  state.household.land = 3;
+  state.month = 3;
+  state.day = 1;
+  const auto = E.ensureAutoFarmWorkers(state);
+  auto.requiredWorkers = 1;
+  auto.paidWorkers = 1;
+  auto.lastPayrollMonthKey = '290-3';
+  E.ensureAutoFarmWorkers(state);
+  state.agriculture.weather['290-spring'] = { yieldModifier: 1, label: '测试天气' };
   assert.equal(E.selectActivity(state, 'trade').ok, true);
-  state.running = true;
-  E.advanceDay(state);
-  assert.equal(state.resources.land, beforeLand);
-  assert.ok(E.getV162FarmSummary(state).requiredWorkers >= 1);
+  const beforeSown = Number(state.agriculture.work.sown || 0);
+  E.setRunning(state, true);
+  const result = E.advanceDay(state);
+  assert.equal(result.ok, true);
+  assert.ok(Number(state.agriculture.work.sown || 0) > beforeSown);
 });
 
 test('legacy manual-farming activity migrates to shortwork on load', async () => {
-  const E = await engine();
+  const E = await currentEngine();
   const state = makeGame(E, 1654);
   state.currentActivity = { id: 'longfarm', kind: 'routine', elapsed: 0, duration: null, destination: null, charged: false };
   state.agriculture.work.assignments[state.playerId] = 'longfarm';
