@@ -116,7 +116,7 @@ test('future industries cannot be inferred complete merely because an old save a
   assert.equal(buggy.v174Guide.completed.mill, true, 'documents V1.7.4 predecessor inference');
 
   const loaded = E.deserializeState(Old.serializeState(buggy));
-  setAssetValue(E, loaded, 500);
+  setAssetValue(E, loaded, 300);
   const before = loaded.resources.money;
   const status = E.getHouseholdUnlockStatus(loaded);
   const guide = E.getV174GuideStatus(loaded);
