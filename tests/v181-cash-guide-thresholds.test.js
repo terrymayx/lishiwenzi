@@ -42,16 +42,19 @@ function setCash(state, amount) {
 test('current guide uses cash rather than total household assets for money thresholds', async () => {
   const E = await currentEngine();
   const state = game(E, 1811);
-  addPropertyValue(state, 2000);
+  // Keep total assets above the early guide thresholds without crossing the separate
+  // 500-money asset achievement, which legitimately pays its own reward.
+  addPropertyValue(state, 100);
   setCash(state, 79);
 
+  assert.ok(E.getHouseholdAssetValue(state) >= 80, 'total assets should already satisfy the old land threshold');
   let guide = E.getV174GuideStatus(state);
   assert.equal(guide.current.id, 'landPurchase');
   const landCash = guide.current.conditions.find(item => item.label === '现金');
   assert.ok(landCash, 'current guide should display a cash condition');
   assert.equal(landCash.current, 79);
   assert.equal(landCash.required, 80);
-  assert.equal(guide.current.thresholdReady, false, 'large property value must not satisfy a cash threshold');
+  assert.equal(guide.current.thresholdReady, false, 'property value must not satisfy a cash threshold');
 
   const blockedLand = E.buyLand(state, 1);
   assert.equal(blockedLand.ok, false, 'buying land must remain blocked until cash itself reaches 80');
@@ -68,15 +71,17 @@ test('current guide uses cash rather than total household assets for money thres
   state.household.land = 3;
   state.resources.land = 3;
   setCash(state, 179);
+  assert.ok(E.getHouseholdAssetValue(state) >= 180, 'total assets should satisfy the old mill threshold');
   guide = E.getV174GuideStatus(state);
   assert.equal(guide.current.id, 'mill');
   const millCash = guide.current.conditions.find(item => item.label === '现金');
   assert.ok(millCash);
+  assert.equal(millCash.current, 179);
   assert.equal(millCash.required, 180);
   assert.equal(guide.current.thresholdReady, false);
 
   const blockedMill = E.buyBusiness(state, 'mill');
-  assert.equal(blockedMill.ok, false, 'mill construction must require 180 current cash even if total assets are much higher');
+  assert.equal(blockedMill.ok, false, 'mill construction must require 180 current cash even if total assets are higher');
   assert.equal(E.getV174GuideStatus(state).current.id, 'mill');
 
   setCash(state, 180);
