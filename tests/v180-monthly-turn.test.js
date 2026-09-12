@@ -5,8 +5,8 @@ import fs from 'node:fs';
 const enginePath = new URL('../dist/engine-v180.js', import.meta.url);
 
 async function currentEngine() {
-  assert.ok(fs.existsSync(enginePath), 'V1.8.0 monthly-turn engine must exist');
-  return import('../dist/engine-v180.js?v=1.8.0');
+  assert.ok(fs.existsSync(enginePath), 'V1.8.x monthly-turn engine must exist');
+  return import('../dist/engine-v180.js?v=1.8.1');
 }
 
 function game(E, seed = 1800) {
@@ -105,16 +105,16 @@ test('monthly report keeps resource and person changes for the finished turn', a
   assert.ok(Array.isArray(report.events));
 });
 
-test('V1.8.0 page exposes monthly turns while legacy timer controls are hidden compatibility shims', () => {
+test('V1.8.x page exposes monthly turns while legacy timer controls are hidden compatibility shims', () => {
   const index = fs.readFileSync(new URL('../dist/index.html', import.meta.url), 'utf8');
   const ui = fs.readFileSync(new URL('../dist/v180-ui.js', import.meta.url), 'utf8');
 
-  assert.match(index, /V1\.8\.0/);
+  assert.match(index, /V1\.8\.1/);
   assert.match(index, /度过本月/);
   assert.match(index, /月报/);
-  assert.match(index, /engine-v180\.js\?v=1\.8\.0/);
+  assert.match(index, /engine-v180\.js\?v=1\.8\.1/);
   assert.match(index, /time-controls v180-legacy-time-controls" hidden aria-hidden="true"/);
-  assert.match(index, /v180-ui\.js\?v=1\.8\.0/);
+  assert.match(index, /v180-ui\.js\?v=1\.8\.1/);
   assert.match(ui, /advanceMonth/);
   assert.match(ui, /advance-month/);
   assert.match(ui, /继续本月/);
