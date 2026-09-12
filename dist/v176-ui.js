@@ -1,3 +1,5 @@
+import './v180-ui.js?v=1.8.0';
+
 import {
   V170_BUSINESSES,
   getV174GuideStatus,
