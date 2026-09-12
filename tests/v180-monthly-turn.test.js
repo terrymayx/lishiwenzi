@@ -35,6 +35,10 @@ function finishMonth(E, state, firstResult) {
       const resolved = E.resolveEvent(state, event.id, option.id);
       assert.equal(resolved.ok, true);
     }
+    if (!state.currentActivity && state.phase === 'playing') {
+      const selected = E.selectActivity(state, 'trade');
+      assert.equal(selected.ok, true);
+    }
     result = E.advanceMonth(state);
   }
   return result;
@@ -101,15 +105,17 @@ test('monthly report keeps resource and person changes for the finished turn', a
   assert.ok(Array.isArray(report.events));
 });
 
-test('V1.8.0 page exposes one monthly-turn button and removes continuous-time controls', () => {
+test('V1.8.0 page exposes monthly turns while legacy timer controls are hidden compatibility shims', () => {
   const index = fs.readFileSync(new URL('../dist/index.html', import.meta.url), 'utf8');
-  const game = fs.readFileSync(new URL('../dist/game.js', import.meta.url), 'utf8');
+  const ui = fs.readFileSync(new URL('../dist/v180-ui.js', import.meta.url), 'utf8');
 
   assert.match(index, /V1\.8\.0/);
   assert.match(index, /度过本月/);
   assert.match(index, /月报/);
-  assert.doesNotMatch(index, /id="pause-time"/);
-  assert.doesNotMatch(index, /id="speed"/);
-  assert.match(game, /advanceMonth/);
-  assert.doesNotMatch(game, /setInterval\(stepOneDay/);
+  assert.match(index, /engine-v180\.js\?v=1\.8\.0/);
+  assert.match(index, /time-controls v180-legacy-time-controls" hidden aria-hidden="true"/);
+  assert.match(index, /v180-ui\.js\?v=1\.8\.0/);
+  assert.match(ui, /advanceMonth/);
+  assert.match(ui, /advance-month/);
+  assert.match(ui, /继续本月/);
 });
