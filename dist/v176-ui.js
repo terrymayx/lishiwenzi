@@ -1,4 +1,4 @@
-import './v180-ui.js?v=1.8.0';
+import './v180-ui.js?v=1.8.1';
 
 import {
   V170_BUSINESSES,
@@ -8,7 +8,7 @@ import {
   buyLand,
   buyBusiness,
   serializeState
-} from './engine-v175.js?v=1.7.5';
+} from './engine-v180.js?v=1.8.1';
 
 const STORAGE_KEY = 'luanshi-jia-shu-v3';
 const ACTION_LABELS = Object.freeze({
@@ -59,7 +59,7 @@ export function getGuideActionModel(state) {
       note = '当前田价无效，暂时不能置办。';
     } else if (short > 0) {
       label = `现钱不足 · 还差${short.toFixed(1)}钱`;
-      note = `置办1亩需要${price}钱，当前现钱${cash.toFixed(1)}钱。家产门槛已经满足，但必须备足现钱后才能实际购买。`;
+      note = `置办1亩需要${price}钱，当前现金${cash.toFixed(1)}钱。必须备足现金后才能实际购买。`;
     }
     return {
       visible: true,
@@ -92,7 +92,7 @@ export function getGuideActionModel(state) {
     note = '当前产业已经达到持有上限。';
   } else if (short > 0) {
     label = `现钱不足 · 还差${short.toFixed(1)}钱`;
-    note = `建设费用${price}钱，当前现钱${cash.toFixed(1)}钱。前置条件已经满足，但还需要备足现钱才能实际建设。`;
+    note = `建设费用${price}钱，当前现金${cash.toFixed(1)}钱。还需要备足现金才能实际建设。`;
   }
 
   return {
@@ -182,8 +182,6 @@ let scheduled = false;
 function schedule() {
   if (scheduled) return;
   scheduled = true;
-  // v172/v174 rebuild the whole goal panel in zero-delay timers. Defer one extra
-  // timer turn so this V1.7.6 action is attached to the final panel, not erased by it.
   window.setTimeout(() => {
     window.setTimeout(() => {
       scheduled = false;
