@@ -5,12 +5,12 @@ import { execFileSync } from 'node:child_process';
 
 const read = path => fs.readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
 
-test('V1.8.5 loads the mobile-side-navigation layer after V1.8.4', () => {
+test('V1.8.5.1 loads the mobile-side-navigation hotfix after V1.8.4', () => {
   const html = read('dist/index.html');
-  assert.match(html, /V1\.8\.5/);
-  assert.match(html, /v185\.css\?v=1\.8\.5/);
-  assert.match(html, /v185-mobile-nav\.js\?v=1\.8\.5/);
-  assert.ok(html.indexOf('v185.css?v=1.8.5') > html.indexOf('v184.css?v=1.8.4'));
+  assert.match(html, /V1\.8\.5\.1/);
+  assert.match(html, /v185\.css\?v=1\.8\.5\.1/);
+  assert.match(html, /v185-mobile-nav\.js\?v=1\.8\.5\.1/);
+  assert.ok(html.indexOf('v185.css?v=1.8.5.1') > html.indexOf('v184.css?v=1.8.4'));
 });
 
 test('mobile side rail exposes industry, relations, history and menu as thumb-friendly direct buttons', () => {
@@ -44,12 +44,19 @@ test('phone navigation is fixed at the right-middle, vertical, and replaces the 
   assert.match(rail, /transform:\s*translateY\(-50%\)/);
   assert.match(rail, /flex-direction:\s*column/);
   assert.doesNotMatch(rail, /bottom\s*:/, 'new phone rail must not be bottom-anchored');
-  assert.match(css, /@media\s*\(max-width:\s*760px\)[\s\S]*\.v183-nav-root[\s\S]*display:\s*none\s*!important/);
+});
+
+test('touch landscape devices use the phone rail even when their CSS viewport is wider than 760px', () => {
+  const css = read('dist/v185.css');
+  assert.match(css, /@media[^{]*\(hover:\s*none\)[^{]*\(pointer:\s*coarse\)/, 'touch capability must activate the mobile navigation independently of width');
+  assert.match(css, /@media[^{]*\(max-width:\s*(900|1024|1100)px\)/, 'narrow screens should also use the mobile rail');
+  assert.match(css, /\(hover:\s*none\)[\s\S]*\.v183-nav-root[\s\S]*display:\s*none\s*!important/, 'touch devices must hide the old lower-right navigation ball');
+  assert.match(css, /\(hover:\s*none\)[\s\S]*#game[\s\S]*padding-right:\s*(7[0-9]|8[0-9]|9[0-9])px/, 'touch devices must reserve the thumb-navigation gutter even in landscape');
+  assert.doesNotMatch(css, /@media\s*\(min-width:\s*761px\)[\s\S]*\.v185-mobile-side-nav[\s\S]*display:\s*none\s*!important/, 'wide touch devices must not be unconditionally forced back to the desktop navigator');
 });
 
 test('mobile content reserves a right thumb zone and the popup menu opens beside the rail', () => {
   const css = read('dist/v185.css');
-  assert.match(css, /@media\s*\(max-width:\s*760px\)[\s\S]*#game[\s\S]*padding-right:\s*(7[0-9]|8[0-9]|9[0-9])px/);
   assert.match(css, /\.v185-mobile-menu[\s\S]*position:\s*fixed/);
   assert.match(css, /\.v185-mobile-menu[\s\S]*right:\s*(6[0-9]|7[0-9]|8[0-9])px/);
   assert.match(css, /\.v185-mobile-nav-button[\s\S]*width:\s*(5[0-9]|6[0-9])px/);
