@@ -55,3 +55,9 @@ test('mobile content reserves a right thumb zone and the popup menu opens beside
   assert.match(css, /\.v185-mobile-nav-button[\s\S]*width:\s*(5[0-9]|6[0-9])px/);
   assert.match(css, /\.v185-mobile-nav-button[\s\S]*height:\s*(5[0-9]|6[0-9])px/);
 });
+
+test('V1.8.4 label synchronizer yields to the newer V1.8.5 release layer', () => {
+  const js = read('dist/v184-ui.js');
+  assert.match(js, /compatibility-v185/);
+  assert.match(js, /applyVersionLabel[\s\S]*compatibility-v185[\s\S]*return/);
+});
