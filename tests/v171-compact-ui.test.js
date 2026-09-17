@@ -13,13 +13,15 @@ test('compact UI remains the base while the current release stylesheet wins the 
   const overviewIndex = sheets.indexOf('./v172.css?v=1.7.2');
   const industryIndex = sheets.indexOf('./v173.css?v=1.7.3');
   const guideIndex = sheets.indexOf('./v174.css?v=1.7.4');
-  const currentIndex = sheets.indexOf('./v180.css?v=1.8.0');
+  const monthlyIndex = sheets.indexOf('./v180.css?v=1.8.0');
+  const navigationIndex = sheets.indexOf('./v183.css?v=1.8.3');
   assert.ok(compactIndex >= 0, 'V1.7.1 compact stylesheet is retained');
   assert.ok(overviewIndex > compactIndex, 'V1.7.2 overview stylesheet layers on top of compact UI');
   assert.ok(industryIndex > overviewIndex, 'V1.7.3 industry state styling remains layered on top of the overview');
   assert.ok(guideIndex > industryIndex, 'V1.7.4 guide styling remains layered on top of industry state styling');
-  assert.ok(currentIndex > guideIndex, 'V1.8.x monthly-turn styling is the current visual layer');
-  assert.equal(sheets.at(-1), './v180.css?v=1.8.0');
+  assert.ok(monthlyIndex > guideIndex, 'V1.8.x monthly-turn styling remains above the guide layer');
+  assert.ok(navigationIndex > monthlyIndex, 'V1.8.3 navigation styling is the current visual layer');
+  assert.equal(sheets.at(-1), './v183.css?v=1.8.3');
   assert.match(html, /v171-ui\.js\?v=1\.7\.1/);
 });
 
