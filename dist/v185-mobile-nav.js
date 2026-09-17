@@ -1,4 +1,4 @@
-const VERSION = '1.8.5';
+const VERSION = '1.8.5.1';
 
 const DIRECT_ITEMS = Object.freeze([
   Object.freeze({ id: 'assets', label: '产业', short: '产', tab: 'assets' }),
@@ -13,11 +13,11 @@ const MENU_ITEMS = Object.freeze([
 ]);
 
 function applyVersionLabel() {
-  const titleText = '乱世家书 · V1.8.5 手机侧边导航';
+  const titleText = '乱世家书 · V1.8.5.1 手机侧边导航';
   if (document.title !== titleText) document.title = titleText;
   document.querySelectorAll('.topbar .eyebrow, #setup .eyebrow').forEach(node => {
     const text = node.textContent || '';
-    if (!/乱世家书|V1\.8\.[0-5]/.test(text)) return;
+    if (!/乱世家书|V1\.8\.5(?:\.1)?|V1\.8\.[0-4]/.test(text)) return;
     const next = node.closest('#setup')
       ? `V${VERSION} 手机侧边导航 · 290年1月1日`
       : `乱世家书 · V${VERSION}`;
