@@ -41,6 +41,18 @@ test('low-frequency save and new-game controls are grouped under a more menu', (
   assert.match(js, /更多/);
 });
 
+test('low grain coverage, low stamina and low health can raise visual alerts without changing game state', () => {
+  const js = read('dist/v184-ui.js');
+  assert.match(js, /#food-rate/);
+  assert.match(js, /#grain/);
+  assert.match(js, /#stamina/);
+  assert.match(js, /#health/);
+  assert.match(js, /dataset\.v184Alert/);
+  assert.match(js, /35/);
+  assert.match(js, /50/);
+  assert.doesNotMatch(js, /__luanshiState\s*=|resources\.[a-zA-Z]+\s*=/, 'visual alert layer must not mutate gameplay state');
+});
+
 test('V1.8.4 visually prioritizes the primary turn button and core survival resources', () => {
   const css = read('dist/v184.css');
   assert.match(css, /\.v184-command-center/);
@@ -48,5 +60,6 @@ test('V1.8.4 visually prioritizes the primary turn button and core survival reso
   for (const id of ['money', 'grain', 'stamina', 'health']) {
     assert.match(css, new RegExp(`#${id}\\b`), `${id} should receive explicit prominence styling`);
   }
+  assert.match(css, /data-v184-alert/);
   assert.match(css, /@media\s*\(max-width:/);
 });
