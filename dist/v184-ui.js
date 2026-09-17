@@ -6,6 +6,7 @@ function numberFrom(node) {
 }
 
 function applyVersionLabel() {
+  if (document.querySelector('meta[name="compatibility-v185"]')) return;
   const titleText = '乱世家书 · V1.8.4 高频操作台';
   if (document.title !== titleText) document.title = titleText;
   document.querySelectorAll('.topbar .eyebrow, #setup .eyebrow').forEach(node => {
