@@ -18,6 +18,11 @@ function game(E, seed = 1820) {
   return state;
 }
 
+function setCash(state, amount) {
+  state.resources.money = amount;
+  state.household.money = amount;
+}
+
 test('V1.8.2 lowers only the first four cash thresholds', async () => {
   const E = await currentEngine();
   assert.deepEqual(
@@ -36,6 +41,31 @@ test('V1.8.2 lowers only the first four cash thresholds', async () => {
       oilPress: 1000
     }
   );
+});
+
+test('lowered early thresholds really enable the current guide purchase instead of the old locks', async () => {
+  const E = await currentEngine();
+  const state = game(E, 1822);
+
+  setCash(state, 39);
+  assert.equal(E.getV174GuideStatus(state).current.thresholdReady, false);
+  setCash(state, 40);
+  assert.equal(E.getV174GuideStatus(state).current.thresholdReady, true);
+  const land = E.buyLand(state, 1);
+  assert.equal(land.ok, true, '40 cash should be enough to clear the new land guide gate when the actual land price is affordable');
+  assert.equal(E.getV174GuideStatus(state).current.id, 'mill');
+
+  state.household.land = 3;
+  state.resources.land = 3;
+  setCash(state, 119);
+  assert.equal(E.getV174GuideStatus(state).current.thresholdReady, true, 'mill guide gate should be ready from 100 cash plus 3 mu');
+  const short = E.buyBusiness(state, 'mill');
+  assert.equal(short.ok, false, 'the real 120-money build cost still applies after the guide gate is met');
+
+  setCash(state, 120);
+  const mill = E.buyBusiness(state, 'mill');
+  assert.equal(mill.ok, true, 'the old 180-money unlock must not block a 120-money mill build in V1.8.2');
+  assert.equal(E.getV174GuideStatus(state).current.id, 'grainShop');
 });
 
 test('the first five monthly turns expose ordered onboarding hints and turn six has none', async () => {
