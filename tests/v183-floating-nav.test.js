@@ -29,7 +29,7 @@ test('floating navigation reuses existing tabs and exposes the current-task shor
 test('floating navigation can open, close, and dismiss itself from outside clicks', () => {
   const js = read('dist/v183-nav.js');
   assert.match(js, /aria-expanded/);
-  assert.match(js, /data-nav-open/);
+  assert.match(js, /dataset\.navOpen/);
   assert.match(js, /document\.addEventListener\(['\"]click['\"]/);
   assert.match(js, /Escape/);
 });
