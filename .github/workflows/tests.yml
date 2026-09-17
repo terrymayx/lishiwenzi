@@ -45,3 +45,4 @@ jobs:
       - run: node --check dist/engine-v180.js && node --check dist/v180-ui.js
       - run: node --check dist/engine-v182.js && node --check dist/v182-ui.js
       - run: node --check dist/v183-nav.js
+      - run: node --check dist/v184-ui.js
