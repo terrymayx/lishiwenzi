@@ -1,4 +1,4 @@
-/* V1.8.5 手机侧边导航：手机端把导航从右下角移到右侧中部，按拇指习惯纵向排列。 */
+/* V1.8.5.1 手机侧边导航：手机/触屏端把导航从右下角移到右侧中部，横屏与宽视口触屏也保持拇指导航。 */
 .v185-mobile-side-nav[hidden],
 .v185-mobile-menu[hidden]{display:none!important}
 
@@ -8,7 +8,7 @@
   top:50%;
   transform:translateY(-50%);
   z-index:2800;
-  display:flex;
+  display:none;
   flex-direction:column;
   gap:10px;
   align-items:center;
@@ -54,7 +54,7 @@
   background:rgba(10,31,46,.97);
   box-shadow:0 16px 38px rgba(3,16,26,.34);
   backdrop-filter:blur(12px);
-  display:grid;
+  display:none;
   gap:7px;
 }
 .v185-mobile-menu::after{
@@ -87,12 +87,13 @@
 .v185-mobile-menu-item:active{transform:scale(.98);background:rgba(69,167,244,.16)}
 .v185-mobile-menu-item:focus-visible{outline:2px solid rgba(90,177,245,.68);outline-offset:1px}
 
-@media(min-width:761px){
-  .v185-mobile-side-nav,.v185-mobile-menu{display:none!important}
-}
-
-@media(max-width:760px){
-  /* 手机上由右侧中部导航替代旧版右下角导航球。 */
+/*
+ * 手机优先：不仅看 CSS 宽度，也看真实触屏能力。
+ * 这样横屏手机、平板、系统缩放后的宽视口触屏设备不会误回退到桌面右下角导航。
+ */
+@media (max-width:900px), (hover:none) and (pointer:coarse){
+  .v185-mobile-side-nav:not([hidden]){display:flex}
+  .v185-mobile-menu:not([hidden]){display:grid}
   .v183-nav-root{display:none!important}
   .compact-ui #game{padding-right:78px;box-sizing:border-box}
   .compact-ui .app-shell{overflow-x:clip}
