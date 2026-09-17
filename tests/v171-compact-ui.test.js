@@ -16,7 +16,7 @@ test('compact UI remains the base while the current release stylesheet wins the 
   const monthlyIndex = sheets.indexOf('./v180.css?v=1.8.0');
   const navigationIndex = sheets.indexOf('./v183.css?v=1.8.3');
   const frequencyIndex = sheets.indexOf('./v184.css?v=1.8.4');
-  const mobileNavigationIndex = sheets.indexOf('./v185.css?v=1.8.5');
+  const mobileNavigationIndex = sheets.indexOf('./v185.css?v=1.8.5.1');
   assert.ok(compactIndex >= 0, 'V1.7.1 compact stylesheet is retained');
   assert.ok(overviewIndex > compactIndex, 'V1.7.2 overview stylesheet layers on top of compact UI');
   assert.ok(industryIndex > overviewIndex, 'V1.7.3 industry state styling remains layered on top of the overview');
@@ -24,8 +24,8 @@ test('compact UI remains the base while the current release stylesheet wins the 
   assert.ok(monthlyIndex > guideIndex, 'V1.8.x monthly-turn styling remains above the guide layer');
   assert.ok(navigationIndex > monthlyIndex, 'V1.8.3 navigation styling remains above monthly turns');
   assert.ok(frequencyIndex > navigationIndex, 'V1.8.4 high-frequency styling remains above floating navigation');
-  assert.ok(mobileNavigationIndex > frequencyIndex, 'V1.8.5 mobile-side navigation is the current visual layer');
-  assert.equal(sheets.at(-1), './v185.css?v=1.8.5');
+  assert.ok(mobileNavigationIndex > frequencyIndex, 'V1.8.5.1 mobile-side navigation hotfix is the current visual layer');
+  assert.equal(sheets.at(-1), './v185.css?v=1.8.5.1');
   assert.match(html, /v171-ui\.js\?v=1\.7\.1/);
 });
 
