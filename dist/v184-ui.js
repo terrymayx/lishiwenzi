@@ -6,13 +6,14 @@ function numberFrom(node) {
 }
 
 function applyVersionLabel() {
-  document.title = '乱世家书 · V1.8.4 高频操作台';
+  const titleText = '乱世家书 · V1.8.4 高频操作台';
+  if (document.title !== titleText) document.title = titleText;
   document.querySelectorAll('.topbar .eyebrow, #setup .eyebrow').forEach(node => {
-    if (/乱世家书|V1\.8\.[0-4]/.test(node.textContent || '')) {
-      node.textContent = node.closest('#setup')
-        ? `V${VERSION} 高频操作台 · 290年1月1日`
-        : `乱世家书 · V${VERSION}`;
-    }
+    if (!/乱世家书|V1\.8\.[0-4]/.test(node.textContent || '')) return;
+    const nextText = node.closest('#setup')
+      ? `V${VERSION} 高频操作台 · 290年1月1日`
+      : `乱世家书 · V${VERSION}`;
+    if (node.textContent !== nextText) node.textContent = nextText;
   });
 }
 
