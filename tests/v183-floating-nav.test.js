@@ -36,7 +36,7 @@ test('floating navigation can open, close, and dismiss itself from outside click
 
 test('floating navigation stays fixed at the lower-right corner and has a compact popup menu', () => {
   const css = read('dist/v183.css');
-  assert.match(css, /\.v183-nav-ball[\s\S]*position:\s*fixed/);
+  assert.match(css, /\.v183-nav-root[\s\S]*position:\s*fixed/);
   assert.match(css, /right:\s*/);
   assert.match(css, /bottom:\s*/);
   assert.match(css, /\.v183-nav-menu/);
