@@ -2,11 +2,11 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 
-const enginePath = new URL('../dist/engine-v180.js', import.meta.url);
+const enginePath = new URL('../dist/engine-v182.js', import.meta.url);
 
 async function currentEngine() {
-  assert.ok(fs.existsSync(enginePath), 'current monthly-turn engine must exist');
-  return import('../dist/engine-v180.js?v=1.8.2-early-guide-test');
+  assert.ok(fs.existsSync(enginePath), 'V1.8.2 engine wrapper must exist');
+  return import('../dist/engine-v182.js?v=1.8.2-early-guide-test');
 }
 
 function game(E, seed = 1820) {
@@ -46,7 +46,7 @@ test('the first five monthly turns expose ordered onboarding hints and turn six 
   const expected = [
     ['先谋生', /短工|现金|粮/],
     ['置办新田', /置办|40钱|真实购买/],
-    ['田庄产粮', /母亲|3亩|产粮/],
+    ['田庄产粮', /母亲|3亩|粮食/],
     ['第一份产业', /磨坊|被动|收入/],
     ['产业扩张', /粮铺|产业|收入/]
   ];
@@ -68,12 +68,13 @@ test('the first five monthly turns expose ordered onboarding hints and turn six 
 
 test('V1.8.2 page publishes the early-guide version and renders a dedicated hint card', () => {
   const index = fs.readFileSync(new URL('../dist/index.html', import.meta.url), 'utf8');
-  const ui = fs.readFileSync(new URL('../dist/v180-ui.js', import.meta.url), 'utf8');
+  const ui = fs.readFileSync(new URL('../dist/v182-ui.js', import.meta.url), 'utf8');
 
   assert.match(index, /V1\.8\.2/);
-  assert.match(index, /engine-v180\.js\?v=1\.8\.2/);
+  assert.match(index, /engine-v182\.js\?v=1\.8\.2/);
   assert.match(index, /game\.js\?v=1\.8\.2/);
   assert.match(index, /v180-ui\.js\?v=1\.8\.2/);
+  assert.match(index, /v182-ui\.js\?v=1\.8\.2/);
   assert.match(ui, /getEarlyGuideHint/);
   assert.match(ui, /v182-early-guide/);
 });
