@@ -1,0 +1,111 @@
+/* V1.8.5 手机侧边导航：手机端把导航从右下角移到右侧中部，按拇指习惯纵向排列。 */
+.v185-mobile-side-nav[hidden],
+.v185-mobile-menu[hidden]{display:none!important}
+
+.v185-mobile-side-nav{
+  position:fixed;
+  right:max(10px,env(safe-area-inset-right));
+  top:50%;
+  transform:translateY(-50%);
+  z-index:2800;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  align-items:center;
+}
+
+.v185-mobile-nav-button{
+  width:54px;
+  height:54px;
+  padding:0;
+  border:1px solid rgba(255,255,255,.24);
+  border-radius:50%;
+  background:linear-gradient(160deg,#48afff,#2588db);
+  color:#fff;
+  box-shadow:0 8px 22px rgba(6,31,52,.3),inset 0 1px 0 rgba(255,255,255,.25);
+  display:grid;
+  place-items:center;
+  align-content:center;
+  gap:1px;
+  cursor:pointer;
+  font:inherit;
+  touch-action:manipulation;
+  -webkit-tap-highlight-color:transparent;
+  transition:transform .14s ease,filter .14s ease,box-shadow .14s ease;
+}
+.v185-mobile-nav-button strong{font-size:18px;line-height:1;font-weight:900}
+.v185-mobile-nav-button small{font-size:10px;line-height:1.1;font-weight:700;letter-spacing:.04em}
+.v185-mobile-nav-button:active{transform:scale(.94)}
+.v185-mobile-nav-button:focus-visible{outline:3px solid rgba(255,255,255,.45);outline-offset:2px}
+.v185-mobile-nav-button.active{filter:brightness(.92);box-shadow:0 8px 22px rgba(6,31,52,.38),0 0 0 3px rgba(255,255,255,.2)}
+.v185-mobile-menu-toggle{background:linear-gradient(160deg,#397aa9,#235b82)}
+
+.v185-mobile-menu{
+  position:fixed;
+  right:74px;
+  top:50%;
+  transform:translateY(-50%);
+  z-index:2795;
+  width:min(188px,calc(100vw - 166px));
+  min-width:136px;
+  padding:9px;
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:15px;
+  background:rgba(10,31,46,.97);
+  box-shadow:0 16px 38px rgba(3,16,26,.34);
+  backdrop-filter:blur(12px);
+  display:grid;
+  gap:7px;
+}
+.v185-mobile-menu::after{
+  content:'';
+  position:absolute;
+  right:-7px;
+  top:50%;
+  width:13px;
+  height:13px;
+  margin-top:-7px;
+  border-top:1px solid rgba(255,255,255,.12);
+  border-right:1px solid rgba(255,255,255,.12);
+  background:rgba(10,31,46,.97);
+  transform:rotate(45deg);
+}
+.v185-mobile-menu-item{
+  min-height:42px;
+  padding:8px 11px;
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:10px;
+  background:rgba(255,255,255,.05);
+  color:#f3ead6;
+  font:inherit;
+  font-size:13px;
+  font-weight:700;
+  text-align:left;
+  cursor:pointer;
+  touch-action:manipulation;
+}
+.v185-mobile-menu-item:active{transform:scale(.98);background:rgba(69,167,244,.16)}
+.v185-mobile-menu-item:focus-visible{outline:2px solid rgba(90,177,245,.68);outline-offset:1px}
+
+@media(min-width:761px){
+  .v185-mobile-side-nav,.v185-mobile-menu{display:none!important}
+}
+
+@media(max-width:760px){
+  /* 手机上由右侧中部导航替代旧版右下角导航球。 */
+  .v183-nav-root{display:none!important}
+  .compact-ui #game{padding-right:78px;box-sizing:border-box}
+  .compact-ui .app-shell{overflow-x:clip}
+  .compact-ui .v184-command-center,
+  .compact-ui .compact-status,
+  .compact-ui .primary-workspace,
+  .compact-ui .detail-tabs-shell{min-width:0;max-width:100%}
+  .compact-ui .detail-tabs-shell .tabs{padding-right:2px}
+}
+
+@media(max-width:430px){
+  .v185-mobile-side-nav{right:max(8px,env(safe-area-inset-right));gap:8px}
+  .v185-mobile-nav-button{width:52px;height:52px}
+  .v185-mobile-menu{right:70px;width:min(176px,calc(100vw - 150px))}
+  .compact-ui #game{padding-right:74px}
+}
