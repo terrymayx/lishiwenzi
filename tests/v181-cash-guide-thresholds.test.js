@@ -39,7 +39,7 @@ function setCash(state, amount) {
   state.household.money = amount;
 }
 
-test('current guide uses cash rather than total household assets for money thresholds', async () => {
+test('V1.8.1 guide uses cash rather than total household assets for money thresholds', async () => {
   const E = await currentEngine();
   const state = game(E, 1811);
   addPropertyValue(state, 100);
@@ -98,16 +98,17 @@ test('ordinary asset milestones still use total household assets', async () => {
   assert.equal(milestones.byId.assets500.completed, true, 'side achievements should remain based on total household assets');
 });
 
-test('V1.8.1 page publishes the cash-threshold guide rule and routes buttons through the cash-aware engine', () => {
+test('V1.8.1 cash-threshold rule remains documented beneath the V1.8.2 release', () => {
   const index = fs.readFileSync(new URL('../dist/index.html', import.meta.url), 'utf8');
   const directGuide = fs.readFileSync(new URL('../dist/v176-ui.js', import.meta.url), 'utf8');
   const monthlyUi = fs.readFileSync(new URL('../dist/v180-ui.js', import.meta.url), 'utf8');
-  assert.match(index, /V1\.8\.1/);
+  assert.match(index, /V1\.8\.1 当前任务现金门槛/);
+  assert.match(index, /V1\.8\.2/);
   assert.match(index, /当前任务.*现金|现金.*当前任务/);
   assert.match(index, /普通经营成就.*家产|家产.*经营成就/);
-  assert.match(index, /engine-v180\.js\?v=1\.8\.1/);
-  assert.match(index, /game\.js\?v=1\.8\.1/);
-  assert.match(index, /v180-ui\.js\?v=1\.8\.1/);
+  assert.match(index, /engine-v182\.js\?v=1\.8\.2/);
+  assert.match(index, /game\.js\?v=1\.8\.2/);
+  assert.match(index, /v180-ui\.js\?v=1\.8\.2/);
   assert.match(directGuide, /from ['"]\.\/engine-v180\.js\?v=1\.8\.1['"]/);
   assert.match(directGuide, /v180-ui\.js\?v=1\.8\.1/);
   assert.match(monthlyUi, /engine-v180\.js\?v=1\.8\.1/);
