@@ -18,8 +18,9 @@
   <meta name="compatibility-v181" content="V1.8.1 当前任务现金门槛 engine-v180.js?v=1.8.1">
   <meta name="compatibility-v182" content="V1.8.2 前期引导优化 engine-v182.js?v=1.8.2">
   <meta name="compatibility-v183" content="V1.8.3 悬浮导航球 v183-nav.js?v=1.8.3">
+  <meta name="compatibility-v184" content="V1.8.4 高频操作台 v184-ui.js?v=1.8.4">
   <meta name="compatibility-v164-ui" content="v164-ui.js?v=1.6.9">
-  <title>乱世家书 · V1.8.3 悬浮导航球</title>
+  <title>乱世家书 · V1.8.4 高频操作台</title>
   <link rel="stylesheet" href="./style.css?v=1.2.1">
   <link rel="stylesheet" href="./v13.css?v=1.3.0">
   <link rel="stylesheet" href="./v132.css?v=1.3.2">
@@ -36,6 +37,7 @@
   <link rel="stylesheet" href="./v174.css?v=1.7.4">
   <link rel="stylesheet" href="./v180.css?v=1.8.0">
   <link rel="stylesheet" href="./v183.css?v=1.8.3">
+  <link rel="stylesheet" href="./v184.css?v=1.8.4">
   <script type="importmap">
     {
       "imports": {
@@ -55,7 +57,7 @@
 <body class="compact-ui">
   <main class="app-shell">
     <section id="setup" class="setup-card">
-      <p class="eyebrow">V1.8.3 悬浮导航球 · 290年1月1日</p>
+      <p class="eyebrow">V1.8.4 高频操作台 · 290年1月1日</p>
       <h1>乱世家书</h1>
       <p class="lead">每次选择本月行动后，点击“度过本月”推进一个月。底层仍逐日结算吃饭、短工、体力、健康、产业、田庄与历史；重大事件会在月中打断，处理后继续本月。</p>
       <form id="setup-form">
@@ -63,13 +65,13 @@
         <label>开局身份<select id="origin"></select></label>
         <button class="primary" type="submit">落笔开局</button>
       </form>
-      <p class="fine-print">前5个月会显示不打断操作的新手提示；前四项家业现金门槛降低为40 / 100 / 220 / 500钱，帮助更快体验买田与第一批产业。进入游戏后，右下角导航球可快速前往家族树、关系、产业、历史和当前任务。</p>
+      <p class="fine-print">进入游戏后，本月行动、度过本月、当前任务、补粮与田地/产业入口会集中在首屏高频操作台；导入导出、另起一门等低频操作收进“更多”。右下角导航球仍可快速前往家族树、关系、产业、历史和当前任务。</p>
     </section>
 
     <section id="game" hidden>
       <section id="compact-status" class="compact-status" aria-label="当前状态总览">
         <header class="topbar">
-          <div><p class="eyebrow">乱世家书 · V1.8.3</p><h1 id="date">290年1月1日</h1><p id="chapter">第1章 · 家门初立</p></div>
+          <div><p class="eyebrow">乱世家书 · V1.8.4</p><h1 id="date">290年1月1日</h1><p id="chapter">第1章 · 家门初立</p></div>
           <div class="top-actions"><button id="export" type="button">导出家书</button><label class="file-button">导入家书<input id="import" type="file" accept="application/json,.json"></label><button id="new-game" type="button">另起一门</button></div>
         </header>
         <div id="compact-person-summary" class="compact-person-summary" aria-live="polite">等待开局</div>
@@ -121,7 +123,7 @@
         <div id="tab-relations" class="tab-panel" hidden><div id="relations"></div></div>
         <div id="tab-assets" class="tab-panel" hidden><div id="assets"></div></div>
         <div id="tab-timeline" class="tab-panel" hidden><div id="timeline"></div></div>
-        <details class="help"><summary>V1.8.3 规则说明</summary><p><strong>悬浮导航：</strong>进入游戏后右下角显示导航球。点击后可直接前往家族树、关系、产业、历史或当前任务；再次点击导航球、点击空白处或按 Esc 可收起菜单。</p><p><strong>月度回合：</strong>选择当前执笔人的本月行动后，点击“度过本月”。一次点击以一个月为玩家回合，不再持续播放时间。</p><p><strong>前5个月引导：</strong>第1个月提示短工谋生与钱粮体力；第2个月提示置办新田；第3个月提示母亲免费照看前3亩；第4个月提示磨坊被动收入；第5个月提示粮铺与产业扩张。提示不会阻断操作，第6个月起自动结束固定新手引导。</p><p><strong>底层仍按天：</strong>月度按钮不会把经济粗暴改成“每月一次”。系统仍会逐日计算吃饭、饥饿、体力、健康、短工是否找到活、产业日收入、田庄与人物成长。</p><p><strong>月中中断：</strong>重大历史、需要选择的随机/剧情事件、断粮危机、主角死亡与继承等会立刻中断本月。处理后保留原来的月份目标，可点击“继续本月”。</p><p><strong>月报：</strong>完整度过一个月后自动生成月报，汇总钱粮、田产、声望、人物状态和本月纪事。</p><p><strong>当前任务现金门槛：</strong>家业引导链里当前任务的金额条件统一检查手中现金。前四项现金门槛调整为：置办新田40钱、磨坊100钱、粮铺220钱、布庄500钱；油坊起保持1000钱及之后的原门槛。</p><p><strong>门槛不是完成：</strong>现金、田地、声望、学识等达到要求，只代表当前任务已经具备执行条件。达到条件不算完成，不发任务奖励，也不解锁下一项。</p><p><strong>任务内直接操作：</strong>当前任务满足全部前置条件后，会直接出现“置办1亩”“建造/开设产业”或“组建商队/船队”按钮。玩家无需再去产业页寻找入口；只有按钮操作实际成功，任务才完成。</p><p><strong>家业引导链：</strong>家业按严格顺序推进。当前任务只有在真实购买或建成后才完成；后面的任务即使数值提前达标，也继续锁定。</p><p><strong>普通经营成就：</strong>小康之家、家底渐厚、家资丰足、富甲乡里等普通经营成就仍按总家产判断，不受当前任务现金门槛规则影响。</p><p><strong>主线顺序：</strong>置办新田 → 磨坊 → 粮铺 → 布庄 → 油坊 → 第一支商队 → 酒坊 → 客栈 → 织坊 → 纸坊 → 水运船队。</p><p><strong>完成奖励：</strong>置办新田+20钱；磨坊+20钱、粮铺+50钱、布庄+100钱、油坊+80钱、第一支商队+200钱、酒坊+120钱、客栈+180钱、织坊+250钱、纸坊+350钱、水运船队+600钱。每项最多结算一次。</p><p><strong>产业上限：</strong>磨坊、粮铺、布庄、油坊、酒坊、客栈、织坊、纸坊、水运船队最多1份；商队最多2支。</p><p><strong>体力与健康：</strong>劳动消耗体力；体力≤35自动休养，恢复到60后再工作。健康独立于体力，健康越低每日死亡风险越高。</p><p><strong>田庄：</strong>母亲健在时免费照看前3亩；超过3亩的部分按每3亩1名农工、每人每月6钱自动雇工。夏收与秋收仍按原有具体日期进入仓储。</p><p><strong>短工谋生：</strong>仍按每天判定是否找到活，月底只做汇总；春80%·0.8钱/工作日，夏65%·0.8钱，秋85%·0.9钱，冬45%·0.7钱。</p><p><strong>兼容：</strong>婚配、婚育、历史主线、紧凑总览布局、家业完成制、任务内直接建设、月度回合、前期引导与产业限额全部继续保留。</p></details>
+        <details class="help"><summary>V1.8.4 规则说明</summary><p><strong>高频操作台：</strong>本月行动、度过本月、当前任务、补粮与田地/产业入口集中到首屏；度过本月是最大的主按钮。钱、粮、体力、健康加强显示，粮食不足约30日、体力≤35或健康≤50时会自动提示风险。</p><p><strong>低频操作：</strong>导出家书、导入家书、另起一门收进顶部“更多”，减少对主要回合操作的干扰。</p><p><strong>悬浮导航：</strong>进入游戏后右下角显示导航球。点击后可直接前往家族树、关系、产业、历史或当前任务；再次点击导航球、点击空白处或按 Esc 可收起菜单。</p><p><strong>月度回合：</strong>选择当前执笔人的本月行动后，点击“度过本月”。一次点击以一个月为玩家回合，不再持续播放时间。</p><p><strong>前5个月引导：</strong>第1个月提示短工谋生与钱粮体力；第2个月提示置办新田；第3个月提示母亲免费照看前3亩；第4个月提示磨坊被动收入；第5个月提示粮铺与产业扩张。提示不会阻断操作，第6个月起自动结束固定新手引导。</p><p><strong>底层仍按天：</strong>月度按钮不会把经济粗暴改成“每月一次”。系统仍会逐日计算吃饭、饥饿、体力、健康、短工是否找到活、产业日收入、田庄与人物成长。</p><p><strong>月中中断：</strong>重大历史、需要选择的随机/剧情事件、断粮危机、主角死亡与继承等会立刻中断本月。处理后保留原来的月份目标，可点击“继续本月”。</p><p><strong>月报：</strong>完整度过一个月后自动生成月报，汇总钱粮、田产、声望、人物状态和本月纪事。</p><p><strong>当前任务现金门槛：</strong>家业引导链里当前任务的金额条件统一检查手中现金。前四项现金门槛调整为：置办新田40钱、磨坊100钱、粮铺220钱、布庄500钱；油坊起保持1000钱及之后的原门槛。</p><p><strong>门槛不是完成：</strong>现金、田地、声望、学识等达到要求，只代表当前任务已经具备执行条件。达到条件不算完成，不发任务奖励，也不解锁下一项。</p><p><strong>任务内直接操作：</strong>当前任务满足全部前置条件后，会直接出现“置办1亩”“建造/开设产业”或“组建商队/船队”按钮。玩家无需再去产业页寻找入口；只有按钮操作实际成功，任务才完成。</p><p><strong>家业引导链：</strong>家业按严格顺序推进。当前任务只有在真实购买或建成后才完成；后面的任务即使数值提前达标，也继续锁定。</p><p><strong>普通经营成就：</strong>小康之家、家底渐厚、家资丰足、富甲乡里等普通经营成就仍按总家产判断，不受当前任务现金门槛规则影响。</p><p><strong>主线顺序：</strong>置办新田 → 磨坊 → 粮铺 → 布庄 → 油坊 → 第一支商队 → 酒坊 → 客栈 → 织坊 → 纸坊 → 水运船队。</p><p><strong>完成奖励：</strong>置办新田+20钱；磨坊+20钱、粮铺+50钱、布庄+100钱、油坊+80钱、第一支商队+200钱、酒坊+120钱、客栈+180钱、织坊+250钱、纸坊+350钱、水运船队+600钱。每项最多结算一次。</p><p><strong>产业上限：</strong>磨坊、粮铺、布庄、油坊、酒坊、客栈、织坊、纸坊、水运船队最多1份；商队最多2支。</p><p><strong>体力与健康：</strong>劳动消耗体力；体力≤35自动休养，恢复到60后再工作。健康独立于体力，健康越低每日死亡风险越高。</p><p><strong>田庄：</strong>母亲健在时免费照看前3亩；超过3亩的部分按每3亩1名农工、每人每月6钱自动雇工。夏收与秋收仍按原有具体日期进入仓储。</p><p><strong>短工谋生：</strong>仍按每天判定是否找到活，月底只做汇总；春80%·0.8钱/工作日，夏65%·0.8钱，秋85%·0.9钱，冬45%·0.7钱。</p><p><strong>兼容：</strong>婚配、婚育、历史主线、紧凑总览布局、家业完成制、任务内直接建设、月度回合、前期引导、悬浮导航与产业限额全部继续保留。</p></details>
       </section>
     </section>
   </main>
@@ -142,5 +144,6 @@
   <script type="module" src="./v180-ui.js?v=1.8.2"></script>
   <script type="module" src="./v182-ui.js?v=1.8.2"></script>
   <script type="module" src="./v183-nav.js?v=1.8.3"></script>
+  <script type="module" src="./v184-ui.js?v=1.8.4"></script>
 </body>
 </html>
