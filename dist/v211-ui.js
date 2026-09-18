@@ -150,11 +150,11 @@ function ensureRightColumn() {
   right = create('aside', 'v211-right');
   right.id = 'v211-right';
 
-  const taskRail = createPaperCard('v211-task-rail', '当前任务', '主');
-  const preview = createPaperCard('v211-preview', '本次行动预览', '⌕');
-  const turnRail = createPaperCard('v211-turn-rail', '下个月', '⏳');
-
-  right.append(taskRail, preview, turnRail);
+  right.append(
+    createPaperCard('v211-task-rail', '当前任务', '主'),
+    createPaperCard('v211-preview', '本次行动预览', '⌕'),
+    createPaperCard('v211-turn-rail', '下个月', '⏳')
+  );
   return right;
 }
 
