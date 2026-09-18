@@ -1,0 +1,516 @@
+/* V1.10.0 全局古风重构版
+ * 木质框架 + 深青底 + 鎏金细边 + 暖宣纸主舞台 + 宋楷字体层级
+ * 仅覆盖视觉层，不修改玩法、存档或引擎逻辑。
+ */
+
+:root{
+  --v200-bg:#091b21;
+  --v200-bg2:#0d272e;
+  --v200-teal:#143740;
+  --v200-teal2:#1e4a54;
+  --v200-teal3:#285a65;
+  --v200-gold:#c89542;
+  --v200-gold2:#edc873;
+  --v200-gold3:#8e5d20;
+  --v200-wood:#4b2e1b;
+  --v200-wood2:#2b1b12;
+  --v200-paper:#efe2bf;
+  --v200-paper2:#faf2dd;
+  --v200-paper3:#dfcda2;
+  --v200-ink:#2d2115;
+  --v200-ink2:#6d5840;
+  --v200-red:#a94532;
+  --v200-green:#476d4c;
+  --v200-line:rgba(142,96,37,.30);
+  --v200-shadow:rgba(0,0,0,.30);
+}
+
+body.compact-ui.v200-global-ancient-ui{
+  min-height:100vh;
+  font-family:"Songti SC","Noto Serif SC","SimSun",serif;
+  color:#eadbb7;
+  background:
+    radial-gradient(circle at 50% -12%,rgba(113,137,107,.20),transparent 36%),
+    linear-gradient(180deg,#0c2229 0,#091b21 55%,#07151a 100%);
+}
+body.compact-ui.v200-global-ancient-ui::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  z-index:-1;
+  pointer-events:none;
+  opacity:.28;
+  background:
+    linear-gradient(90deg,rgba(215,169,82,.035) 1px,transparent 1px) 0 0/64px 64px,
+    linear-gradient(rgba(215,169,82,.025) 1px,transparent 1px) 0 0/64px 64px;
+}
+.compact-ui.v200-global-ancient-ui .app-shell{
+  max-width:1800px;
+  padding:10px;
+}
+
+/* 顶部资源栏 */
+.compact-ui.v200-global-ancient-ui .compact-status.v200-top-status{
+  position:relative;
+  overflow:visible;
+  border:1px solid rgba(208,159,69,.58);
+  border-radius:13px;
+  background:linear-gradient(180deg,rgba(20,45,50,.985),rgba(8,27,33,.99));
+  box-shadow:0 14px 34px rgba(0,0,0,.26),inset 0 0 0 1px rgba(255,231,174,.05);
+}
+.compact-ui.v200-global-ancient-ui .compact-status.v200-top-status::before{
+  content:"";
+  position:absolute;
+  inset:-4px;
+  z-index:-1;
+  border:1px solid rgba(90,53,25,.55);
+  border-radius:16px;
+  box-shadow:inset 0 0 0 2px rgba(32,18,10,.28);
+}
+.compact-ui.v200-global-ancient-ui .topbar{
+  padding:8px 10px 6px;
+  border-bottom:1px solid rgba(201,153,65,.18);
+}
+.compact-ui.v200-global-ancient-ui .topbar h1{
+  color:#f2dca5;
+  font-family:"STKaiti","KaiTi","FangSong",serif;
+  font-size:26px;
+  letter-spacing:.05em;
+}
+.compact-ui.v200-global-ancient-ui .topbar .eyebrow,
+.compact-ui.v200-global-ancient-ui #chapter{color:#bca77f}
+.compact-ui.v200-global-ancient-ui .resource-strip{
+  gap:0;
+  border:1px solid rgba(204,157,69,.20);
+  border-radius:8px;
+  overflow:hidden;
+  background:#0c2830;
+}
+.compact-ui.v200-global-ancient-ui .resource-card.v200-resource-card{
+  min-height:54px;
+  border:0!important;
+  border-right:1px solid rgba(210,164,78,.20)!important;
+  border-radius:0!important;
+  background:linear-gradient(180deg,rgba(29,66,72,.80),rgba(14,43,50,.88))!important;
+  box-shadow:inset 0 1px rgba(255,255,255,.03)!important;
+}
+.compact-ui.v200-global-ancient-ui .resource-card.v200-resource-card:last-child{border-right:0!important}
+.compact-ui.v200-global-ancient-ui .resource-label span{
+  color:#cfc09d!important;
+  font-size:11px;
+}
+.compact-ui.v200-global-ancient-ui .resource-label span::before{
+  content:attr(data-v200-icon);
+  margin-right:5px;
+  color:#e3b85f;
+}
+.compact-ui.v200-global-ancient-ui .resource-card b{
+  color:#f2dfad!important;
+  font-family:"Songti SC","Noto Serif SC",serif;
+  font-size:18px!important;
+}
+.compact-ui.v200-global-ancient-ui .resource-plus{
+  border-color:rgba(221,180,94,.45)!important;
+  color:#e9c16d!important;
+  background:#183b43!important;
+}
+
+/* 主外框 */
+.compact-ui.v200-global-ancient-ui .v184-command-center.v200-main-shell{
+  position:relative;
+  overflow:hidden;
+  padding:10px;
+  border:1px solid rgba(211,162,70,.55);
+  border-radius:14px;
+  background:linear-gradient(180deg,rgba(12,36,42,.985),rgba(7,25,30,.995));
+  box-shadow:0 18px 44px rgba(0,0,0,.31),inset 0 0 0 1px rgba(244,211,145,.05);
+}
+.compact-ui.v200-global-ancient-ui .v184-command-center.v200-main-shell::before,
+.compact-ui.v200-global-ancient-ui .v184-command-center.v200-main-shell::after{
+  content:"";
+  position:absolute;
+  width:130px;height:130px;
+  border:1px solid rgba(210,164,79,.15);
+  transform:rotate(45deg);
+  pointer-events:none;
+}
+.compact-ui.v200-global-ancient-ui .v184-command-center.v200-main-shell::before{left:-85px;top:-85px}
+.compact-ui.v200-global-ancient-ui .v184-command-center.v200-main-shell::after{right:-85px;bottom:-85px}
+.compact-ui.v200-global-ancient-ui .v184-command-head{
+  min-height:44px;
+  padding:2px 5px 8px;
+  border-bottom:1px solid rgba(207,159,69,.24);
+}
+.compact-ui.v200-global-ancient-ui .v184-command-head .eyebrow{color:#9d8760}
+.compact-ui.v200-global-ancient-ui .v184-command-head strong{
+  color:#f0d595;
+  font-family:"STKaiti","KaiTi",serif;
+  font-size:20px;
+  letter-spacing:.08em;
+}
+
+/* 三栏布局 */
+.compact-ui.v200-global-ancient-ui .v184-command-grid.v200-main-grid{
+  display:grid!important;
+  grid-template-columns:minmax(210px,245px) minmax(620px,1fr) minmax(270px,315px)!important;
+  grid-template-rows:minmax(430px,1fr) auto!important;
+  grid-template-areas:
+    "v200nav v200center v200right"
+    "v200nav v200center v200turn"!important;
+  gap:10px!important;
+  align-items:stretch!important;
+}
+.compact-ui.v200-global-ancient-ui #v190-command-nav{grid-area:v200nav}
+.compact-ui.v200-global-ancient-ui #v184-action-slot{grid-area:v200center}
+.compact-ui.v200-global-ancient-ui #v184-goal-slot{grid-area:v200right}
+.compact-ui.v200-global-ancient-ui #v184-turn-slot{grid-area:v200turn}
+
+/* 左侧导航 */
+.compact-ui.v200-global-ancient-ui .v190-command-nav.v200-left-nav{
+  min-width:0;
+  padding:8px;
+  border:1px solid rgba(205,158,71,.30);
+  border-radius:10px;
+  background:linear-gradient(180deg,rgba(21,57,61,.98),rgba(8,32,36,.99));
+  box-shadow:inset 0 0 24px rgba(0,0,0,.18);
+}
+.compact-ui.v200-global-ancient-ui .v190-nav-title{
+  padding:5px 7px 10px;
+  border-bottom:1px solid rgba(207,159,70,.24);
+}
+.compact-ui.v200-global-ancient-ui .v190-nav-title strong{
+  color:#f0d59b;
+  font-family:"STKaiti","KaiTi",serif;
+  font-size:20px;
+  letter-spacing:.08em;
+}
+.compact-ui.v200-global-ancient-ui .v190-nav-title small{color:#a8b0a0;font-size:10px}
+.compact-ui.v200-global-ancient-ui .v190-nav-list{display:grid;gap:5px;padding-top:7px}
+.compact-ui.v200-global-ancient-ui .v190-nav-button.v200-nav-btn{
+  min-height:50px;
+  grid-template-columns:30px minmax(0,1fr) 16px;
+  gap:6px;
+  padding:7px 8px;
+  border:1px solid rgba(206,159,70,.18);
+  border-radius:7px;
+  background:linear-gradient(180deg,rgba(17,51,57,.92),rgba(8,31,36,.96));
+  color:#ecddbd;
+  box-shadow:inset 0 1px rgba(255,255,255,.025);
+}
+.compact-ui.v200-global-ancient-ui .v190-nav-button.v200-nav-btn:hover,
+.compact-ui.v200-global-ancient-ui .v190-nav-button.v200-nav-btn:focus-visible{
+  border-color:rgba(231,187,94,.55);
+  background:linear-gradient(180deg,rgba(43,70,68,.95),rgba(21,48,50,.97));
+}
+.compact-ui.v200-global-ancient-ui .v190-nav-button.v200-nav-btn.active{
+  border-color:#d1a04a;
+  background:linear-gradient(90deg,rgba(142,91,30,.88),rgba(74,55,32,.96));
+  box-shadow:inset 4px 0 #f0c66b,0 0 0 1px rgba(240,198,107,.13);
+}
+.compact-ui.v200-global-ancient-ui .v190-nav-icon{font-size:21px}
+.compact-ui.v200-global-ancient-ui .v190-nav-copy strong{
+  color:#f3e4c4;
+  font-family:"STKaiti","KaiTi",serif;
+  font-size:15px;
+}
+.compact-ui.v200-global-ancient-ui .v190-nav-copy small{color:#a9b4aa;font-size:10px}
+.compact-ui.v200-global-ancient-ui .v190-nav-button.active .v190-nav-copy small{color:#e1c98e}
+.compact-ui.v200-global-ancient-ui .v190-nav-arrow{color:#d8ab54}
+
+/* 中央宣纸主舞台 */
+.compact-ui.v200-global-ancient-ui #v184-action-slot.v200-center-stage{
+  min-width:0;
+  overflow:hidden;
+  padding:0;
+  border:1px solid rgba(175,124,49,.40);
+  border-radius:10px;
+  background:linear-gradient(180deg,var(--v200-paper2),var(--v200-paper));
+  color:var(--v200-ink);
+  box-shadow:inset 0 0 36px rgba(105,69,27,.08),inset 0 0 0 1px rgba(255,255,255,.38);
+}
+.compact-ui.v200-global-ancient-ui .v200-stage-header{
+  position:relative;
+  min-height:92px;
+  display:flex;
+  align-items:center;
+  gap:13px;
+  padding:13px 60px 13px 15px!important;
+  border-bottom:1px solid rgba(126,87,37,.25);
+  background:
+    radial-gradient(circle at 80% 0,rgba(97,122,103,.14),transparent 33%),
+    linear-gradient(90deg,rgba(255,250,234,.95),rgba(235,221,190,.88));
+}
+.compact-ui.v200-global-ancient-ui .v200-stage-header::after{
+  content:"";
+  position:absolute;
+  right:20px;top:14px;
+  width:75px;height:56px;
+  opacity:.14;
+  background:
+    radial-gradient(ellipse at 30% 65%,#315d62 0 24%,transparent 25%),
+    radial-gradient(ellipse at 65% 45%,#315d62 0 28%,transparent 29%);
+}
+.compact-ui.v200-global-ancient-ui .v190-detail-icon{
+  width:58px;height:58px;
+  border:1px solid rgba(133,92,39,.38);
+  border-radius:7px;
+  background:linear-gradient(180deg,#fff7de,#e5d0a0);
+  box-shadow:0 2px 7px rgba(90,53,17,.10),inset 0 0 0 2px rgba(255,255,255,.38);
+  font-size:31px;
+}
+.compact-ui.v200-global-ancient-ui .v200-stage-header h2{
+  margin:0;
+  color:#21180f!important;
+  font-family:"STKaiti","KaiTi","FangSong",serif;
+  font-size:29px!important;
+  font-weight:900!important;
+  letter-spacing:.08em;
+}
+.compact-ui.v200-global-ancient-ui .v200-stage-header p{
+  margin:4px 0 0;
+  color:#6a553d!important;
+  font-size:12px!important;
+  line-height:1.55!important;
+}
+.compact-ui.v200-global-ancient-ui .v200-stage-seal{
+  position:absolute;
+  left:86px;top:11px;
+  min-width:28px;
+  padding:2px 4px;
+  border:1px solid rgba(148,57,37,.58);
+  border-radius:3px;
+  color:#a23e2d;
+  background:rgba(255,238,211,.64);
+  font-family:"STKaiti","KaiTi",serif;
+  font-size:9px;
+  line-height:1.05;
+  text-align:center;
+}
+
+/* 行动卡 */
+.compact-ui.v200-global-ancient-ui #v184-action-slot>section{
+  margin:0!important;
+  padding:10px 12px 14px!important;
+}
+.compact-ui.v200-global-ancient-ui #v184-action-slot>section>h2{display:none!important}
+.compact-ui.v200-global-ancient-ui #actions.v200-actions-panel{
+  display:grid!important;
+  grid-template-columns:1fr!important;
+  gap:7px!important;
+}
+.compact-ui.v200-global-ancient-ui .action-card.v200-action-card{
+  min-height:72px!important;
+  padding:11px 14px!important;
+  border:1px solid rgba(139,98,44,.28)!important;
+  border-radius:7px!important;
+  background:linear-gradient(180deg,rgba(255,251,237,.92),rgba(231,216,183,.85))!important;
+  color:#34271a!important;
+  box-shadow:0 3px 8px rgba(72,46,19,.06),inset 0 1px rgba(255,255,255,.55)!important;
+  text-align:left;
+}
+.compact-ui.v200-global-ancient-ui .action-card.v200-action-card:hover{
+  border-color:#bd8736!important;
+  transform:translateY(-1px);
+}
+.compact-ui.v200-global-ancient-ui .action-card.v200-action-card.selected{
+  border-color:#c68c31!important;
+  box-shadow:inset 4px 0 #ba7720,0 0 0 2px rgba(190,128,36,.10)!important;
+}
+.compact-ui.v200-global-ancient-ui .action-card.v200-action-card strong{
+  color:#2d2115!important;
+  font-family:"STKaiti","KaiTi",serif!important;
+  font-size:17px!important;
+  font-weight:900!important;
+}
+.compact-ui.v200-global-ancient-ui .action-card.v200-action-card span{
+  color:#65503a!important;
+  font-size:12px!important;
+  line-height:1.48;
+}
+.compact-ui.v200-global-ancient-ui .action-card.v200-action-card small{
+  color:#8b6940!important;
+  font-size:11px!important;
+}
+
+/* 右侧任务栏 */
+.compact-ui.v200-global-ancient-ui #v184-goal-slot.v200-right-rail{
+  min-width:0;
+  padding:0;
+  border:1px solid rgba(205,158,71,.30);
+  border-radius:9px;
+  background:linear-gradient(180deg,rgba(19,54,57,.98),rgba(8,34,38,.99));
+  color:#ead9b6;
+  overflow:hidden;
+}
+.compact-ui.v200-global-ancient-ui #v184-goal-slot .next-goal-panel{
+  position:static;
+  margin:0;
+  min-height:100%;
+  padding:10px;
+  border:0;
+  border-radius:0;
+  background:transparent!important;
+  box-shadow:none;
+}
+.compact-ui.v200-global-ancient-ui #v184-goal-slot .next-goal-heading{
+  padding:4px 2px 8px;
+  border-bottom:1px solid rgba(206,159,71,.21);
+}
+.compact-ui.v200-global-ancient-ui #v184-goal-slot .next-goal-heading strong{
+  color:#f1d89d!important;
+  font-family:"STKaiti","KaiTi",serif;
+  font-size:15px;
+}
+.compact-ui.v200-global-ancient-ui #v184-goal-slot h3,
+.compact-ui.v200-global-ancient-ui #v184-goal-slot strong{color:#f0d9a1!important}
+.compact-ui.v200-global-ancient-ui #v184-goal-slot p,
+.compact-ui.v200-global-ancient-ui #v184-goal-slot span,
+.compact-ui.v200-global-ancient-ui #v184-goal-slot small{color:#cdbb97!important}
+
+/* 下个月按钮 */
+.compact-ui.v200-global-ancient-ui #v184-turn-slot.v200-next-month-panel{
+  align-self:end;
+  padding:8px;
+  border:1px solid rgba(205,158,71,.34);
+  border-radius:10px;
+  background:linear-gradient(180deg,rgba(51,50,33,.95),rgba(27,34,25,.99));
+}
+.compact-ui.v200-global-ancient-ui #advance-month.v200-next-month-button{
+  width:100%;
+  min-height:72px!important;
+  border:1px solid #dda951!important;
+  border-radius:15px!important;
+  background:linear-gradient(180deg,#efc568,#c6882e)!important;
+  color:#3d250b!important;
+  font-family:"STKaiti","KaiTi",serif!important;
+  font-size:28px!important;
+  font-weight:900!important;
+  letter-spacing:.12em!important;
+  text-shadow:0 1px rgba(255,247,222,.55);
+  box-shadow:0 8px 17px rgba(0,0,0,.24),inset 0 1px rgba(255,247,218,.58),inset 0 -1px rgba(112,66,14,.20)!important;
+}
+.compact-ui.v200-global-ancient-ui #advance-month.v200-next-month-button:not(:disabled):hover{
+  filter:brightness(1.04);
+  transform:translateY(-1px);
+}
+.compact-ui.v200-global-ancient-ui .v180-month-hint{
+  color:#c3b28d!important;
+  font-size:10px!important;
+  line-height:1.4!important;
+}
+
+/* 内嵌页 */
+.compact-ui.v200-global-ancient-ui .v190-tab-area.v200-tab-area{
+  min-height:340px;
+  padding:8px 10px 13px;
+  color:var(--v200-ink);
+  font-family:"Songti SC","Noto Serif SC","SimSun",serif;
+}
+.compact-ui.v200-global-ancient-ui .v190-tab-area .tab-panel{color:var(--v200-ink)}
+.compact-ui.v200-global-ancient-ui .v190-tab-area .tab-panel h3,
+.compact-ui.v200-global-ancient-ui .v190-tab-area .tab-panel strong{color:#302317!important}
+.compact-ui.v200-global-ancient-ui .v190-tab-area .tab-panel p,
+.compact-ui.v200-global-ancient-ui .v190-tab-area .tab-panel small{color:#6a5740!important}
+
+/* 家族树 */
+.compact-ui.v200-global-ancient-ui .v200-family-board .family-tree{
+  border:1px solid rgba(143,99,43,.25);
+  border-radius:7px;
+  background:radial-gradient(circle at 50% 30%,rgba(88,105,88,.08),transparent 34%),rgba(250,241,216,.58);
+}
+.compact-ui.v200-global-ancient-ui .v200-family-board .tree-instruction{
+  color:#806641!important;
+  border-bottom:1px solid rgba(144,100,43,.18);
+}
+
+/* 关系 */
+.compact-ui.v200-global-ancient-ui .v200-relations-board #relations p{
+  margin:5px 0;
+  padding:8px 10px!important;
+  border:1px solid rgba(147,103,47,.22);
+  border-radius:6px;
+  background:rgba(249,239,213,.62);
+  color:#4e3b28!important;
+}
+
+/* 历史 */
+.compact-ui.v200-global-ancient-ui .v200-timeline-row{
+  border:1px solid rgba(148,103,47,.24)!important;
+  background:rgba(247,237,210,.62)!important;
+  color:#392a1d!important;
+}
+
+/* 产业兼容 V1.9.0.2 */
+.compact-ui.v200-global-ancient-ui .v200-business-card{
+  box-shadow:0 3px 9px rgba(86,58,28,.09),inset 0 0 0 1px rgba(255,255,255,.45)!important;
+}
+.compact-ui.v200-global-ancient-ui .v200-gold-button{
+  border-color:#b88c47!important;
+  background:linear-gradient(180deg,#285665,#193e4b)!important;
+  color:#fff0cf!important;
+}
+
+/* 工具菜单 */
+.compact-ui.v200-global-ancient-ui .v200-utility-menu>summary{
+  border-color:rgba(207,159,71,.28);
+  background:rgba(62,48,28,.50);
+  color:#d8c49b;
+}
+.compact-ui.v200-global-ancient-ui .v200-utility-menu .top-actions{
+  border-color:rgba(207,159,71,.34);
+  background:#102d32;
+}
+.compact-ui.v200-global-ancient-ui .v200-notice:not(:empty){
+  border:1px solid rgba(207,159,71,.26);
+  border-radius:7px;
+  background:rgba(20,50,55,.94);
+  color:#ecd9ae;
+}
+
+/* 旧浮动导航退出 */
+.compact-ui.v200-global-ancient-ui #detail-tabs-shell{display:none!important}
+.compact-ui.v200-global-ancient-ui .v183-nav-root,
+.compact-ui.v200-global-ancient-ui .v185-mobile-side-nav,
+.compact-ui.v200-global-ancient-ui .v185-mobile-menu{display:none!important}
+
+/* 响应式 */
+@media(max-width:1260px){
+  .compact-ui.v200-global-ancient-ui .v184-command-grid.v200-main-grid{
+    grid-template-columns:minmax(190px,220px) minmax(500px,1fr) minmax(250px,285px)!important;
+  }
+  .compact-ui.v200-global-ancient-ui .v200-stage-header h2{font-size:25px!important}
+}
+@media(max-width:960px){
+  .compact-ui.v200-global-ancient-ui .v184-command-grid.v200-main-grid{
+    grid-template-columns:1fr!important;
+    grid-template-rows:auto!important;
+    grid-template-areas:
+      "v200nav"
+      "v200center"
+      "v200right"
+      "v200turn"!important;
+  }
+  .compact-ui.v200-global-ancient-ui .v190-nav-list{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .compact-ui.v200-global-ancient-ui .v190-nav-button.v200-nav-btn{grid-template-columns:26px minmax(0,1fr)}
+  .compact-ui.v200-global-ancient-ui .v190-nav-arrow{display:none}
+  .compact-ui.v200-global-ancient-ui #v184-turn-slot.v200-next-month-panel{
+    position:sticky;
+    bottom:max(6px,env(safe-area-inset-bottom));
+    z-index:50;
+  }
+}
+@media(max-width:620px){
+  .compact-ui.v200-global-ancient-ui .app-shell{padding:7px}
+  .compact-ui.v200-global-ancient-ui .v184-command-center.v200-main-shell{padding:7px}
+  .compact-ui.v200-global-ancient-ui .v190-nav-list{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .compact-ui.v200-global-ancient-ui .v200-stage-header{min-height:76px;padding:10px 45px 10px 10px!important}
+  .compact-ui.v200-global-ancient-ui .v190-detail-icon{width:47px;height:47px;font-size:25px}
+  .compact-ui.v200-global-ancient-ui .v200-stage-header h2{font-size:22px!important}
+  .compact-ui.v200-global-ancient-ui .v200-stage-header p{font-size:11px!important}
+  .compact-ui.v200-global-ancient-ui #advance-month.v200-next-month-button{min-height:62px!important;font-size:22px!important}
+}
+@media(prefers-reduced-motion:reduce){
+  .compact-ui.v200-global-ancient-ui *{scroll-behavior:auto!important}
+  .compact-ui.v200-global-ancient-ui .action-card,
+  .compact-ui.v200-global-ancient-ui #advance-month{transition:none!important}
+}
