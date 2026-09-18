@@ -5,12 +5,11 @@ import { execFileSync } from 'node:child_process';
 
 const read = path => fs.readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
 
-test('V1.8.4 page loads the high-frequency operation layer after V1.8.3', () => {
+test('V1.8.4 high-frequency UI files remain available but the current page no longer loads them', () => {
   const html = read('dist/index.html');
-  assert.match(html, /V1\.8\.4/);
-  assert.match(html, /v184\.css\?v=1\.8\.4/);
-  assert.match(html, /v184-ui\.js\?v=1\.8\.4/);
-  assert.ok(html.indexOf('v184.css?v=1.8.4') > html.indexOf('v183.css?v=1.8.3'));
+  assert.ok(fs.existsSync(new URL('../dist/v184.css', import.meta.url)));
+  assert.ok(fs.existsSync(new URL('../dist/v184-ui.js', import.meta.url)));
+  assert.doesNotMatch(html, /v184\.css\?v=|v184-ui\.js\?v=/);
 });
 
 test('high-frequency command center reuses the real action, month and current-goal controls', () => {
