@@ -6,19 +6,19 @@ import { execFileSync } from 'node:child_process';
 const read = path => fs.readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
 const html = read('dist/index.html');
 
-test('compact UI remains the base while V1.11.3 is the only active presentation layer', () => {
+test('compact UI remains the base while V1.11.4 is the only active presentation layer', () => {
   assert.match(html, /<body class="compact-ui">/);
   const sheets = [...html.matchAll(/<link rel="stylesheet" href="([^"]+)"/g)].map(m => m[1]);
   const compactIndex = sheets.indexOf('./v171.css?v=1.7.1');
   const monthlyIndex = sheets.indexOf('./v180.css?v=1.8.0');
-  const currentIndex = sheets.indexOf('./v211.css?v=1.11.3');
+  const currentIndex = sheets.indexOf('./v211.css?v=1.11.4');
   assert.ok(compactIndex >= 0, 'V1.7.1 compact foundation is retained');
   assert.ok(monthlyIndex > compactIndex, 'monthly-turn functional styling remains above compact base');
-  assert.ok(currentIndex > monthlyIndex, 'V1.11.3 is the final visual layer');
+  assert.ok(currentIndex > monthlyIndex, 'V1.11.4 is the final visual layer');
   for (const retired of ['v183.css','v184.css','v185.css','v190.css','v200.css','v210.css']) {
     assert.equal(sheets.some(sheet => sheet.includes(retired)), false, retired + ' must not be loaded');
   }
-  assert.equal(sheets.at(-1), './v211.css?v=1.11.3');
+  assert.equal(sheets.at(-1), './v211.css?v=1.11.4');
   assert.match(html, /v171-ui\.js\?v=1\.7\.1/);
 });
 test('current release keeps the compact viewport and routes gameplay through V1.8.2', () => {
