@@ -21,8 +21,9 @@
   <meta name="compatibility-v184" content="V1.8.4 高频操作台 v184-ui.js?v=1.8.4">
   <meta name="compatibility-v185" content="V1.8.5.1 手机侧边导航修复 v185-mobile-nav.js?v=1.8.5.1">
   <meta name="compatibility-v190" content="V1.9.0.2 产业视觉精修 v190-ui.js?v=1.9.0.2">
+  <meta name="compatibility-v200" content="V1.10.0 全局古风重构版 v200-ui.js?v=1.10.0">
   <meta name="compatibility-v164-ui" content="v164-ui.js?v=1.6.9">
-  <title>乱世家书 · V1.9.0.2 古风经营台</title>
+  <title>乱世家书 · V1.10.0 全局古风重构版</title>
   <link rel="stylesheet" href="./style.css?v=1.2.1">
   <link rel="stylesheet" href="./v13.css?v=1.3.0">
   <link rel="stylesheet" href="./v132.css?v=1.3.2">
@@ -42,6 +43,7 @@
   <link rel="stylesheet" href="./v184.css?v=1.8.4">
   <link rel="stylesheet" href="./v185.css?v=1.8.5.1">
   <link rel="stylesheet" href="./v190.css?v=1.9.0.2">
+  <link rel="stylesheet" href="./v200.css?v=1.10.0">
   <script type="importmap">
     {
       "imports": {
@@ -61,7 +63,7 @@
 <body class="compact-ui">
   <main class="app-shell">
     <section id="setup" class="setup-card">
-      <p class="eyebrow">V1.9.0.2 古风经营台 · 290年1月1日</p>
+      <p class="eyebrow">V1.10.0 全局古风重构版 · 290年1月1日</p>
       <h1>乱世家书</h1>
       <p class="lead">每次在“本月操作台”选择行动后，点击“下个月”执行当前月计划并推进一个月。底层仍逐日结算吃饭、短工、体力、健康、产业、田庄与历史；重大事件会在月中自动暂停。</p>
       <form id="setup-form">
@@ -75,7 +77,7 @@
     <section id="game" hidden>
       <section id="compact-status" class="compact-status" aria-label="当前状态总览">
         <header class="topbar">
-          <div><p class="eyebrow">乱世家书 · V1.9.0.1</p><h1 id="date">290年1月1日</h1><p id="chapter">第1章 · 家门初立</p></div>
+          <div><p class="eyebrow">乱世家书 · V1.10.0</p><h1 id="date">290年1月1日</h1><p id="chapter">第1章 · 家门初立</p></div>
           <div class="top-actions"><button id="export" type="button">导出家书</button><label class="file-button">导入家书<input id="import" type="file" accept="application/json,.json"></label><button id="new-game" type="button">另起一门</button></div>
         </header>
         <div id="compact-person-summary" class="compact-person-summary" aria-live="polite">等待开局</div>
@@ -127,7 +129,7 @@
         <div id="tab-relations" class="tab-panel" hidden><div id="relations"></div></div>
         <div id="tab-assets" class="tab-panel" hidden><div id="assets"></div></div>
         <div id="tab-timeline" class="tab-panel" hidden><div id="timeline"></div></div>
-        <details class="help"><summary>V1.9.0.2 规则说明</summary><p><strong>稳定修复：</strong>产业、关系、家族树、历史切换不再监听自身 DOM 变化，也不会重复触发旧页签点击，修复打开功能后页面持续抖动、跳动的问题。</p><p><strong>古风经营台：</strong>原悬浮导航与手机侧边导航退出主流程。谋生、求学、农耕、军旅、家事、休养、迁徙、产业、关系、家族树与历史统一进入“本月操作台”，点击左侧导航后在右侧展开。</p><p><strong>下个月：</strong>原“度过X月”主按钮改为“下个月”，固定在操作台右下区域。执行逻辑不变：系统仍逐日结算整个月，重大历史、关键随机事件、继承与断粮等会在月中自动暂停。</p><p><strong>产业 / 关系 / 家族树：</strong>三者不再跳到底部独立页，而是在本月操作台主区域直接查看和操作；产业仍复用原有买田、建产业和收益逻辑。</p><p><strong>古代经营视觉：</strong>界面采用深青墨色、木质与鎏金边框、宣纸内容区和宋楷字体方向，提高古代家业经营氛围，同时保留核心资源和风险提示的可读性。</p><p><strong>兼容规则摘要：</strong>婚配、婚育和历史主线规则保持不变；短工仍按季节判定，春80%·0.8钱/工作日、夏65%·0.8钱/工作日、秋85%·0.9钱/工作日、冬45%·0.7钱/工作日；母亲健在时免费照看前3亩；田庄保留夏收与秋收，相关开局兼容初始粮食170；体力与健康分开计算，健康越低每日死亡风险越高；产业继续包含磨坊、油坊、酒坊、客栈、织坊、纸坊、水运船队，并保留产业上限与完成奖励；V1.7.4 家业引导链继续有效；“下个月”沿用旧“度过本月”月度结算逻辑并继续生成月报；当前任务的门槛检查现金，普通经营成就仍按总家产判断。</p><p><strong>兼容：</strong>月度回合、逐日底层结算、农业、产业、家业引导、婚育、家族传承、历史主线与旧存档继续兼容。</p></details>
+        <details class="help"><summary>V1.10.0 规则说明</summary><p><strong>全局古风重构：</strong>顶部资源栏、左侧本月操作台、中央宣纸主舞台、右侧当前任务、家族树、关系、产业与“下个月”主按钮统一采用深青、木框、鎏金细边和暖宣纸视觉体系；V1.9.0.2 的产业字体与防抖动修复继续保留。</p><p><strong>稳定修复：</strong>产业、关系、家族树、历史切换不再监听自身 DOM 变化，也不会重复触发旧页签点击，修复打开功能后页面持续抖动、跳动的问题。</p><p><strong>古风经营台：</strong>原悬浮导航与手机侧边导航退出主流程。谋生、求学、农耕、军旅、家事、休养、迁徙、产业、关系、家族树与历史统一进入“本月操作台”，点击左侧导航后在右侧展开。</p><p><strong>下个月：</strong>原“度过X月”主按钮改为“下个月”，固定在操作台右下区域。执行逻辑不变：系统仍逐日结算整个月，重大历史、关键随机事件、继承与断粮等会在月中自动暂停。</p><p><strong>产业 / 关系 / 家族树：</strong>三者不再跳到底部独立页，而是在本月操作台主区域直接查看和操作；产业仍复用原有买田、建产业和收益逻辑。</p><p><strong>古代经营视觉：</strong>界面采用深青墨色、木质与鎏金边框、宣纸内容区和宋楷字体方向，提高古代家业经营氛围，同时保留核心资源和风险提示的可读性。</p><p><strong>兼容规则摘要：</strong>婚配、婚育和历史主线规则保持不变；短工仍按季节判定，春80%·0.8钱/工作日、夏65%·0.8钱/工作日、秋85%·0.9钱/工作日、冬45%·0.7钱/工作日；母亲健在时免费照看前3亩；田庄保留夏收与秋收，相关开局兼容初始粮食170；体力与健康分开计算，健康越低每日死亡风险越高；产业继续包含磨坊、油坊、酒坊、客栈、织坊、纸坊、水运船队，并保留产业上限与完成奖励；V1.7.4 家业引导链继续有效；“下个月”沿用旧“度过本月”月度结算逻辑并继续生成月报；当前任务的门槛检查现金，普通经营成就仍按总家产判断。</p><p><strong>兼容：</strong>月度回合、逐日底层结算、农业、产业、家业引导、婚育、家族传承、历史主线与旧存档继续兼容。</p></details>
       </section>
     </section>
   </main>
@@ -151,5 +153,6 @@
   <script type="module" src="./v184-ui.js?v=1.8.4"></script>
   <script type="module" src="./v185-mobile-nav.js?v=1.8.5.1"></script>
   <script type="module" src="./v190-ui.js?v=1.9.0.2"></script>
+  <script type="module" src="./v200-ui.js?v=1.10.0"></script>
 </body>
 </html>
