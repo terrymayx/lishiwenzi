@@ -1,4 +1,4 @@
-const VERSION = '1.9.0.1';
+const VERSION = '1.9.0.2';
 
 const NAV_ITEMS = Object.freeze([
   Object.freeze({ id: 'livelihood', label: '谋生', icon: '🔨', kind: 'action', patterns: ['谋生', '短工', '行商', '经商'] }),
@@ -22,14 +22,14 @@ function state() {
 }
 
 function applyVersionLabel() {
-  const title = '乱世家书 · V1.9.0.1 古风经营台';
+  const title = '乱世家书 · V1.9.0.2 古风经营台';
   if (document.title !== title) document.title = title;
   document.querySelectorAll('.topbar .eyebrow, #setup .eyebrow').forEach(node => {
     const text = node.textContent || '';
     if (!/乱世家书|V1\.8\.|V1\.9\./.test(text)) return;
     node.textContent = node.closest('#setup')
-      ? 'V1.9.0.1 古风经营台 · 290年1月1日'
-      : '乱世家书 · V1.9.0.1';
+      ? 'V1.9.0.2 古风经营台 · 290年1月1日'
+      : '乱世家书 · V1.9.0.2';
   });
 }
 
