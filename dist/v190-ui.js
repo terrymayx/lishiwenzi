@@ -1,4 +1,4 @@
-const VERSION = '1.9.0';
+const VERSION = '1.9.0.1';
 
 const NAV_ITEMS = Object.freeze([
   Object.freeze({ id: 'livelihood', label: '谋生', icon: '🔨', kind: 'action', patterns: ['谋生', '短工', '行商', '经商'] }),
@@ -22,14 +22,14 @@ function state() {
 }
 
 function applyVersionLabel() {
-  const title = '乱世家书 · V1.9.0 古风经营台';
+  const title = '乱世家书 · V1.9.0.1 古风经营台';
   if (document.title !== title) document.title = title;
   document.querySelectorAll('.topbar .eyebrow, #setup .eyebrow').forEach(node => {
     const text = node.textContent || '';
     if (!/乱世家书|V1\.8\.|V1\.9\./.test(text)) return;
     node.textContent = node.closest('#setup')
-      ? 'V1.9.0 古风经营台 · 290年1月1日'
-      : '乱世家书 · V1.9.0';
+      ? 'V1.9.0.1 古风经营台 · 290年1月1日'
+      : '乱世家书 · V1.9.0.1';
   });
 }
 
@@ -168,12 +168,16 @@ function showTab(item) {
 
   const tabButton = document.querySelector('#detail-tabs-shell .tabs [data-tab="' + item.tab + '"]')
     || document.querySelector('[data-tab="' + item.tab + '"]');
-  if (tabButton) tabButton.click();
 
-  window.setTimeout(() => {
-    const panel = document.querySelector('#tab-' + item.tab);
-    if (panel) panel.hidden = false;
-  }, 0);
+  // 稳定修复：只有真正切换页签时才触发旧版 tab 点击。
+  // 已经处于目标页签时重复 click 会重新 renderAssets/renderTree，
+  // 再叠加 DOM 监听就会形成反复重排和页面抖动。
+  if (tabButton && !tabButton.classList.contains('active')) {
+    tabButton.click();
+  }
+
+  const panel = document.querySelector('#tab-' + item.tab);
+  if (panel) panel.hidden = false;
 }
 
 function updateHeader(item) {
@@ -267,18 +271,10 @@ function scheduleSync() {
   }, 24);
 }
 
-function observeGame() {
-  const game = document.querySelector('#game');
-  if (!game || game.dataset.v190Observed === 'true') return;
-  game.dataset.v190Observed = 'true';
-  const observer = new MutationObserver(mutations => {
-    if (mutations.some(mutation => mutation.type === 'childList')) scheduleSync();
-  });
-  observer.observe(game, { childList: true, subtree: true });
-}
-
 function init() {
-  observeGame();
+  // 稳定修复：不再监听整个 #game 子树的 DOM 变化。
+  // 家族树、关系、产业、历史本身会重建 DOM；监听这些变化再同步工作台
+  // 会反向触发页签渲染，造成循环重排。只响应明确的游戏渲染/状态事件即可。
   syncWorkspace();
 }
 
