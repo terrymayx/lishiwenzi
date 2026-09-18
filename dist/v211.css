@@ -1,0 +1,532 @@
+/* V1.11.1 稳定视觉版
+ * Single presentation layer: 深青木框 + 鎏金 + 暖宣纸。
+ * 旧 V1.8.3~V1.11.0 视觉控制器不再从入口加载。
+ */
+
+:root{
+  --v211-night:#07171b;
+  --v211-teal:#0f3037;
+  --v211-teal-2:#173f47;
+  --v211-teal-3:#24545d;
+  --v211-gold:#c9953f;
+  --v211-gold-2:#efc96f;
+  --v211-wood:#4b2d19;
+  --v211-paper:#eee0bc;
+  --v211-paper-2:#fbf2dc;
+  --v211-ink:#2c1f13;
+  --v211-ink-soft:#695139;
+  --v211-red:#a74431;
+}
+
+body.compact-ui.v211-ui{
+  min-height:100vh;
+  color:#ead8b1;
+  font-family:"Songti SC","Noto Serif SC","SimSun",serif;
+  background:
+    radial-gradient(circle at 50% -10%,rgba(120,139,111,.18),transparent 36%),
+    linear-gradient(180deg,#0b2228 0,#07171c 70%,#051115 100%);
+}
+body.compact-ui.v211-ui::before{
+  content:"";
+  position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.25;
+  background:
+    repeating-linear-gradient(90deg,rgba(222,178,88,.025) 0 1px,transparent 1px 76px),
+    radial-gradient(circle at 13% 10%,rgba(206,164,82,.08),transparent 18%),
+    radial-gradient(circle at 87% 8%,rgba(206,164,82,.06),transparent 21%);
+}
+.compact-ui.v211-ui .app-shell{
+  max-width:1840px;
+  padding:10px 18px 18px;
+}
+
+/* 顶栏 */
+.compact-ui.v211-ui #compact-status.v211-top-frame{
+  position:relative;
+  overflow:visible;
+  padding:0;
+  border:1px solid rgba(217,169,76,.63);
+  border-radius:0;
+  background:linear-gradient(180deg,#14343a,#0a272d);
+  box-shadow:0 12px 28px rgba(0,0,0,.28),inset 0 0 0 2px rgba(70,40,20,.42);
+}
+.compact-ui.v211-ui #compact-status.v211-top-frame::before,
+.compact-ui.v211-ui #compact-status.v211-top-frame::after{
+  content:"";position:absolute;top:-7px;bottom:-7px;width:17px;z-index:4;pointer-events:none;
+  border:1px solid rgba(218,170,75,.46);
+  background:linear-gradient(90deg,#28170e,#633b20 48%,#28170e);
+}
+.compact-ui.v211-ui #compact-status.v211-top-frame::before{left:-10px}
+.compact-ui.v211-ui #compact-status.v211-top-frame::after{right:-10px}
+.compact-ui.v211-ui .v211-topbar{
+  display:grid!important;
+  grid-template-columns:minmax(205px,245px) minmax(0,1fr) auto;
+  align-items:center;
+  gap:8px;
+  min-height:84px;
+  padding:6px 10px!important;
+  border:0!important;
+}
+.compact-ui.v211-ui .v211-date-block{
+  align-self:stretch;
+  display:flex;flex-direction:column;justify-content:center;
+  padding:3px 12px 3px 7px;
+  border-right:1px solid rgba(214,166,76,.22);
+}
+.compact-ui.v211-ui .v211-date-block .eyebrow{color:#bf9b5d!important;font-size:9px!important}
+.compact-ui.v211-ui .v211-date-block h1{
+  margin:2px 0!important;
+  color:#f3dca3!important;
+  font-family:"STKaiti","KaiTi","FangSong",serif!important;
+  font-size:26px!important;font-weight:900!important;letter-spacing:.04em;
+}
+.compact-ui.v211-ui .v211-date-block #chapter{color:#e2cd9b!important;font-size:11px!important}
+
+.compact-ui.v211-ui .resource-strip.v211-resource-row{
+  display:grid!important;
+  grid-template-columns:repeat(7,minmax(0,1fr));
+  gap:0!important;min-width:0;margin:0!important;
+  border:1px solid rgba(205,157,68,.22)!important;
+  border-radius:0!important;overflow:hidden;
+  background:#0c2930!important;
+}
+.compact-ui.v211-ui .v211-resource-row .resource-card{
+  min-width:0;
+  min-height:55px;
+  padding:6px 8px!important;
+  border:0!important;
+  border-right:1px solid rgba(207,160,70,.18)!important;
+  border-radius:0!important;
+  background:linear-gradient(180deg,#1a444a,#0d333a)!important;
+  opacity:1!important;
+}
+.compact-ui.v211-ui .v211-resource-row .resource-card:last-child{border-right:0!important}
+.compact-ui.v211-ui .v211-resource-row .resource-label{
+  min-width:0;display:flex;align-items:center;gap:4px;white-space:nowrap;
+}
+.compact-ui.v211-ui .v211-resource-row .resource-label span{
+  min-width:0;overflow:hidden;text-overflow:ellipsis;
+  color:#c8ba91!important;font-size:10px!important;white-space:nowrap;
+}
+.compact-ui.v211-ui .resource-card b{
+  display:block;
+  min-width:0;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  color:#f1dba5!important;
+  font-family:"Songti SC","Noto Serif SC",serif!important;
+  font-size:clamp(14px,1.05vw,18px)!important;
+  font-variant-numeric:tabular-nums;
+  line-height:1.2!important;
+}
+.compact-ui.v211-ui .v211-resource-row .resource-plus{
+  flex:0 0 auto;width:26px;height:26px;min-height:26px!important;padding:0!important;
+  border-color:rgba(219,177,83,.42)!important;color:#e9bd5f!important;background:#143b43!important;
+}
+.compact-ui.v211-ui .v211-top-tools{
+  display:flex;align-items:stretch;height:62px;
+  border:1px solid rgba(211,163,73,.20);
+}
+.compact-ui.v211-ui .v211-top-tool{
+  width:58px;min-height:58px;
+  display:grid;place-items:center;align-content:center;gap:2px;
+  padding:2px!important;border:0!important;border-right:1px solid rgba(211,163,73,.16)!important;
+  border-radius:0!important;background:linear-gradient(180deg,#153a42,#0d2b32)!important;
+  color:#efd59a!important;font:inherit;cursor:pointer;
+}
+.compact-ui.v211-ui .v211-top-tool:hover{background:linear-gradient(180deg,#23525c,#143b43)!important}
+.compact-ui.v211-ui .v211-top-tool span{font-size:20px;line-height:1}
+.compact-ui.v211-ui .v211-top-tool small{font-size:9px;color:#e6d4a6;font-family:"STKaiti","KaiTi",serif}
+.compact-ui.v211-ui .v211-settings{position:relative}
+.compact-ui.v211-ui .v211-settings>summary{list-style:none}
+.compact-ui.v211-ui .v211-settings>summary::-webkit-details-marker{display:none}
+.compact-ui.v211-ui .v211-settings .top-actions{
+  position:absolute;right:0;top:64px;z-index:3000;
+  display:grid!important;min-width:170px;padding:7px;
+  border:1px solid rgba(211,163,73,.32);background:#102e34;
+  box-shadow:0 12px 28px rgba(0,0,0,.28);
+}
+.compact-ui.v211-ui .v211-settings .top-actions button,
+.compact-ui.v211-ui .v211-settings .top-actions .file-button{width:100%;margin:0;justify-content:center}
+.compact-ui.v211-ui .v211-hidden-secondary{display:none!important}
+
+/* 主外框 */
+.compact-ui.v211-ui #v211-shell{
+  position:relative;
+  display:grid;
+  grid-template-columns:minmax(225px,250px) minmax(620px,1fr) minmax(300px,340px);
+  grid-template-areas:
+    "nav main right"
+    "dash dash dash";
+  gap:8px;
+  margin-top:10px;
+  padding:8px;
+  border:1px solid rgba(217,169,75,.60);
+  background:linear-gradient(180deg,#0b2a30,#061c21);
+  box-shadow:0 18px 40px rgba(0,0,0,.34),inset 0 0 0 2px rgba(67,38,20,.46);
+}
+.compact-ui.v211-ui #v211-shell::before,
+.compact-ui.v211-ui #v211-shell::after{
+  position:absolute;z-index:5;top:76px;
+  writing-mode:vertical-rl;text-orientation:upright;
+  padding:14px 5px;
+  border:1px solid rgba(202,148,58,.44);
+  background:linear-gradient(180deg,#e4c788,#bf9854);
+  color:#382413;font-family:"STKaiti","KaiTi",serif;font-size:17px;letter-spacing:.18em;
+  box-shadow:0 4px 10px rgba(0,0,0,.20);
+  pointer-events:none;
+}
+.compact-ui.v211-ui #v211-shell::before{content:"见贤思齐";left:-49px}
+.compact-ui.v211-ui #v211-shell::after{content:"家和万事兴";right:-49px}
+.compact-ui.v211-ui #v211-primary-nav{grid-area:nav}
+.compact-ui.v211-ui #v211-main{grid-area:main}
+.compact-ui.v211-ui #v211-right{grid-area:right}
+.compact-ui.v211-ui #v211-bottom-dashboard{grid-area:dash}
+
+/* 左导航 */
+.compact-ui.v211-ui .v211-nav{
+  min-width:0;height:100%;padding:8px;
+  border:1px solid rgba(205,157,69,.34);
+  background:linear-gradient(180deg,#153a3e,#082a30);
+  box-shadow:inset 0 0 24px rgba(0,0,0,.18);
+}
+.compact-ui.v211-ui .v211-nav-heading{
+  padding:6px 8px 11px;border-bottom:1px solid rgba(207,159,70,.22);
+}
+.compact-ui.v211-ui .v211-nav-heading small{color:#b38e50;font-size:8px;letter-spacing:.20em}
+.compact-ui.v211-ui .v211-nav-heading h2{
+  margin:3px 0 1px;color:#f0d69c;font-family:"STKaiti","KaiTi",serif;font-size:24px;letter-spacing:.07em;
+}
+.compact-ui.v211-ui .v211-nav-heading p{margin:0;color:#c6b68d;font-size:10px}
+.compact-ui.v211-ui .v211-nav-list{display:grid;gap:4px;padding-top:7px}
+.compact-ui.v211-ui .v211-nav-button{
+  min-height:53px;display:grid;grid-template-columns:32px minmax(0,1fr) 15px;align-items:center;gap:6px;
+  padding:7px 8px;border:1px solid rgba(205,158,69,.17);border-radius:6px;
+  background:linear-gradient(180deg,#123740,#0b2a31);color:#eedfbe;text-align:left;font:inherit;cursor:pointer;
+}
+.compact-ui.v211-ui .v211-nav-button:hover,
+.compact-ui.v211-ui .v211-nav-button:focus-visible{
+  outline:none;border-color:rgba(232,185,91,.55);background:linear-gradient(180deg,#214e55,#123b42);
+}
+.compact-ui.v211-ui .v211-nav-button.active{
+  border-color:#e0a747;background:linear-gradient(90deg,#8f5f25,#5b3d22);
+  box-shadow:inset 4px 0 #f0c568,0 0 10px rgba(226,166,65,.20);
+}
+.compact-ui.v211-ui .v211-nav-icon{font-size:21px;text-align:center}
+.compact-ui.v211-ui .v211-nav-copy{min-width:0;display:grid;gap:1px}
+.compact-ui.v211-ui .v211-nav-copy strong{color:#f4e4c2;font-family:"STKaiti","KaiTi",serif;font-size:16px}
+.compact-ui.v211-ui .v211-nav-copy small{
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#abb9b1;font-size:9px;
+}
+.compact-ui.v211-ui .v211-nav-button.active .v211-nav-copy small{color:#ead096}
+.compact-ui.v211-ui .v211-nav-arrow{color:#daa84c;font-size:20px}
+.compact-ui.v211-ui .v211-nav-foot{
+  display:grid;gap:2px;margin-top:10px;padding:11px 7px 6px;border-top:1px solid rgba(207,159,70,.18);text-align:center;
+}
+.compact-ui.v211-ui .v211-nav-foot strong{color:#e5c77e;font-family:"STKaiti","KaiTi",serif;font-size:17px;letter-spacing:.14em}
+.compact-ui.v211-ui .v211-nav-foot small{color:#a9a184;font-size:8px}
+
+/* 中央宣纸 */
+.compact-ui.v211-ui .paper-panel{
+  position:relative;min-width:0;min-height:530px;overflow:hidden;
+  border:1px solid rgba(171,120,44,.44);
+  background:
+    repeating-linear-gradient(0deg,rgba(91,58,24,.016) 0 1px,transparent 1px 4px),
+    linear-gradient(180deg,var(--v211-paper-2),var(--v211-paper));
+  color:var(--v211-ink);box-shadow:inset 0 0 34px rgba(99,62,25,.08);
+}
+.compact-ui.v211-ui .v211-detail-header{
+  position:relative;min-height:110px;display:flex;align-items:center;gap:14px;
+  padding:14px 18px;overflow:hidden;border-bottom:1px solid rgba(129,87,34,.28);
+  background:linear-gradient(90deg,rgba(255,249,231,.96) 0 50%,rgba(233,218,184,.80) 78%,rgba(223,207,171,.72));
+}
+.compact-ui.v211-ui .v211-detail-header::after{
+  content:"";position:absolute;inset:0 0 0 46%;opacity:.25;pointer-events:none;
+  background:
+    radial-gradient(ellipse at 18% 72%,#58766a 0 12%,transparent 13%),
+    radial-gradient(ellipse at 43% 58%,#5b776c 0 18%,transparent 19%),
+    radial-gradient(ellipse at 73% 78%,#687d6d 0 13%,transparent 14%);
+}
+.compact-ui.v211-ui .v211-detail-icon{
+  position:relative;z-index:2;width:68px;height:68px;display:grid;place-items:center;
+  border:1px solid rgba(133,91,36,.40);border-radius:6px;
+  background:linear-gradient(180deg,#fff7df,#e6d1a2);font-size:35px;
+  box-shadow:0 2px 7px rgba(82,49,16,.12),inset 0 0 0 2px rgba(255,255,255,.42);
+}
+.compact-ui.v211-ui .v211-detail-copy{position:relative;z-index:2;max-width:66%}
+.compact-ui.v211-ui .v211-detail-copy h2{
+  margin:0;color:#21170e;font-family:"STKaiti","KaiTi","FangSong",serif;font-size:34px;font-weight:900;letter-spacing:.08em;
+}
+.compact-ui.v211-ui .v211-detail-copy p{margin:5px 0 0;color:#5e4832;font-size:13px;line-height:1.55}
+.compact-ui.v211-ui .v211-seal{
+  position:absolute;z-index:3;left:104px;top:16px;padding:2px 4px;
+  border:1px solid rgba(158,54,37,.62);border-radius:2px;background:rgba(255,237,209,.68);
+  color:#a3402d;font-family:"STKaiti","KaiTi",serif;font-size:9px;
+}
+.compact-ui.v211-ui .v211-banner-art{
+  position:absolute;right:16px;bottom:9px;width:210px;height:72px;opacity:.16;pointer-events:none;
+  background:
+    radial-gradient(ellipse at 20% 86%,#385e55 0 12%,transparent 13%),
+    radial-gradient(ellipse at 47% 70%,#385e55 0 21%,transparent 22%),
+    radial-gradient(ellipse at 80% 88%,#385e55 0 13%,transparent 14%);
+}
+
+/* 行动区 */
+.compact-ui.v211-ui #v211-action-host{padding:10px 12px 12px}
+.compact-ui.v211-ui #v211-action-host>section{margin:0!important;padding:0!important}
+.compact-ui.v211-ui #v211-action-host>section>h2{display:none!important}
+.compact-ui.v211-ui #actions{display:grid!important;grid-template-columns:1fr!important;gap:7px!important}
+.compact-ui.v211-ui .action-card.v211-action-row{
+  position:relative;min-height:82px!important;
+  display:grid!important;grid-template-columns:78px minmax(0,1fr) 108px!important;
+  grid-template-rows:auto 1fr auto!important;
+  grid-template-areas:"thumb title choose" "thumb desc choose" "thumb meta choose"!important;
+  gap:2px 12px!important;align-items:center!important;
+  padding:9px 11px!important;border:1px solid rgba(142,99,42,.27)!important;border-radius:5px!important;
+  background:linear-gradient(180deg,rgba(255,250,234,.94),rgba(230,214,179,.86))!important;
+  color:#352719!important;box-shadow:0 2px 7px rgba(74,47,19,.05),inset 0 1px rgba(255,255,255,.55)!important;
+  text-align:left!important;
+}
+.compact-ui.v211-ui .action-card.v211-action-row:hover{border-color:#c48b38!important;transform:translateY(-1px)}
+.compact-ui.v211-ui .action-card.v211-action-row.selected{
+  border-color:#cb9135!important;box-shadow:inset 4px 0 #bd7921,0 0 0 1px rgba(195,132,39,.12)!important;
+}
+.compact-ui.v211-ui .v211-action-thumb{
+  grid-area:thumb;width:72px;height:62px;display:grid;place-items:center;
+  border:1px solid rgba(132,91,37,.30);border-radius:4px;
+  background:radial-gradient(circle at 70% 20%,rgba(255,255,255,.32),transparent 35%),linear-gradient(160deg,#dec58d,#a58e62);
+  font-size:30px;
+}
+.compact-ui.v211-ui .action-card.v211-action-row strong{
+  grid-area:title;color:#2a1e13!important;font-family:"STKaiti","KaiTi",serif!important;font-size:18px!important;font-weight:900!important;
+}
+.compact-ui.v211-ui .action-card.v211-action-row span:not(.v211-action-thumb){
+  grid-area:desc;color:#614b35!important;font-size:12px!important;line-height:1.45!important;
+}
+.compact-ui.v211-ui .action-card.v211-action-row small{grid-area:meta;color:#8a683d!important;font-size:11px!important}
+.compact-ui.v211-ui .action-card.v211-action-row::after{
+  content:"选择";grid-area:choose;justify-self:stretch;display:grid;place-items:center;min-height:42px;
+  border:1px solid #b9802d;border-radius:5px;background:linear-gradient(180deg,#edc268,#c8872d);
+  color:#332008;font-family:"STKaiti","KaiTi",serif;font-size:16px;font-weight:900;
+  box-shadow:inset 0 1px rgba(255,250,222,.55),0 2px 5px rgba(91,53,13,.12);
+}
+.compact-ui.v211-ui .destination-label{
+  margin:8px 0 0!important;padding:8px!important;border:1px solid rgba(142,97,39,.22)!important;
+  background:rgba(248,238,211,.62)!important;color:#4d3926!important;
+}
+.compact-ui.v211-ui .destination-label[hidden]{display:none!important}
+
+/* 嵌入资料页 */
+.compact-ui.v211-ui #v211-tab-host{padding:8px 10px 12px;color:#342619}
+.compact-ui.v211-ui #v211-tab-host[hidden],
+.compact-ui.v211-ui #v211-action-host[hidden]{display:none!important}
+.compact-ui.v211-ui #v211-tab-host .tab-panel h3,
+.compact-ui.v211-ui #v211-tab-host .tab-panel strong{color:#302115!important}
+.compact-ui.v211-ui #v211-tab-host .tab-panel p,
+.compact-ui.v211-ui #v211-tab-host .tab-panel small{color:#68533b!important}
+.compact-ui.v211-ui #v211-tab-host .business-card{
+  border-color:rgba(167,119,51,.52)!important;background:linear-gradient(180deg,#fff8e4,#ead8ae)!important;
+}
+.compact-ui.v211-ui #v211-tab-host .business-buy,
+.compact-ui.v211-ui #v211-tab-host .land-buy,
+.compact-ui.v211-ui #v211-tab-host .locked-action{
+  border-color:#b8873e!important;background:linear-gradient(180deg,#285563,#193e4b)!important;color:#fff0cf!important;
+}
+
+/* 右侧宣纸卡 */
+.compact-ui.v211-ui .v211-right{display:grid;grid-template-rows:auto 1fr;gap:8px;min-width:0}
+.compact-ui.v211-ui .v211-paper-card{
+  position:relative;overflow:hidden;border:1px solid rgba(169,118,43,.44);
+  background:repeating-linear-gradient(0deg,rgba(90,57,23,.015) 0 1px,transparent 1px 4px),linear-gradient(180deg,#f8efd7,#e8d7ae);
+  color:#322317;box-shadow:inset 0 0 22px rgba(85,52,18,.06);
+}
+.compact-ui.v211-ui .v211-paper-card-head{
+  display:flex;align-items:center;gap:8px;padding:11px 12px 8px;border-bottom:1px solid rgba(134,91,34,.24);
+}
+.compact-ui.v211-ui .v211-paper-icon{
+  width:28px;height:28px;display:grid;place-items:center;border:2px solid #255d86;border-radius:50%;
+  color:#184a70;background:#e7eef0;font-weight:900;
+}
+.compact-ui.v211-ui .v211-paper-card-head h2{margin:0;color:#251a10;font-family:"STKaiti","KaiTi",serif;font-size:20px;letter-spacing:.06em}
+.compact-ui.v211-ui .v211-paper-card-body{padding:10px 12px 12px}
+.compact-ui.v211-ui .v211-paper-card-body p{margin:0 0 7px;color:#57432f!important;font-size:12px!important;line-height:1.55!important}
+.compact-ui.v211-ui .v211-help-art{
+  height:84px;margin-top:7px;border-top:1px solid rgba(132,91,36,.16);
+  background:
+    radial-gradient(ellipse at 18% 88%,rgba(71,99,84,.18) 0 13%,transparent 14%),
+    radial-gradient(ellipse at 48% 78%,rgba(71,99,84,.14) 0 20%,transparent 21%),
+    radial-gradient(ellipse at 82% 91%,rgba(71,99,84,.15) 0 13%,transparent 14%);
+}
+.compact-ui.v211-ui .v211-preview-row{
+  display:grid;grid-template-columns:23px 88px minmax(0,1fr);align-items:center;gap:6px;
+  padding:4px 0 7px;border-bottom:1px solid rgba(126,85,34,.12);
+}
+.compact-ui.v211-ui .v211-preview-icon{font-size:18px}
+.compact-ui.v211-ui .v211-preview-label{color:#5e4a35;font-size:12px}
+.compact-ui.v211-ui .v211-preview-row strong{color:#302216;font-size:12px}
+.compact-ui.v211-ui .v211-preview-scene{
+  min-height:115px;display:flex;flex-direction:column;align-items:flex-end;justify-content:flex-end;gap:2px;
+  margin:6px -4px -5px;padding:12px 10px;
+  background:
+    radial-gradient(ellipse at 13% 92%,rgba(65,94,80,.18) 0 12%,transparent 13%),
+    radial-gradient(ellipse at 39% 76%,rgba(65,94,80,.16) 0 20%,transparent 21%),
+    radial-gradient(ellipse at 70% 87%,rgba(65,94,80,.14) 0 15%,transparent 16%);
+}
+.compact-ui.v211-ui .v211-preview-scene span,
+.compact-ui.v211-ui .v211-preview-scene strong{font-family:"STKaiti","KaiTi",serif;font-size:14px;color:#49321c}
+
+/* 支持区 */
+.compact-ui.v211-ui #v211-support-host{padding:0 12px 12px}
+.compact-ui.v211-ui #v211-support-host .event-panel,
+.compact-ui.v211-ui #v211-support-host .succession-panel,
+.compact-ui.v211-ui #v211-support-host .v180-month-report,
+.compact-ui.v211-ui #v211-support-host .chronicle{
+  margin-top:8px;border:1px solid rgba(143,98,40,.25)!important;background:rgba(249,240,215,.65)!important;color:#3c2b1c!important;
+}
+
+/* 底部仪表 */
+.compact-ui.v211-ui #v211-bottom-dashboard{
+  display:grid;grid-template-columns:minmax(225px,1.05fr) minmax(215px,1fr) minmax(230px,1.05fr) minmax(230px,1.08fr) minmax(245px,.95fr);
+  gap:7px;min-width:0;
+}
+.compact-ui.v211-ui .v211-dashboard-card{
+  min-width:0;min-height:195px;overflow:hidden;
+  border:1px solid rgba(205,156,66,.38);background:linear-gradient(180deg,#12363d,#0a2a31);color:#e9d8b4;
+  box-shadow:inset 0 0 18px rgba(0,0,0,.14);
+}
+.compact-ui.v211-ui .v211-dashboard-head{
+  min-height:36px;display:flex;align-items:center;justify-content:space-between;gap:6px;
+  padding:7px 9px;border-bottom:1px solid rgba(206,158,68,.25);background:linear-gradient(180deg,#164048,#0e3036);
+}
+.compact-ui.v211-ui .v211-dashboard-head h2{margin:0;color:#efd59a;font-family:"STKaiti","KaiTi",serif;font-size:16px}
+.compact-ui.v211-ui .v211-dashboard-link{
+  padding:3px 7px;border:1px solid rgba(215,171,81,.34);border-radius:3px;background:#15353b;color:#e7d6ae;font:inherit;font-size:9px;cursor:pointer;
+}
+.compact-ui.v211-ui .v211-dashboard-body{padding:8px}
+
+/* 任务卡 */
+.compact-ui.v211-ui #v211-task-card{
+  background:repeating-linear-gradient(0deg,rgba(91,57,22,.016) 0 1px,transparent 1px 4px),linear-gradient(180deg,#f5ead0,#e3d0a6);
+  color:#352619;
+}
+.compact-ui.v211-ui #v211-task-card .v211-dashboard-head{background:transparent;border-bottom:1px solid rgba(139,94,35,.22)}
+.compact-ui.v211-ui #v211-task-card .v211-dashboard-head h2{color:#342416;font-size:18px}
+.compact-ui.v211-ui #next-goal-panel.v211-task-inner{
+  position:static!important;margin:0!important;padding:0!important;min-height:0!important;border:0!important;background:transparent!important;box-shadow:none!important;
+}
+.compact-ui.v211-ui #v211-task-card #next-goal-panel h3,
+.compact-ui.v211-ui #v211-task-card #next-goal-panel strong{color:#352618!important}
+.compact-ui.v211-ui #v211-task-card #next-goal-panel p,
+.compact-ui.v211-ui #v211-task-card #next-goal-panel span,
+.compact-ui.v211-ui #v211-task-card #next-goal-panel small{color:#665039!important}
+
+/* 家族 */
+.compact-ui.v211-ui .v211-family-main{
+  width:125px;margin:0 auto 10px;padding:6px 8px;display:grid;grid-template-columns:28px 1fr;gap:0 5px;
+  border:1px solid rgba(212,164,73,.30);background:#183b43;
+}
+.compact-ui.v211-ui .v211-family-main>span{grid-row:1/3;align-self:center;font-size:23px}
+.compact-ui.v211-ui .v211-family-main strong{font-size:12px;color:#f0ddb2}
+.compact-ui.v211-ui .v211-family-main small{font-size:9px;color:#c7b996}
+.compact-ui.v211-ui .v211-family-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}
+.compact-ui.v211-ui .v211-family-node,
+.compact-ui.v211-ui .v211-empty{
+  min-height:43px;padding:5px;display:grid;border:1px solid rgba(198,152,68,.20);background:#15353c;
+}
+.compact-ui.v211-ui .v211-family-node strong{font-size:10px;color:#edddb8}
+.compact-ui.v211-ui .v211-family-node small{font-size:8px;color:#bdb394}
+
+/* 关系 */
+.compact-ui.v211-ui .v211-relation-row{
+  min-height:37px;display:grid;grid-template-columns:31px minmax(0,1fr) 26px;align-items:center;gap:5px;
+  padding:4px 2px;border-bottom:1px solid rgba(206,159,71,.13);
+}
+.compact-ui.v211-ui .v211-avatar{
+  width:27px;height:27px;display:grid;place-items:center;border:1px solid rgba(205,158,70,.20);border-radius:50%;background:#26464c;
+}
+.compact-ui.v211-ui .v211-relation-copy{display:grid}
+.compact-ui.v211-ui .v211-relation-copy strong{font-size:10px;color:#ecdcb9}
+.compact-ui.v211-ui .v211-relation-copy small{font-size:8px;color:#b9b299}
+.compact-ui.v211-ui .v211-mood{text-align:center}
+
+/* 产业 */
+.compact-ui.v211-ui .v211-asset-row{
+  display:grid;grid-template-columns:24px minmax(0,1fr) auto;align-items:center;gap:5px;min-height:29px;padding:3px 1px;
+  border-bottom:1px solid rgba(207,159,70,.12);
+}
+.compact-ui.v211-ui .v211-asset-row strong{font-size:10px;color:#e7d8b7}
+.compact-ui.v211-ui .v211-asset-row b{font-size:10px;color:#f0d390}
+
+/* 下个月 */
+.compact-ui.v211-ui #v211-turn-card{
+  display:flex;flex-direction:column;justify-content:flex-end;
+  background:radial-gradient(circle at 80% 20%,rgba(202,162,80,.08),transparent 30%),linear-gradient(180deg,#12343a,#0b282e);
+}
+.compact-ui.v211-ui #v211-turn-card .v211-dashboard-head{display:none}
+.compact-ui.v211-ui #v211-turn-card .v211-dashboard-body{margin-top:auto}
+.compact-ui.v211-ui #v211-turn-card #v180-month-controls{
+  margin:0!important;padding:0!important;border:0!important;background:transparent!important;
+}
+.compact-ui.v211-ui #advance-month.v211-next-month{
+  width:100%;min-height:76px!important;
+  border:2px solid #d49c3f!important;border-radius:18px!important;
+  background:linear-gradient(180deg,#f1c56b,#c98529)!important;color:#321d08!important;
+  font-family:"STKaiti","KaiTi",serif!important;font-size:28px!important;font-weight:900!important;letter-spacing:.10em!important;
+  text-shadow:0 1px rgba(255,245,214,.60);
+  box-shadow:0 7px 16px rgba(0,0,0,.27),inset 0 0 0 2px rgba(255,229,165,.26),inset 0 1px rgba(255,250,225,.58)!important;
+}
+.compact-ui.v211-ui #advance-month.v211-next-month:not(:disabled):hover{filter:brightness(1.05);transform:translateY(-1px)}
+.compact-ui.v211-ui #v211-turn-card .v180-month-hint{margin-top:7px;color:#c0b28f!important;font-size:9px!important}
+
+/* 源 DOM 与旧浮层彻底退出视觉层 */
+.compact-ui.v211-ui #primary-workspace[hidden]{display:none!important}
+.compact-ui.v211-ui #detail-tabs-shell.v211-source-tabs{
+  display:block!important;position:absolute!important;width:1px!important;height:1px!important;overflow:hidden!important;clip:rect(0 0 0 0)!important;
+  clip-path:inset(50%)!important;white-space:nowrap!important;
+}
+.compact-ui.v211-ui #detail-tabs-shell.v211-source-tabs>.tabs,
+.compact-ui.v211-ui #detail-tabs-shell.v211-source-tabs>.help{position:absolute!important;left:-10000px!important}
+.compact-ui.v211-ui .v183-nav-root,
+.compact-ui.v211-ui .v185-mobile-side-nav,
+.compact-ui.v211-ui .v185-mobile-menu{display:none!important}
+
+/* 响应式 */
+@media(max-width:1360px){
+  .compact-ui.v211-ui #v211-shell{grid-template-columns:minmax(205px,225px) minmax(520px,1fr) minmax(275px,305px)}
+  .compact-ui.v211-ui #v211-bottom-dashboard{grid-template-columns:repeat(5,minmax(185px,1fr))}
+  .compact-ui.v211-ui .v211-detail-copy h2{font-size:28px}
+}
+@media(max-width:1080px){
+  .compact-ui.v211-ui .v211-topbar{grid-template-columns:205px 1fr auto}
+  .compact-ui.v211-ui .v211-resource-row{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+  .compact-ui.v211-ui #v211-shell{
+    grid-template-columns:210px minmax(0,1fr);
+    grid-template-areas:"nav main" "right right" "dash dash";
+  }
+  .compact-ui.v211-ui .v211-right{grid-template-columns:1fr 1fr;grid-template-rows:auto}
+  .compact-ui.v211-ui #v211-bottom-dashboard{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .compact-ui.v211-ui #v211-turn-card{grid-column:span 2}
+  .compact-ui.v211-ui #v211-shell::before,
+  .compact-ui.v211-ui #v211-shell::after{display:none}
+}
+@media(max-width:760px){
+  .compact-ui.v211-ui .app-shell{padding:7px}
+  .compact-ui.v211-ui .v211-topbar{grid-template-columns:1fr auto}
+  .compact-ui.v211-ui .v211-date-block{border-right:0}
+  .compact-ui.v211-ui .v211-resource-row{grid-column:1/-1;grid-template-columns:repeat(3,minmax(0,1fr))!important}
+  .compact-ui.v211-ui #v211-shell{grid-template-columns:1fr;grid-template-areas:"nav" "main" "right" "dash"}
+  .compact-ui.v211-ui .v211-nav-list{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .compact-ui.v211-ui .v211-nav-button{grid-template-columns:28px minmax(0,1fr)}
+  .compact-ui.v211-ui .v211-nav-arrow{display:none}
+  .compact-ui.v211-ui .v211-right{grid-template-columns:1fr}
+  .compact-ui.v211-ui #v211-bottom-dashboard{grid-template-columns:1fr}
+  .compact-ui.v211-ui #v211-turn-card{grid-column:auto}
+  .compact-ui.v211-ui .action-card.v211-action-row{grid-template-columns:62px minmax(0,1fr) 82px!important}
+  .compact-ui.v211-ui .v211-action-thumb{width:56px;height:56px;font-size:25px}
+  .compact-ui.v211-ui .v211-detail-header{min-height:90px;padding:10px 12px}
+  .compact-ui.v211-ui .v211-detail-copy{max-width:75%}
+  .compact-ui.v211-ui .v211-detail-copy h2{font-size:24px}
+}
+@media(prefers-reduced-motion:reduce){
+  .compact-ui.v211-ui *{transition:none!important;scroll-behavior:auto!important}
+}
