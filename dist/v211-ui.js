@@ -1,4 +1,4 @@
-const VERSION = '1.11.1';
+const VERSION = '1.11.2';
 
 const VIEW_DEFS = Object.freeze([
   { id:'livelihood', label:'谋生', icon:'🔨', title:'谋生之道', hint:'一分耕耘，一分收获。选择合适的谋生方式，为家族积累财富。', actions:['trade'] },
@@ -145,15 +145,17 @@ function createPaperCard(id, title, icon) {
 }
 
 function ensureRightColumn() {
-  let aside = $('#v211-right');
-  if (aside) return aside;
-  aside = create('aside', 'v211-right');
-  aside.id = 'v211-right';
-  aside.append(
-    createPaperCard('v211-instructions', '操作说明', '!'),
-    createPaperCard('v211-preview', '本次行动预览', '⌕')
+  let right = $('#v211-right');
+  if (right) return right;
+  right = create('aside', 'v211-right');
+  right.id = 'v211-right';
+
+  right.append(
+    createPaperCard('v211-task-rail', '当前任务', '主'),
+    createPaperCard('v211-preview', '本次行动预览', '⌕'),
+    createPaperCard('v211-turn-rail', '下个月', '⏳')
   );
-  return aside;
+  return right;
 }
 
 function createDashboardCard(id, title, buttonLabel, viewId) {
@@ -178,19 +180,10 @@ function ensureDashboard() {
   dash = create('section', 'v211-bottom-dashboard');
   dash.id = 'v211-bottom-dashboard';
 
-  const task = create('section', 'v211-dashboard-card v211-task-card');
-  task.id = 'v211-task-card';
-  task.append(create('header', 'v211-dashboard-head', ''));
-  const taskBody = create('div', 'v211-dashboard-body');
-  task.id = 'v211-task-card';
-  task.append(taskBody);
-
   dash.append(
-    task,
     createDashboardCard('v211-family-card', '家族树', '查看族谱 ›', 'family'),
     createDashboardCard('v211-relations-card', '人际关系', '查看关系 ›', 'relations'),
-    createDashboardCard('v211-assets-card', '产业一览', '进入产业 ›', 'assets'),
-    createDashboardCard('v211-turn-card', '本月推进', null, null)
+    createDashboardCard('v211-assets-card', '产业一览', '进入产业 ›', 'assets')
   );
   return dash;
 }
@@ -283,12 +276,12 @@ function ensureTopbar() {
 }
 
 function applyVersion() {
-  const title = '乱世家书 · V1.11.1 稳定视觉版';
+  const title = '乱世家书 · V1.11.2 右栏优化版';
   if (document.title !== title) document.title = title;
   $$('.topbar .eyebrow, #setup .eyebrow').forEach(node => {
     node.textContent = node.closest('#setup')
-      ? 'V1.11.1 稳定视觉版 · 290年1月1日'
-      : '乱世家书 · V1.11.1';
+      ? 'V1.11.2 右栏优化版 · 290年1月1日'
+      : '乱世家书 · V1.11.2';
   });
 }
 
@@ -395,16 +388,8 @@ function estimateMonthlyIncome(card) {
 }
 
 function updateRightCards() {
-  const instructions = $('#v211-instructions .v211-paper-card-body');
   const preview = $('#v211-preview .v211-paper-card-body');
-  if (!instructions || !preview) return;
-
-  instructions.replaceChildren();
-  const p1 = create('p','', '选择左侧事务，再选择中央具体行动；确认后点击「下个月」。');
-  const p2 = create('p','', '系统仍逐日计算吃饭、体力、产业与农业；重要事件会立即中断。');
-  const art = create('div','v211-help-art');
-  art.setAttribute('aria-hidden','true');
-  instructions.append(p1,p2,art);
+  if (!preview) return;
 
   preview.replaceChildren();
   const card = selectedActionCard();
@@ -439,17 +424,10 @@ function dashboardBody(id) {
 }
 
 function updateTaskCard() {
-  const card = $('#v211-task-card');
+  const body = $('#v211-task-rail .v211-paper-card-body');
   const goal = $('#next-goal-panel');
-  if (!card || !goal) return;
-  let head = card.querySelector('.v211-dashboard-head');
-  if (!head) {
-    head = create('header','v211-dashboard-head');
-    card.prepend(head);
-  }
-  head.replaceChildren(create('h2','', '当前任务'));
-  const body = dashboardBody('v211-task-card');
-  if (body && goal.parentElement !== body) body.append(goal);
+  if (!body || !goal) return;
+  if (goal.parentElement !== body) body.append(goal);
   goal.classList.add('v211-task-inner');
 }
 
@@ -525,17 +503,17 @@ function updateAssetsCard() {
 }
 
 function updateTurnCard() {
-  const body=dashboardBody('v211-turn-card');
-  if(!body)return;
-  const controls=$('#v180-month-controls');
-  if(controls && controls.parentElement!==body)body.append(controls);
-  const guide=$('#v182-early-guide');
-  if(guide && guide.parentElement!==body)body.prepend(guide);
-  const button=$('#advance-month');
-  if(button){
+  const body = $('#v211-turn-rail .v211-paper-card-body');
+  if (!body) return;
+  const controls = $('#v180-month-controls');
+  if (controls && controls.parentElement !== body) body.append(controls);
+  const guide = $('#v182-early-guide');
+  if (guide && guide.parentElement !== body) body.prepend(guide);
+  const button = $('#advance-month');
+  if (button) {
     button.classList.add('v211-next-month');
-    const value=textOf(button);
-    if(/度过\d+月|度过本月/.test(value))button.textContent='⏳ 下个月 ›';
+    const value = textOf(button);
+    if (/度过\d+月|度过本月/.test(value)) button.textContent = '⏳ 下个月 ›';
   }
 }
 

@@ -334,7 +334,7 @@ body.compact-ui.v211-ui::before{
 }
 
 /* 右侧宣纸卡 */
-.compact-ui.v211-ui .v211-right{display:grid;grid-template-rows:auto 1fr;gap:8px;min-width:0}
+.compact-ui.v211-ui .v211-right{display:grid;grid-template-rows:auto minmax(0,1fr) auto;gap:8px;min-width:0;align-self:stretch}
 .compact-ui.v211-ui .v211-paper-card{
   position:relative;overflow:hidden;border:1px solid rgba(169,118,43,.44);
   background:repeating-linear-gradient(0deg,rgba(90,57,23,.015) 0 1px,transparent 1px 4px),linear-gradient(180deg,#f8efd7,#e8d7ae);
@@ -386,7 +386,7 @@ body.compact-ui.v211-ui::before{
 
 /* 底部仪表 */
 .compact-ui.v211-ui #v211-bottom-dashboard{
-  display:grid;grid-template-columns:minmax(225px,1.05fr) minmax(215px,1fr) minmax(230px,1.05fr) minmax(230px,1.08fr) minmax(245px,.95fr);
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
   gap:7px;min-width:0;
 }
 .compact-ui.v211-ui .v211-dashboard-card{
@@ -404,21 +404,25 @@ body.compact-ui.v211-ui::before{
 }
 .compact-ui.v211-ui .v211-dashboard-body{padding:8px}
 
-/* 任务卡 */
-.compact-ui.v211-ui #v211-task-card{
+/* 右侧当前任务 */
+.compact-ui.v211-ui #v211-task-rail{
   background:repeating-linear-gradient(0deg,rgba(91,57,22,.016) 0 1px,transparent 1px 4px),linear-gradient(180deg,#f5ead0,#e3d0a6);
   color:#352619;
 }
-.compact-ui.v211-ui #v211-task-card .v211-dashboard-head{background:transparent;border-bottom:1px solid rgba(139,94,35,.22)}
-.compact-ui.v211-ui #v211-task-card .v211-dashboard-head h2{color:#342416;font-size:18px}
+.compact-ui.v211-ui #v211-task-rail .v211-paper-card-head{
+  background:rgba(255,248,229,.46);
+}
+.compact-ui.v211-ui #v211-task-rail .v211-paper-card-head h2{
+  color:#342416;font-size:19px;
+}
 .compact-ui.v211-ui #next-goal-panel.v211-task-inner{
   position:static!important;margin:0!important;padding:0!important;min-height:0!important;border:0!important;background:transparent!important;box-shadow:none!important;
 }
-.compact-ui.v211-ui #v211-task-card #next-goal-panel h3,
-.compact-ui.v211-ui #v211-task-card #next-goal-panel strong{color:#352618!important}
-.compact-ui.v211-ui #v211-task-card #next-goal-panel p,
-.compact-ui.v211-ui #v211-task-card #next-goal-panel span,
-.compact-ui.v211-ui #v211-task-card #next-goal-panel small{color:#665039!important}
+.compact-ui.v211-ui #v211-task-rail #next-goal-panel h3,
+.compact-ui.v211-ui #v211-task-rail #next-goal-panel strong{color:#352618!important}
+.compact-ui.v211-ui #v211-task-rail #next-goal-panel p,
+.compact-ui.v211-ui #v211-task-rail #next-goal-panel span,
+.compact-ui.v211-ui #v211-task-rail #next-goal-panel small{color:#665039!important}
 
 /* 家族 */
 .compact-ui.v211-ui .v211-family-main{
@@ -457,26 +461,40 @@ body.compact-ui.v211-ui::before{
 .compact-ui.v211-ui .v211-asset-row strong{font-size:10px;color:#e7d8b7}
 .compact-ui.v211-ui .v211-asset-row b{font-size:10px;color:#f0d390}
 
-/* 下个月 */
-.compact-ui.v211-ui #v211-turn-card{
-  display:flex;flex-direction:column;justify-content:flex-end;
+/* 右侧下个月：首屏可见，滚动产业页时保持在右栏底部 */
+.compact-ui.v211-ui #v211-turn-rail{
+  position:sticky;
+  bottom:8px;
+  align-self:end;
+  z-index:20;
   background:radial-gradient(circle at 80% 20%,rgba(202,162,80,.08),transparent 30%),linear-gradient(180deg,#12343a,#0b282e);
+  border-color:rgba(209,160,70,.48);
 }
-.compact-ui.v211-ui #v211-turn-card .v211-dashboard-head{display:none}
-.compact-ui.v211-ui #v211-turn-card .v211-dashboard-body{margin-top:auto}
-.compact-ui.v211-ui #v211-turn-card #v180-month-controls{
+.compact-ui.v211-ui #v211-turn-rail .v211-paper-card-head{
+  padding:7px 10px 5px;
+  background:transparent;
+  border-bottom:0;
+}
+.compact-ui.v211-ui #v211-turn-rail .v211-paper-card-head h2{
+  color:#e8cf95;
+  font-size:14px;
+}
+.compact-ui.v211-ui #v211-turn-rail .v211-paper-card-body{
+  padding:6px 8px 8px;
+}
+.compact-ui.v211-ui #v211-turn-rail #v180-month-controls{
   margin:0!important;padding:0!important;border:0!important;background:transparent!important;
 }
 .compact-ui.v211-ui #advance-month.v211-next-month{
-  width:100%;min-height:76px!important;
+  width:100%;min-height:72px!important;
   border:2px solid #d49c3f!important;border-radius:18px!important;
   background:linear-gradient(180deg,#f1c56b,#c98529)!important;color:#321d08!important;
-  font-family:"STKaiti","KaiTi",serif!important;font-size:28px!important;font-weight:900!important;letter-spacing:.10em!important;
+  font-family:"STKaiti","KaiTi",serif!important;font-size:27px!important;font-weight:900!important;letter-spacing:.10em!important;
   text-shadow:0 1px rgba(255,245,214,.60);
   box-shadow:0 7px 16px rgba(0,0,0,.27),inset 0 0 0 2px rgba(255,229,165,.26),inset 0 1px rgba(255,250,225,.58)!important;
 }
 .compact-ui.v211-ui #advance-month.v211-next-month:not(:disabled):hover{filter:brightness(1.05);transform:translateY(-1px)}
-.compact-ui.v211-ui #v211-turn-card .v180-month-hint{margin-top:7px;color:#c0b28f!important;font-size:9px!important}
+.compact-ui.v211-ui #v211-turn-rail .v180-month-hint{margin-top:7px;color:#c0b28f!important;font-size:9px!important}
 
 /* 源 DOM 与旧浮层彻底退出视觉层 */
 .compact-ui.v211-ui #primary-workspace[hidden]{display:none!important}
@@ -493,7 +511,7 @@ body.compact-ui.v211-ui::before{
 /* 响应式 */
 @media(max-width:1360px){
   .compact-ui.v211-ui #v211-layout{grid-template-columns:minmax(205px,225px) minmax(520px,1fr) minmax(275px,305px)}
-  .compact-ui.v211-ui #v211-bottom-dashboard{grid-template-columns:repeat(5,minmax(185px,1fr))}
+  .compact-ui.v211-ui #v211-bottom-dashboard{grid-template-columns:repeat(3,minmax(185px,1fr))}
   .compact-ui.v211-ui .v211-detail-copy h2{font-size:28px}
 }
 @media(max-width:1080px){
@@ -503,9 +521,9 @@ body.compact-ui.v211-ui::before{
     grid-template-columns:210px minmax(0,1fr);
     grid-template-areas:"nav main" "right right" "dash dash";
   }
-  .compact-ui.v211-ui .v211-right{grid-template-columns:1fr 1fr;grid-template-rows:auto}
+  .compact-ui.v211-ui .v211-right{grid-template-columns:1fr 1fr;grid-template-rows:auto auto}
   .compact-ui.v211-ui #v211-bottom-dashboard{grid-template-columns:repeat(3,minmax(0,1fr))}
-  .compact-ui.v211-ui #v211-turn-card{grid-column:span 2}
+  .compact-ui.v211-ui #v211-turn-rail{grid-column:1/-1;position:sticky;bottom:8px}
   .compact-ui.v211-ui #v211-layout::before,
   .compact-ui.v211-ui #v211-layout::after{display:none}
 }
@@ -520,7 +538,7 @@ body.compact-ui.v211-ui::before{
   .compact-ui.v211-ui .v211-nav-arrow{display:none}
   .compact-ui.v211-ui .v211-right{grid-template-columns:1fr}
   .compact-ui.v211-ui #v211-bottom-dashboard{grid-template-columns:1fr}
-  .compact-ui.v211-ui #v211-turn-card{grid-column:auto}
+  .compact-ui.v211-ui #v211-turn-rail{grid-column:auto;position:sticky;bottom:6px}
   .compact-ui.v211-ui .action-card.v211-action-row{grid-template-columns:62px minmax(0,1fr) 82px!important}
   .compact-ui.v211-ui .v211-action-thumb{width:56px;height:56px;font-size:25px}
   .compact-ui.v211-ui .v211-detail-header{min-height:90px;padding:10px 12px}
@@ -529,4 +547,61 @@ body.compact-ui.v211-ui::before{
 }
 @media(prefers-reduced-motion:reduce){
   .compact-ui.v211-ui *{transition:none!important;scroll-behavior:auto!important}
+}
+
+/* V1.11.2 商业产业：暖宣纸高对比字体层级 */
+.compact-ui.v211-ui #tab-assets .business-industry{
+  color:#3b2b1c!important;
+  background:rgba(247,237,210,.58)!important;
+  border:1px solid rgba(142,98,42,.24)!important;
+}
+.compact-ui.v211-ui #tab-assets .business-heading{
+  padding:7px 9px!important;
+  border-bottom:1px solid rgba(139,94,35,.22)!important;
+  background:linear-gradient(180deg,#244e59,#173e49)!important;
+}
+.compact-ui.v211-ui #tab-assets .business-heading > strong{
+  color:#f3d89a!important;
+  font-family:"STKaiti","KaiTi","Noto Serif SC",serif!important;
+  font-size:17px!important;
+  letter-spacing:.06em;
+}
+.compact-ui.v211-ui #tab-assets .business-income-summary{
+  color:#ffe0a0!important;
+  font-weight:800!important;
+}
+.compact-ui.v211-ui #tab-assets .business-hint,
+.compact-ui.v211-ui #tab-assets .v173-limit-hint{
+  color:#6b543b!important;
+  background:rgba(238,224,191,.72)!important;
+}
+.compact-ui.v211-ui #tab-assets .business-card{
+  opacity:1!important;
+  filter:none!important;
+  border-color:rgba(162,113,47,.42)!important;
+  background:linear-gradient(180deg,#fff8e5,#ead7ac)!important;
+  color:#3a2b1d!important;
+}
+.compact-ui.v211-ui #tab-assets .business-card > strong{
+  color:#2d2115!important;
+  font-family:"STKaiti","KaiTi","Noto Serif SC",serif!important;
+  font-size:15px!important;
+}
+.compact-ui.v211-ui #tab-assets .business-card > span{
+  color:#7c541e!important;
+  font-weight:800!important;
+}
+.compact-ui.v211-ui #tab-assets .business-card > small,
+.compact-ui.v211-ui #tab-assets .business-card .unlock-earned,
+.compact-ui.v211-ui #tab-assets .business-card .v174-card-guide-line{
+  color:#665038!important;
+  opacity:1!important;
+  line-height:1.5!important;
+}
+.compact-ui.v211-ui #tab-assets .business-card.v174-chain-locked{
+  opacity:.76!important;
+  filter:saturate(.82)!important;
+}
+.compact-ui.v211-ui #tab-assets .business-card.v174-chain-locked > strong{
+  color:#4c3b2b!important;
 }
