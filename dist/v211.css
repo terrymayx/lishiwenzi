@@ -696,3 +696,113 @@ body.compact-ui.v211-ui::before{
   color:#a34a36!important;
   font-weight:800!important;
 }
+
+
+/* V1.11.4 当前任务紧凑化 + 条件红绿状态 */
+.compact-ui.v211-ui #v211-task-rail .v211-paper-card-body{
+  font-size:13px!important;
+  line-height:1.5!important;
+}
+
+.compact-ui.v211-ui #v211-task-rail #next-goal-panel h3,
+.compact-ui.v211-ui #v211-task-rail #next-goal-panel strong{
+  color:#24180f!important;
+  font-size:16px!important;
+  font-weight:800!important;
+  line-height:1.35!important;
+}
+
+.compact-ui.v211-ui #v211-task-rail #next-goal-panel p,
+.compact-ui.v211-ui #v211-task-rail #next-goal-panel div,
+.compact-ui.v211-ui #v211-task-rail #next-goal-panel span{
+  font-size:13px!important;
+  line-height:1.5!important;
+}
+
+.compact-ui.v211-ui #v211-task-rail #next-goal-panel small{
+  font-size:11px!important;
+  line-height:1.45!important;
+}
+
+.compact-ui.v211-ui #v211-task-rail .v174-condition{
+  display:flex!important;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  min-height:27px;
+  padding:3px 0!important;
+  border-bottom:1px dashed rgba(116,86,49,.14);
+  font-weight:700!important;
+}
+
+.compact-ui.v211-ui #v211-task-rail .v174-condition.met,
+.compact-ui.v211-ui #v211-task-rail .v174-condition.met span,
+.compact-ui.v211-ui #v211-task-rail .v174-condition.met b{
+  color:#3f7a44!important;
+}
+
+.compact-ui.v211-ui #v211-task-rail .v174-condition.missing,
+.compact-ui.v211-ui #v211-task-rail .v174-condition.missing span,
+.compact-ui.v211-ui #v211-task-rail .v174-condition.missing b{
+  color:#a43f32!important;
+}
+
+.compact-ui.v211-ui #v211-task-rail .v174-condition.met b,
+.compact-ui.v211-ui #v211-task-rail .v174-condition.missing b{
+  font-size:12px!important;
+  font-weight:900!important;
+  white-space:nowrap;
+}
+
+.compact-ui.v211-ui #v211-task-rail .v174-guide-cost,
+.compact-ui.v211-ui #v211-task-rail .v174-guide-reward,
+.compact-ui.v211-ui #v211-task-rail .v174-next-preview{
+  font-size:12px!important;
+  line-height:1.45!important;
+}
+
+.compact-ui.v211-ui #v211-task-rail .v174-guide-cost{
+  color:#664728!important;
+}
+
+.compact-ui.v211-ui #v211-task-rail .v174-guide-reward{
+  color:#8a5a18!important;
+  font-weight:800!important;
+}
+
+.compact-ui.v211-ui #v211-task-rail .v174-next-preview{
+  color:#5d4935!important;
+}
+
+.compact-ui.v211-ui #v211-task-rail .v174-chain-progress{
+  display:flex!important;
+  flex-wrap:wrap;
+  gap:5px!important;
+  margin-top:8px!important;
+}
+
+.compact-ui.v211-ui #v211-task-rail .v174-chain-progress span{
+  padding:3px 6px!important;
+  border-radius:3px!important;
+  font-size:11px!important;
+  line-height:1.25!important;
+  font-weight:700!important;
+}
+
+.compact-ui.v211-ui #v211-task-rail .v174-chain-progress .done{
+  color:#3f7a44!important;
+  background:rgba(63,122,68,.10)!important;
+  border-color:rgba(63,122,68,.28)!important;
+}
+
+.compact-ui.v211-ui #v211-task-rail .v174-chain-progress .current{
+  color:#8a5a18!important;
+  background:rgba(138,90,24,.09)!important;
+  border-color:rgba(138,90,24,.24)!important;
+}
+
+.compact-ui.v211-ui #v211-task-rail .v174-chain-progress .locked{
+  color:#746554!important;
+  background:rgba(116,101,84,.07)!important;
+  border-color:rgba(116,101,84,.18)!important;
+}
