@@ -4,13 +4,11 @@ import fs from 'node:fs';
 
 const read = path => fs.readFileSync(new URL('../' + path, import.meta.url), 'utf8');
 
-test('V1.11.0 target-layout layer loads after V1.10.0', () => {
+test('V1.11.0 target-layout files are retained only as historical assets after V1.11.1', () => {
   const html = read('dist/index.html');
-  assert.match(html, /V1\.11\.0/);
-  assert.match(html, /v210\.css\?v=1\.11\.0/);
-  assert.match(html, /v210-ui\.js\?v=1\.11\.0/);
-  assert.ok(html.indexOf('v210.css?v=1.11.0') > html.indexOf('v200.css?v=1.10.0'));
-  assert.ok(html.indexOf('v210-ui.js?v=1.11.0') > html.indexOf('v200-ui.js?v=1.10.0'));
+  assert.ok(fs.existsSync(new URL('../dist/v210.css', import.meta.url)));
+  assert.ok(fs.existsSync(new URL('../dist/v210-ui.js', import.meta.url)));
+  assert.doesNotMatch(html, /v210\.css\?v=|v210-ui\.js\?v=/);
 });
 
 test('V1.11.0 rebuilds the page into target top-main-bottom dashboard', () => {
