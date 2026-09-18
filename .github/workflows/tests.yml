@@ -49,3 +49,5 @@ jobs:
       - run: node --check dist/v185-mobile-nav.js
 
       - run: node --check dist/v190-ui.js
+
+      - run: node --check dist/v200-ui.js
