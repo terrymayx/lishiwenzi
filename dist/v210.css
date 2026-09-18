@@ -984,3 +984,13 @@ body.compact-ui.v210-target-ui::before{
     scroll-behavior:auto!important;
   }
 }
+
+
+/* 底部三块缩略面板的统一识别与边框，供回归测试和后续扩展使用。 */
+.compact-ui.v210-target-ui .v210-family-summary,
+.compact-ui.v210-target-ui .v210-relations-summary,
+.compact-ui.v210-target-ui .v210-assets-summary{
+  position:relative;
+  min-width:0;
+  border-color:rgba(205,156,66,.38)!important;
+}
