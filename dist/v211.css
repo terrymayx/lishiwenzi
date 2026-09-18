@@ -605,3 +605,94 @@ body.compact-ui.v211-ui::before{
 .compact-ui.v211-ui #tab-assets .business-card.v174-chain-locked > strong{
   color:#4c3b2b!important;
 }
+
+
+/* V1.11.3 当前任务字体清晰修复 */
+.compact-ui.v211-ui #v211-right,
+.compact-ui.v211-ui #v211-task-rail,
+.compact-ui.v211-ui #next-goal-panel{
+  transform:none!important;
+  filter:none!important;
+  opacity:1!important;
+}
+
+.compact-ui.v211-ui #v211-task-rail{
+  color:#2f2115!important;
+}
+
+.compact-ui.v211-ui #v211-task-rail .v211-paper-card-body{
+  color:#2f2115!important;
+  font-size:15px!important;
+  line-height:1.65!important;
+  opacity:1!important;
+  filter:none!important;
+  text-shadow:none!important;
+  -webkit-font-smoothing:auto;
+  -moz-osx-font-smoothing:auto;
+  text-rendering:optimizeLegibility;
+}
+
+.compact-ui.v211-ui #v211-task-rail #next-goal-panel{
+  opacity:1!important;
+  filter:none!important;
+  text-shadow:none!important;
+}
+
+.compact-ui.v211-ui #v211-task-rail #next-goal-panel *{
+  opacity:1!important;
+  filter:none!important;
+  text-shadow:none!important;
+}
+
+.compact-ui.v211-ui #v211-task-rail #next-goal-panel h3,
+.compact-ui.v211-ui #v211-task-rail #next-goal-panel strong{
+  color:#24180f!important;
+  font-size:18px!important;
+  font-weight:800!important;
+  line-height:1.45!important;
+}
+
+.compact-ui.v211-ui #v211-task-rail #next-goal-panel p,
+.compact-ui.v211-ui #v211-task-rail #next-goal-panel div,
+.compact-ui.v211-ui #v211-task-rail #next-goal-panel span{
+  color:#3b2b1d!important;
+  font-size:15px!important;
+  font-weight:600!important;
+  line-height:1.65!important;
+}
+
+.compact-ui.v211-ui #v211-task-rail #next-goal-panel small{
+  color:#5a4330!important;
+  font-size:13px!important;
+  font-weight:600!important;
+  line-height:1.6!important;
+}
+
+.compact-ui.v211-ui #v211-task-rail .goal-requirement,
+.compact-ui.v211-ui #v211-task-rail .unlock-condition,
+.compact-ui.v211-ui #v211-task-rail li{
+  color:#35271b!important;
+  font-size:15px!important;
+  font-weight:600!important;
+}
+
+.compact-ui.v211-ui #v211-task-rail .reward,
+.compact-ui.v211-ui #v211-task-rail .progress-value,
+.compact-ui.v211-ui #v211-task-rail .goal-progress{
+  color:#9a5b18!important;
+  font-weight:800!important;
+}
+
+.compact-ui.v211-ui #v211-task-rail .success,
+.compact-ui.v211-ui #v211-task-rail .done,
+.compact-ui.v211-ui #v211-task-rail .complete{
+  color:#4f7a38!important;
+  font-weight:800!important;
+}
+
+.compact-ui.v211-ui #v211-task-rail .danger,
+.compact-ui.v211-ui #v211-task-rail .warning,
+.compact-ui.v211-ui #v211-task-rail .missing{
+  color:#a34a36!important;
+  font-weight:800!important;
+}
