@@ -25,7 +25,7 @@ test('compact UI remains the base while the current release stylesheet wins the 
   assert.ok(navigationIndex > monthlyIndex, 'V1.8.3 navigation styling remains above monthly turns');
   assert.ok(frequencyIndex > navigationIndex, 'V1.8.4 high-frequency styling remains above floating navigation');
   assert.ok(mobileNavigationIndex > frequencyIndex, 'V1.8.5.1 mobile-side navigation hotfix is the current visual layer');
-  assert.equal(sheets.at(-1), './v185.css?v=1.8.5.1');
+  assert.equal(sheets.at(-1), './v190.css?v=1.9.0');
   assert.match(html, /v171-ui\.js\?v=1\.7\.1/);
 });
 
