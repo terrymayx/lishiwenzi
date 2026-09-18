@@ -205,7 +205,7 @@ function ensureShell() {
   document.body.classList.add('v211-ui');
 
   const shell = create('section', 'v211-shell');
-  shell.id = 'v211-shell';
+  shell.id = 'v211-layout';
 
   const left = createPrimaryNavigation();
   const main = create('main', 'v211-main paper-panel');
