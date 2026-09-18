@@ -151,7 +151,7 @@ body.compact-ui.v211-ui::before{
 .compact-ui.v211-ui .v211-hidden-secondary{display:none!important}
 
 /* 主外框 */
-.compact-ui.v211-ui #v211-shell{
+.compact-ui.v211-ui #v211-layout{
   position:relative;
   display:grid;
   grid-template-columns:minmax(225px,250px) minmax(620px,1fr) minmax(300px,340px);
@@ -165,8 +165,8 @@ body.compact-ui.v211-ui::before{
   background:linear-gradient(180deg,#0b2a30,#061c21);
   box-shadow:0 18px 40px rgba(0,0,0,.34),inset 0 0 0 2px rgba(67,38,20,.46);
 }
-.compact-ui.v211-ui #v211-shell::before,
-.compact-ui.v211-ui #v211-shell::after{
+.compact-ui.v211-ui #v211-layout::before,
+.compact-ui.v211-ui #v211-layout::after{
   position:absolute;z-index:5;top:76px;
   writing-mode:vertical-rl;text-orientation:upright;
   padding:14px 5px;
@@ -176,8 +176,8 @@ body.compact-ui.v211-ui::before{
   box-shadow:0 4px 10px rgba(0,0,0,.20);
   pointer-events:none;
 }
-.compact-ui.v211-ui #v211-shell::before{content:"见贤思齐";left:-49px}
-.compact-ui.v211-ui #v211-shell::after{content:"家和万事兴";right:-49px}
+.compact-ui.v211-ui #v211-layout::before{content:"见贤思齐";left:-49px}
+.compact-ui.v211-ui #v211-layout::after{content:"家和万事兴";right:-49px}
 .compact-ui.v211-ui #v211-primary-nav{grid-area:nav}
 .compact-ui.v211-ui #v211-main{grid-area:main}
 .compact-ui.v211-ui #v211-right{grid-area:right}
@@ -492,29 +492,29 @@ body.compact-ui.v211-ui::before{
 
 /* 响应式 */
 @media(max-width:1360px){
-  .compact-ui.v211-ui #v211-shell{grid-template-columns:minmax(205px,225px) minmax(520px,1fr) minmax(275px,305px)}
+  .compact-ui.v211-ui #v211-layout{grid-template-columns:minmax(205px,225px) minmax(520px,1fr) minmax(275px,305px)}
   .compact-ui.v211-ui #v211-bottom-dashboard{grid-template-columns:repeat(5,minmax(185px,1fr))}
   .compact-ui.v211-ui .v211-detail-copy h2{font-size:28px}
 }
 @media(max-width:1080px){
   .compact-ui.v211-ui .v211-topbar{grid-template-columns:205px 1fr auto}
   .compact-ui.v211-ui .v211-resource-row{grid-template-columns:repeat(4,minmax(0,1fr))!important}
-  .compact-ui.v211-ui #v211-shell{
+  .compact-ui.v211-ui #v211-layout{
     grid-template-columns:210px minmax(0,1fr);
     grid-template-areas:"nav main" "right right" "dash dash";
   }
   .compact-ui.v211-ui .v211-right{grid-template-columns:1fr 1fr;grid-template-rows:auto}
   .compact-ui.v211-ui #v211-bottom-dashboard{grid-template-columns:repeat(3,minmax(0,1fr))}
   .compact-ui.v211-ui #v211-turn-card{grid-column:span 2}
-  .compact-ui.v211-ui #v211-shell::before,
-  .compact-ui.v211-ui #v211-shell::after{display:none}
+  .compact-ui.v211-ui #v211-layout::before,
+  .compact-ui.v211-ui #v211-layout::after{display:none}
 }
 @media(max-width:760px){
   .compact-ui.v211-ui .app-shell{padding:7px}
   .compact-ui.v211-ui .v211-topbar{grid-template-columns:1fr auto}
   .compact-ui.v211-ui .v211-date-block{border-right:0}
   .compact-ui.v211-ui .v211-resource-row{grid-column:1/-1;grid-template-columns:repeat(3,minmax(0,1fr))!important}
-  .compact-ui.v211-ui #v211-shell{grid-template-columns:1fr;grid-template-areas:"nav" "main" "right" "dash"}
+  .compact-ui.v211-ui #v211-layout{grid-template-columns:1fr;grid-template-areas:"nav" "main" "right" "dash"}
   .compact-ui.v211-ui .v211-nav-list{grid-template-columns:repeat(2,minmax(0,1fr))}
   .compact-ui.v211-ui .v211-nav-button{grid-template-columns:28px minmax(0,1fr)}
   .compact-ui.v211-ui .v211-nav-arrow{display:none}
