@@ -1,4 +1,4 @@
-const VERSION = '1.11.3';
+const VERSION = '1.11.4';
 
 const VIEW_DEFS = Object.freeze([
   { id:'livelihood', label:'谋生', icon:'🔨', title:'谋生之道', hint:'一分耕耘，一分收获。选择合适的谋生方式，为家族积累财富。', actions:['trade'] },
@@ -276,12 +276,12 @@ function ensureTopbar() {
 }
 
 function applyVersion() {
-  const title = '乱世家书 · V1.11.3 字体清晰修复版';
+  const title = '乱世家书 · V1.11.4 任务紧凑配色版';
   if (document.title !== title) document.title = title;
   $$('.topbar .eyebrow, #setup .eyebrow').forEach(node => {
     node.textContent = node.closest('#setup')
-      ? 'V1.11.3 字体清晰修复版 · 290年1月1日'
-      : '乱世家书 · V1.11.3';
+      ? 'V1.11.4 任务紧凑配色版 · 290年1月1日'
+      : '乱世家书 · V1.11.4';
   });
 }
 
