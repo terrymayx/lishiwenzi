@@ -4,13 +4,11 @@ import fs from 'node:fs';
 
 const read = path => fs.readFileSync(new URL('../' + path, import.meta.url), 'utf8');
 
-test('V1.10.0 global ancient layer loads after V1.9.0.2', () => {
+test('V1.10.0 global-ancient files are retained only as historical assets', () => {
   const html = read('dist/index.html');
-  assert.match(html, /V1\.10\.0/);
-  assert.match(html, /v200\.css\?v=1\.10\.0/);
-  assert.match(html, /v200-ui\.js\?v=1\.10\.0/);
-  assert.ok(html.indexOf('v200.css?v=1.10.0') > html.indexOf('v190.css?v=1.9.0.2'));
-  assert.ok(html.indexOf('v200-ui.js?v=1.10.0') > html.indexOf('v190-ui.js?v=1.9.0.2'));
+  assert.ok(fs.existsSync(new URL('../dist/v200.css', import.meta.url)));
+  assert.ok(fs.existsSync(new URL('../dist/v200-ui.js', import.meta.url)));
+  assert.doesNotMatch(html, /v200\.css\?v=|v200-ui\.js\?v=/);
 });
 
 test('V1.10.0 styles all major surfaces with one ancient visual system', () => {

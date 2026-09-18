@@ -4,13 +4,11 @@ import fs from 'node:fs';
 
 const read = path => fs.readFileSync(new URL('../' + path, import.meta.url), 'utf8');
 
-test('V1.9.0.2 ancient command-center layer loads after V1.8.5.1', () => {
+test('V1.9.0.2 ancient-command-center files are retained only as historical assets', () => {
   const html = read('dist/index.html');
-  assert.match(html, /V1\.9\.0/);
-  assert.match(html, /v190\.css\?v=1\.9\.0\.2/);
-  assert.match(html, /v190-ui\.js\?v=1\.9\.0\.2/);
-  assert.ok(html.indexOf('v190.css?v=1.9.0.2') > html.indexOf('v185.css?v=1.8.5.1'));
-  assert.ok(html.indexOf('v190-ui.js?v=1.9.0.2') > html.indexOf('v185-mobile-nav.js?v=1.8.5.1'));
+  assert.ok(fs.existsSync(new URL('../dist/v190.css', import.meta.url)));
+  assert.ok(fs.existsSync(new URL('../dist/v190-ui.js', import.meta.url)));
+  assert.doesNotMatch(html, /v190\.css\?v=|v190-ui\.js\?v=/);
 });
 
 test('V1.9.0.2 moves navigation concepts into the monthly command center', () => {

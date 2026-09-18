@@ -53,3 +53,5 @@ jobs:
       - run: node --check dist/v200-ui.js
 
       - run: node --check dist/v210-ui.js
+
+      - run: node --check dist/v211-ui.js

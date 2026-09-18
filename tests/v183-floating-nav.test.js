@@ -5,11 +5,11 @@ import { execFileSync } from 'node:child_process';
 
 const read = path => fs.readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
 
-test('V1.8.3 page loads the floating navigation layer', () => {
+test('V1.8.3 floating-navigation files remain as historical compatibility assets but are not loaded', () => {
   const html = read('dist/index.html');
-  assert.match(html, /V1\.8\.3/);
-  assert.match(html, /v183\.css\?v=1\.8\.3/);
-  assert.match(html, /v183-nav\.js\?v=1\.8\.3/);
+  assert.ok(fs.existsSync(new URL('../dist/v183.css', import.meta.url)));
+  assert.ok(fs.existsSync(new URL('../dist/v183-nav.js', import.meta.url)));
+  assert.doesNotMatch(html, /v183\.css\?v=|v183-nav\.js\?v=/);
 });
 
 test('floating navigation reuses existing tabs and exposes the current-task shortcut', () => {
