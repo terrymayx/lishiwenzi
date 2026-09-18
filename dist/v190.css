@@ -343,3 +343,368 @@ body.compact-ui::before{
   .v190-detail-header h2{font-size:21px}
   .v190-detail-header p{font-size:11px}
 }
+
+
+/* V1.9.0.2 产业页视觉精修：暖宣纸、青金标题、资产牌层级 */
+.compact-ui #tab-assets{
+  position:relative;
+  isolation:isolate;
+  padding:4px 2px 18px;
+  color:#30271d;
+  font-family:"Songti SC","SimSun","Noto Serif SC","STKaiti","KaiTi",serif;
+  background:
+    radial-gradient(circle at 88% 8%,rgba(103,126,108,.16),transparent 27%),
+    linear-gradient(180deg,rgba(250,244,224,.98),rgba(239,226,193,.98));
+}
+.compact-ui #tab-assets::before{
+  content:"";
+  position:absolute;
+  z-index:-1;
+  inset:0;
+  pointer-events:none;
+  opacity:.42;
+  background:
+    radial-gradient(ellipse at 78% 24%,rgba(91,105,91,.10) 0 14%,transparent 15%),
+    radial-gradient(ellipse at 86% 29%,rgba(91,105,91,.08) 0 10%,transparent 11%),
+    repeating-linear-gradient(0deg,rgba(90,62,28,.018) 0 1px,transparent 1px 4px);
+}
+.compact-ui #tab-assets>h3{
+  position:relative;
+  margin:0 -2px 9px;
+  padding:10px 14px 9px 62px;
+  min-height:56px;
+  display:flex;
+  align-items:center;
+  border-bottom:1px solid rgba(117,84,39,.25);
+  background:
+    linear-gradient(90deg,rgba(255,251,236,.94),rgba(239,229,202,.86)),
+    radial-gradient(circle at 80% 20%,rgba(79,106,99,.12),transparent 35%);
+  color:#142f38!important;
+  font-family:"STKaiti","KaiTi","FangSong","Noto Serif SC",serif;
+  font-size:28px!important;
+  font-weight:900!important;
+  letter-spacing:.12em;
+  text-shadow:0 1px rgba(255,255,255,.7);
+}
+.compact-ui #tab-assets>h3::before{
+  content:"🏪";
+  position:absolute;
+  left:14px;
+  top:50%;
+  width:36px;
+  height:36px;
+  transform:translateY(-50%);
+  display:grid;
+  place-items:center;
+  border:1px solid rgba(143,100,38,.48);
+  border-radius:7px;
+  background:linear-gradient(180deg,#fff8df,#e7d5a9);
+  box-shadow:0 2px 7px rgba(80,49,16,.12),inset 0 0 0 2px rgba(255,255,255,.45);
+  font-size:22px;
+}
+.compact-ui #tab-assets>p{
+  margin:0 6px 10px!important;
+  padding:5px 0!important;
+  color:#786c59!important;
+  font-family:"Songti SC","Noto Serif SC","SimSun",serif;
+  font-size:12px!important;
+  line-height:1.65!important;
+  border-bottom:1px solid rgba(122,91,50,.14);
+}
+
+/* 家业进度改为图中深青信息条，避免发灰。 */
+.compact-ui #tab-assets .household-progression-summary{
+  margin:8px 6px 12px!important;
+  padding:9px 12px!important;
+  border:1px solid rgba(201,157,76,.35)!important;
+  border-radius:6px!important;
+  background:linear-gradient(180deg,#244a56,#183a46)!important;
+  color:#f4dfad!important;
+  box-shadow:0 3px 8px rgba(17,38,43,.12);
+}
+.compact-ui #tab-assets .household-progression-summary>span{
+  color:#d8e1dc!important;
+  font-size:12px!important;
+}
+.compact-ui #tab-assets .household-progression-summary strong{
+  color:#f4d184!important;
+}
+
+/* 购买田地 */
+.compact-ui #tab-assets .land-purchase{
+  margin:10px 6px 12px!important;
+  padding:10px 10px 11px!important;
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:7px!important;
+  border:1px solid rgba(133,93,39,.22)!important;
+  border-radius:6px!important;
+  background:rgba(255,250,232,.60)!important;
+  box-shadow:inset 0 1px rgba(255,255,255,.6);
+}
+.compact-ui #tab-assets .land-purchase>strong{
+  grid-column:1/-1;
+  margin:0 0 2px;
+  color:#453522!important;
+  font-family:"STKaiti","KaiTi","Noto Serif SC",serif;
+  font-size:15px!important;
+  letter-spacing:.04em;
+}
+.compact-ui #tab-assets .land-buy{
+  min-height:34px;
+  border:1px solid #b58a47!important;
+  border-radius:4px!important;
+  background:linear-gradient(180deg,#214b59,#173b49)!important;
+  color:#fff3d2!important;
+  font-family:"Songti SC","Noto Serif SC",serif!important;
+  font-weight:700!important;
+  box-shadow:inset 0 1px rgba(255,255,255,.10),0 2px 4px rgba(21,45,52,.12);
+}
+.compact-ui #tab-assets .land-buy:not(:disabled):hover{
+  border-color:#d7aa58!important;
+  background:linear-gradient(180deg,#2b5b69,#1d4654)!important;
+  transform:translateY(-1px);
+}
+
+/* 商业产业主体从灰绿块改为暖纸面。 */
+.compact-ui #tab-assets .business-industry{
+  margin:10px 6px!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  color:#30271d!important;
+}
+.compact-ui #tab-assets .business-heading{
+  min-height:38px;
+  margin:8px 0 7px!important;
+  padding:0!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:10px!important;
+  border-bottom:1px solid rgba(139,98,42,.26);
+}
+.compact-ui #tab-assets .business-heading>strong{
+  position:relative;
+  display:inline-flex;
+  align-items:center;
+  min-height:32px;
+  margin-bottom:-1px;
+  padding:5px 22px 5px 14px;
+  border:1px solid #b9893f;
+  border-radius:5px 18px 5px 5px;
+  background:linear-gradient(180deg,#285667,#1b4352);
+  color:#f7e5b7!important;
+  font-family:"STKaiti","KaiTi","Noto Serif SC",serif;
+  font-size:18px!important;
+  font-weight:900!important;
+  letter-spacing:.10em;
+  text-shadow:0 1px rgba(0,0,0,.24);
+  box-shadow:inset 0 1px rgba(255,255,255,.09);
+}
+.compact-ui #tab-assets .business-income-summary{
+  padding:4px 9px;
+  border:1px solid rgba(182,130,52,.32);
+  border-radius:999px;
+  background:linear-gradient(180deg,#896126,#674418);
+  color:#ffe2a1!important;
+  font-family:"Songti SC","Noto Serif SC",serif;
+  font-size:12px!important;
+  font-weight:800;
+}
+.compact-ui #tab-assets .business-hint{
+  margin:5px 0 7px!important;
+  padding:6px 9px!important;
+  border:1px solid rgba(131,94,48,.17)!important;
+  border-radius:5px!important;
+  background:rgba(239,226,196,.48)!important;
+  color:#675844!important;
+  font-family:"Songti SC","Noto Serif SC",serif;
+  font-size:12px!important;
+  line-height:1.6!important;
+}
+.compact-ui #tab-assets .v173-limit-hint{
+  border:1px dashed rgba(143,101,45,.36)!important;
+  background:rgba(222,205,168,.35)!important;
+  color:#725d40!important;
+}
+
+/* 已有产业 = 资产牌 */
+.compact-ui #tab-assets .business-grid{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:9px!important;
+  margin-top:8px!important;
+}
+.compact-ui #tab-assets .business-card{
+  position:relative;
+  min-width:0;
+  padding:11px 11px 9px!important;
+  gap:5px!important;
+  border:1px solid rgba(169,122,55,.54)!important;
+  border-radius:7px!important;
+  background:
+    linear-gradient(180deg,rgba(255,250,233,.96),rgba(238,224,192,.95))!important;
+  color:#382a1c!important;
+  box-shadow:0 3px 9px rgba(86,58,28,.10),inset 0 0 0 1px rgba(255,255,255,.48)!important;
+  filter:none!important;
+}
+.compact-ui #tab-assets .business-card::before{
+  content:"";
+  position:absolute;
+  top:0;left:0;right:0;
+  height:3px;
+  border-radius:7px 7px 0 0;
+  background:linear-gradient(90deg,#b67f31,#e1bf72,#9e6b28);
+  opacity:.78;
+}
+.compact-ui #tab-assets .business-card>strong{
+  color:#2b2117!important;
+  font-family:"STKaiti","KaiTi","Noto Serif SC",serif!important;
+  font-size:16px!important;
+  font-weight:900!important;
+  letter-spacing:.04em;
+}
+.compact-ui #tab-assets .business-card>span{
+  width:max-content;
+  max-width:100%;
+  padding:2px 6px;
+  border-radius:999px;
+  background:#ead199;
+  color:#75501d!important;
+  font-family:"Songti SC","Noto Serif SC",serif;
+  font-size:11px!important;
+  font-weight:800;
+}
+.compact-ui #tab-assets .business-card>small,
+.compact-ui #tab-assets .business-card .unlock-earned,
+.compact-ui #tab-assets .business-card .v174-card-guide-line{
+  color:#6d5940!important;
+  font-family:"Songti SC","Noto Serif SC",serif!important;
+  font-size:11px!important;
+  line-height:1.55!important;
+}
+.compact-ui #tab-assets .business-card.v174-guide-completed{
+  opacity:1!important;
+}
+.compact-ui #tab-assets .business-card.v174-guide-completed .v174-card-guide-line{
+  color:#526a4c!important;
+  opacity:1!important;
+}
+.compact-ui #tab-assets .business-buy,
+.compact-ui #tab-assets .locked-action{
+  width:100%;
+  min-height:32px;
+  margin-top:auto;
+  border:1px solid #b38b4d!important;
+  border-radius:4px!important;
+  background:linear-gradient(180deg,#285461,#1d4350)!important;
+  color:#fff0cf!important;
+  font-family:"Songti SC","Noto Serif SC",serif!important;
+  font-size:11px!important;
+  font-weight:800!important;
+  letter-spacing:.03em;
+  box-shadow:inset 0 1px rgba(255,255,255,.10);
+}
+.compact-ui #tab-assets .business-buy:not(:disabled):hover{
+  background:linear-gradient(180deg,#326574,#23505e)!important;
+  border-color:#d2a95e!important;
+}
+.compact-ui #tab-assets .business-buy:disabled,
+.compact-ui #tab-assets .locked-action:disabled{
+  opacity:.72!important;
+  color:#dfd5bd!important;
+  cursor:not-allowed;
+}
+
+/* “下一批可发展产业”不再做成灰黑禁用卡，而是低饱和旧纸卡。 */
+.compact-ui #tab-assets .v170-business-group,
+.compact-ui #tab-assets .v170-remote-businesses,
+.compact-ui #tab-assets .v170-milestones{
+  margin-top:10px!important;
+  padding:9px!important;
+  border:1px solid rgba(139,99,46,.24)!important;
+  border-radius:6px!important;
+  background:rgba(248,239,214,.62)!important;
+  color:#403222!important;
+}
+.compact-ui #tab-assets .v170-group-heading,
+.compact-ui #tab-assets .v170-milestone-heading{
+  padding-bottom:6px;
+  border-bottom:1px solid rgba(139,99,46,.19);
+}
+.compact-ui #tab-assets .v170-group-heading strong,
+.compact-ui #tab-assets .v170-milestone-heading strong{
+  color:#42301e!important;
+  font-family:"STKaiti","KaiTi","Noto Serif SC",serif!important;
+  font-size:15px!important;
+}
+.compact-ui #tab-assets .unlock-project-card,
+.compact-ui #tab-assets .unlock-project{
+  border:1px solid rgba(151,112,62,.32)!important;
+  border-radius:6px!important;
+  background:linear-gradient(180deg,rgba(246,237,214,.95),rgba(224,211,182,.92))!important;
+  color:#4a3b29!important;
+  box-shadow:none!important;
+}
+.compact-ui #tab-assets .unlock-project-card.locked,
+.compact-ui #tab-assets .unlock-project.v174-chain-locked,
+.compact-ui #tab-assets .unlock-project-card.v174-chain-locked,
+.compact-ui #tab-assets .business-card.v174-chain-locked{
+  opacity:.76!important;
+  filter:none!important;
+  background:linear-gradient(180deg,rgba(239,232,214,.92),rgba(215,205,184,.92))!important;
+}
+.compact-ui #tab-assets .unlock-project-heading strong{
+  color:#433120!important;
+  font-family:"STKaiti","KaiTi","Noto Serif SC",serif!important;
+  font-size:14px!important;
+}
+.compact-ui #tab-assets .unlock-project-desc{
+  color:#74664f!important;
+  font-family:"Songti SC","Noto Serif SC",serif!important;
+  font-size:11px!important;
+  line-height:1.55!important;
+}
+.compact-ui #tab-assets .unlock-badge.locked{
+  border-color:#9d6c5f!important;
+  background:#80514a!important;
+  color:#ffe2d7!important;
+}
+.compact-ui #tab-assets .unlock-condition.met{
+  background:#dce8d5!important;
+  color:#426144!important;
+}
+.compact-ui #tab-assets .unlock-condition.missing{
+  background:#ead9d1!important;
+  color:#884a42!important;
+}
+.compact-ui #tab-assets .unlock-remaining{
+  color:#9b493f!important;
+}
+
+/* 产业页里农业/田庄附属模块也统一回暖，避免夹杂旧灰蓝色块。 */
+.compact-ui #tab-assets .farm-dashboard,
+.compact-ui #tab-assets .farm-stat,
+.compact-ui #tab-assets .auto-worker-feedback,
+.compact-ui #tab-assets .auto-worker-purchase-hint,
+.compact-ui #tab-assets .auto-farm-note,
+.compact-ui #tab-assets .farm-labor-feedback{
+  border-color:rgba(140,101,53,.25)!important;
+  background:rgba(248,239,215,.62)!important;
+  color:#564631!important;
+}
+.compact-ui #tab-assets .farm-dashboard h4,
+.compact-ui #tab-assets .farm-stat b{
+  color:#3e2f20!important;
+}
+
+@media(max-width:1050px){
+  .compact-ui #tab-assets .business-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+@media(max-width:620px){
+  .compact-ui #tab-assets>h3{font-size:23px!important;padding-left:54px}
+  .compact-ui #tab-assets .business-grid{grid-template-columns:1fr!important}
+  .compact-ui #tab-assets .land-purchase{grid-template-columns:1fr!important}
+}
