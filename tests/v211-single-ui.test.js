@@ -6,9 +6,9 @@ const read = path => fs.readFileSync(new URL('../' + path, import.meta.url), 'ut
 
 test('V1.11.2 loads one presentation layer and drops V1.9/V1.10 visual controllers', () => {
   const html = read('dist/index.html');
-  assert.match(html, /V1\.11\.1/);
-  assert.match(html, /v211\.css\?v=1\.11\.1/);
-  assert.match(html, /v211-ui\.js\?v=1\.11\.1/);
+  assert.match(html, /V1\.11\.2/);
+  assert.match(html, /v211\.css\?v=1\.11\.2/);
+  assert.match(html, /v211-ui\.js\?v=1\.11\.2/);
   assert.doesNotMatch(html, /v190(?:-ui)?\.js|v190\.css|v200(?:-ui)?\.js|v200\.css/);
 });
 
